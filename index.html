@@ -1,71 +1,531 @@
+
 <!doctype html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#090b14">
-  <meta name="description" content="Discover public posts, trending video moments, and creative communities on Megavallia. Watch public moments and explore community voices.">
-  <title>Megavallia — Discover your world & public moments</title>
+  <meta name="description" content="Discover public posts, watch live streams, explore creators and find your community on Megavallia.">
+  <meta name="robots" content="index,follow">
+  <title>Megavallia — Discover Your World</title>
   <link rel="stylesheet" href="styles.css">
-  
-  <!-- TODO: Replace with your actual Google AdSense Publisher script after approval -->
-  <!-- <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-XXXXXXXXXXXXXXXX" crossorigin="anonymous"></script> -->
 
-  <!-- Supabase JS SDK CDN -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Megavallia — Discover Your World">
+  <meta property="og:description" content="Explore public posts, watch live moments and discover your community on Megavallia.">
+  <meta property="og:url" content="https://megavallia.com">
+  <meta name="twitter:card" content="summary_large_image">
+
+  <!-- Retained for compatibility with existing website functionality. -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1576067675286796"
-     crossorigin="anonymous"></script>
+  <!-- Google AdSense. Ads only appear when configured and eligible. -->
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1576067675286796"
+    crossorigin="anonymous"></script>
 
+  <style>
+    :root {
+      color-scheme: dark;
+      --mv-bg: #090b14;
+      --mv-card: #121626;
+      --mv-border: rgba(255,255,255,.10);
+      --mv-text: #f6f7ff;
+      --mv-muted: #a6adc5;
+      --mv-purple: #8b5cf6;
+      --mv-pink: #ec4899;
+      --mv-green: #22c55e;
+    }
 
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 90px;
+    }
+
+    body {
+      background: var(--mv-bg);
+      color: var(--mv-text);
+    }
+
+    a { text-decoration: none; }
+
+    button, a {
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    button:focus-visible,
+    a:focus-visible {
+      outline: 2px solid #c4b5fd;
+      outline-offset: 4px;
+    }
+
+    .topbar {
+      position: sticky;
+      top: 0;
+      z-index: 50;
+      backdrop-filter: blur(18px);
+      -webkit-backdrop-filter: blur(18px);
+      background: rgba(9,11,20,.94);
+      border-bottom: 1px solid var(--mv-border);
+    }
+
+    .topbar nav {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .topbar nav a,
+    .footer-links a {
+      color: var(--mv-muted);
+      transition: color .2s ease;
+    }
+
+    .topbar nav a:hover,
+    .footer-links a:hover {
+      color: white;
+    }
+
+    .brand .logo,
+    .app-logo {
+      display: inline-grid;
+      place-items: center;
+      background: linear-gradient(135deg,var(--mv-purple),var(--mv-pink));
+      color: white;
+      font-weight: 900;
+      border-radius: 13px;
+      flex-shrink: 0;
+    }
+
+    .brand .logo {
+      width: 34px;
+      height: 34px;
+    }
+
+    .app-logo {
+      width: 64px;
+      height: 64px;
+      font-size: 28px;
+    }
+
+    .btn {
+      cursor: pointer;
+      transition: transform .2s ease, filter .2s ease;
+    }
+
+    .btn:hover {
+      filter: brightness(1.12);
+      transform: translateY(-1px);
+    }
+
+    .section {
+      padding-top: 66px;
+      padding-bottom: 66px;
+    }
+
+    .section-head {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 20px;
+      margin-bottom: 25px;
+    }
+
+    .section-head p,
+    .about p,
+    .feature-grid p,
+    .download-copy p,
+    .creator-band p {
+      color: var(--mv-muted);
+      line-height: 1.7;
+    }
+
+    .pill {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      white-space: nowrap;
+    }
+
+    .pill i {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--mv-green);
+      box-shadow: 0 0 12px rgba(34,197,94,.5);
+    }
+
+    .status {
+      color: var(--mv-muted);
+      padding: 14px 0;
+    }
+
+    .feed:empty {
+      min-height: 0;
+    }
+
+    /* Live player */
+    .live-player {
+      margin-top: 28px;
+      padding: 20px;
+      background: var(--mv-card);
+      border: 1px solid var(--mv-border);
+      border-radius: 20px;
+      overflow: hidden;
+    }
+
+    .live-player[hidden] {
+      display: none !important;
+    }
+
+    .live-player-heading {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      gap: 16px;
+      margin-bottom: 18px;
+    }
+
+    .live-player-heading h3 {
+      margin: 8px 0;
+    }
+
+    .live-badge {
+      color: #f87171;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: .08em;
+    }
+
+    .live-video-container {
+      width: 100%;
+      aspect-ratio: 16 / 9;
+      background: #05060a;
+      border-radius: 14px;
+      overflow: hidden;
+    }
+
+    .live-video-container video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: #05060a;
+    }
+
+    /* Discovery features */
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 18px;
+      margin-top: 28px;
+    }
+
+    .feature-grid article,
+    .value-card {
+      padding: 24px;
+      background: var(--mv-card);
+      border: 1px solid var(--mv-border);
+      border-radius: 20px;
+      min-width: 0;
+    }
+
+    .feature-grid article > span {
+      font-size: 28px;
+    }
+
+    .feature-grid h3 {
+      margin-bottom: 8px;
+    }
+
+    .value-grid {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 16px;
+      margin-top: 24px;
+    }
+
+    .value-card h3 {
+      margin-top: 8px;
+    }
+
+    .value-card p {
+      color: var(--mv-muted);
+      line-height: 1.65;
+    }
+
+    .value-icon {
+      font-size: 25px;
+    }
+
+    .section-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      color: #c4b5fd;
+      font-weight: 700;
+      margin-top: 16px;
+    }
+
+    .section-link:hover {
+      color: white;
+    }
+
+    /* Ad placement */
+    .adsense-container {
+      margin: 28px auto;
+      max-width: 1100px;
+      padding: 14px;
+      text-align: center;
+    }
+
+    .ad-label {
+      display: block;
+      color: var(--mv-muted);
+      font-size: 12px;
+      margin-bottom: 8px;
+    }
+
+    /* Creator call-to-action */
+    .creator-band {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 24px;
+      padding: 32px;
+      margin: 40px 0;
+      border: 1px solid var(--mv-border);
+      border-radius: 24px;
+      background: linear-gradient(
+        115deg,
+        rgba(139,92,246,.16),
+        rgba(236,72,153,.08)
+      );
+    }
+
+    .creator-band .star {
+      font-size: 34px;
+    }
+
+    .creator-band h2 {
+      margin: 8px 0;
+    }
+
+    /* Download */
+    .download {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 22px;
+      padding: 32px;
+      margin: 40px 0;
+      border-radius: 24px;
+      background: linear-gradient(120deg,#19152c,#111827);
+      border: 1px solid var(--mv-border);
+    }
+
+    .download-copy {
+      flex: 1;
+      min-width: 220px;
+    }
+
+    .download-action {
+      display: grid;
+      gap: 10px;
+      max-width: 100%;
+    }
+
+    .download-action .btn {
+      text-align: center;
+    }
+
+    .download-action small {
+      color: var(--mv-muted);
+      max-width: 280px;
+      line-height: 1.6;
+    }
+
+    .footer-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .fineprint {
+      color: var(--mv-muted);
+      font-size: 13px;
+      line-height: 1.7;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+
+    @media (max-width: 1000px) {
+      .topbar nav {
+        gap: 12px;
+      }
+    }
+
+    @media (max-width: 760px) {
+      .topbar {
+        gap: 12px;
+      }
+
+      .topbar nav {
+        gap: 12px;
+        font-size: 13px;
+      }
+
+      .section {
+        padding-top: 44px;
+        padding-bottom: 44px;
+      }
+
+      .feature-grid,
+      .value-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .section-head {
+        align-items: flex-start;
+        flex-direction: column;
+      }
+
+      .creator-band {
+        align-items: flex-start;
+        flex-direction: column;
+        padding: 24px;
+      }
+
+      .download {
+        padding: 24px;
+      }
+
+      .hero {
+        overflow: hidden;
+      }
+
+      .live-player {
+        padding: 12px;
+      }
+
+      .live-player-heading {
+        flex-wrap: wrap;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .topbar nav {
+        width: 100%;
+        justify-content: space-between;
+      }
+
+      .user-actions {
+        gap: 8px;
+      }
+
+      .download-action,
+      .download-action .btn {
+        width: 100%;
+      }
+
+      .live-video-container {
+        aspect-ratio: 9 / 16;
+        max-height: 70vh;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: .01ms !important;
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
 </head>
+
 <body>
   <header class="topbar">
-    <a class="brand" href="#top"><span class="logo">M</span> mega<span>vallia</span></a>
-    <nav>
+    <a class="brand" href="#top" aria-label="Megavallia home">
+      <span class="logo">M</span>
+      mega<span>vallia</span>
+    </a>
+
+    <nav aria-label="Main navigation">
       <a href="#discover">Discover</a>
-      <a href="#about">About</a>
       <a href="#live">Live</a>
       <a href="#creators">Creators</a>
+      <a href="#features">Features</a>
+      <a href="#about">About</a>
     </nav>
+
     <div class="user-actions">
-      <span id="user-display" class="user-display" style="display:none;"></span>
-      <button id="auth-btn" class="btn small">Sign In</button>
-      <a class="btn small ghost" href="#download">Get the app ↗</a>
+      <!-- Legacy elements retained for app.js compatibility.
+           No sign-in control is visible on the public website. -->
+      <span id="user-display" class="user-display" hidden></span>
+      <button
+        id="auth-btn"
+        class="btn small"
+        type="button"
+        hidden
+        aria-hidden="true"
+        tabindex="-1"
+      >Sign In</button>
+
+      <a class="btn small" href="#download">Get the app ↗</a>
     </div>
   </header>
 
   <main id="top">
-    <!-- Hero Section -->
+    <!-- Hero -->
     <section class="hero">
-      <div class="glow"></div>
+      <div class="glow" aria-hidden="true"></div>
+
       <div class="hero-copy">
         <div class="eyebrow"><i></i> YOUR WORLD, IN MOTION</div>
+
         <h1>Find your people.<br><em>Feel the moment.</em></h1>
-        <p>Watch public posts, discover new voices, and explore live community video moments on Megavallia.</p>
+
+        <p>
+          Discover public posts, watch community videos, explore new creators
+          and catch live moments from around the world.
+        </p>
+
         <div class="actions">
-          <a class="btn" href="#discover">Watch public content ↓</a>
-          <a class="btn ghost" href="#download">Download the app</a>
+          <a class="btn" href="#discover">Explore public posts ↓</a>
+          <a class="btn ghost" href="#live">Watch live</a>
         </div>
+
         <div class="hint">✓ Watch on the web · Create in the app</div>
       </div>
-      <div class="art">
+
+      <div class="art" aria-label="Megavallia community preview">
         <div class="ring r1"></div>
         <div class="ring r2"></div>
         <div class="floating f1">✦ Discover</div>
         <div class="floating f2">◎ Connect</div>
+
         <div class="mock back">
           <div class="abstract pink"></div>
           <small>YOUR COMMUNITY</small>
         </div>
+
         <div class="mock front">
           <div class="video">
             <div class="sun"></div>
             <div class="mountain m1"></div>
             <div class="mountain m2"></div>
             <span class="live">● PUBLIC MOMENT</span>
-            <span class="play">▶</span>
+            <span class="play" aria-hidden="true">▶</span>
           </div>
+
           <div class="mock-info">
             <b>A new moment awaits</b>
             <small>Stories from your world</small>
@@ -73,21 +533,28 @@
         </div>
       </div>
     </section>
-    <!-- Live Streams Section -->
+
+    <!-- Live broadcasts -->
     <section class="section live-section" id="live">
       <div class="section-head">
         <div>
           <div class="eyebrow">LIVE ON MEGAVALLIA</div>
           <h2>Watch what's happening now.</h2>
-          <p>Join public live broadcasts from creators streaming on the Megavallia app.</p>
+          <p>
+            Explore public live broadcasts from creators streaming on the
+            Megavallia app.
+          </p>
         </div>
+
         <span class="pill"><i></i> LIVE NOW</span>
       </div>
 
-      <div id="live-status" class="status">Checking for live broadcasts…</div>
+      <div id="live-status" class="status" role="status" aria-live="polite">
+        Checking for live broadcasts…
+      </div>
+
       <div id="live-streams" class="feed live-stream-grid"></div>
 
-      <!-- Browser video player -->
       <div id="live-player" class="live-player" hidden>
         <div class="live-player-heading">
           <div>
@@ -95,98 +562,227 @@
             <h3 id="live-player-title">Live broadcast</h3>
             <p id="live-player-host"></p>
           </div>
-          <button type="button" id="live-close" class="btn small ghost">Close ✕</button>
+
+          <button
+            type="button"
+            id="live-close"
+            class="btn small ghost"
+          >Close ✕</button>
         </div>
 
         <div id="live-video-container" class="live-video-container">
-          <video id="live-video" autoplay playsinline controls></video>
+          <video
+            id="live-video"
+            autoplay
+            playsinline
+            controls
+            aria-label="Live broadcast video"
+          ></video>
         </div>
 
-        <p id="live-player-status" class="status">Connecting to the broadcast…</p>
+        <p id="live-player-status" class="status" role="status" aria-live="polite">
+          Select a live broadcast to start watching.
+        </p>
       </div>
     </section>
 
-    <!-- Public Feed Section -->
+    <!-- Public posts feed -->
     <section class="section discover" id="discover">
       <div class="section-head">
         <div>
           <div class="eyebrow">THE PUBLIC FEED</div>
           <h2>Something worth watching.</h2>
-          <p>Explore public posts and video highlights shared by the Megavallia community.</p>
+          <p>
+            Discover public posts and video highlights shared by the
+            Megavallia community.
+          </p>
         </div>
+
         <span class="pill"><i></i> PUBLIC CONTENT</span>
       </div>
-      <div id="feed-status" class="status">Loading public content…</div>
+
+      <div id="feed-status" class="status" role="status" aria-live="polite">
+        Loading public content…
+      </div>
+
       <div id="feed" class="feed"></div>
-      <p class="fineprint">Only content confirmed as public should appear here. Sign in and creator tools are available in the app.</p>
+
+      <p class="fineprint">
+        Only content intended for public viewing should appear here.
+        Publishing, going live and creator tools are available in the app.
+      </p>
     </section>
 
-    <!-- AdSense Banner Container (Between Sections) -->
+    <!-- Features -->
+    <section class="section features" id="features">
+      <div class="eyebrow">EXPLORE MEGAVALLIA</div>
+      <h2>Your next favorite moment<br>is out there.</h2>
+      <p>
+        One place to discover videos, watch live moments and find new voices.
+      </p>
+
+      <div class="feature-grid">
+        <article>
+          <span aria-hidden="true">◉</span>
+          <h3>Discover</h3>
+          <p>
+            Browse publicly shared posts and explore content from the community.
+          </p>
+          <a class="section-link" href="#discover">Explore posts →</a>
+        </article>
+
+        <article>
+          <span aria-hidden="true">▶</span>
+          <h3>Watch live</h3>
+          <p>
+            Find public broadcasts and watch supported live streams in your browser.
+          </p>
+          <a class="section-link" href="#live">See live streams →</a>
+        </article>
+
+        <article>
+          <span aria-hidden="true">✦</span>
+          <h3>Create and share</h3>
+          <p>
+            Use the Megavallia mobile app to publish posts and access creator features.
+          </p>
+          <a class="section-link" href="#download">Get the app →</a>
+        </article>
+      </div>
+    </section>
+
+    <!-- App benefits -->
+    <section class="section" id="app-benefits">
+      <div class="eyebrow">MORE WITH THE APP</div>
+      <h2>Your Megavallia journey goes further.</h2>
+
+      <div class="value-grid">
+        <article class="value-card">
+          <div class="value-icon" aria-hidden="true">📱</div>
+          <h3>Create on the go</h3>
+          <p>
+            Access mobile creator tools and share moments from your device.
+          </p>
+        </article>
+
+        <article class="value-card">
+          <div class="value-icon" aria-hidden="true">🎥</div>
+          <h3>Join the conversation</h3>
+          <p>
+            Use the app's supported community and communication features.
+          </p>
+        </article>
+
+        <article class="value-card">
+          <div class="value-icon" aria-hidden="true">🌍</div>
+          <h3>Discover your world</h3>
+          <p>
+            Return to the public website to explore content and supported live broadcasts.
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <!-- AdSense placement.
+         Configure Auto ads or add a real AdSense ad unit after approval.
+         This label alone does not display an advertisement. -->
     <div class="adsense-container">
       <small class="ad-label">Advertisement</small>
-      <!-- Insert Google AdSense <ins> tag here -->
-      <div class="ad-placeholder">
-        <span>Google AdSense Banner Slot</span>
-      </div>
     </div>
 
-    <!-- About Section (Required for AdSense Content Value) -->
+    <!-- About -->
     <section class="section about" id="about">
       <div class="eyebrow">ABOUT MEGAVALLIA</div>
-      <h2>Connecting creators and audiences globally.</h2>
-      <p>Megavallia is a dynamic social discovery platform designed to bring authentic moments closer to you. Whether you are looking to explore trending video content, follow your favorite community creators, or share your own perspective through our mobile application, Megavallia provides a seamless ecosystem for digital expression.</p>
+      <h2>Connecting creators and audiences.</h2>
+
+      <p>
+        Megavallia is a social discovery platform built to bring public moments
+        and community voices closer together. Visitors can explore public posts
+        and supported live broadcasts on the website. Creators can download the
+        mobile app to access publishing and other supported creator tools.
+      </p>
+
+      <a class="section-link" href="#download">Discover the app →</a>
     </section>
 
-    <!-- Creator Band -->
+    <!-- Creator call-to-action -->
     <section class="creator-band" id="creators">
-      <div class="star">✦</div>
+      <div class="star" aria-hidden="true">✦</div>
+
       <div>
         <div class="eyebrow">MADE FOR YOUR MOMENT</div>
         <h2>Ready to become a creator?</h2>
-        <p>Go live, publish content, and unlock creator features in the Megavallia app.</p>
+        <p>
+          Download Megavallia to access the creator features available in the app.
+        </p>
       </div>
+
       <a class="btn" href="#download">Get the app ↗</a>
     </section>
 
-    <!-- Features Section -->
-    <section class="section features" id="live">
-      <div class="eyebrow">EXPLORE MEGAVALLIA</div>
-      <h2>Your next favorite moment<br>is out there.</h2>
-      <div class="feature-grid">
-        <article><span>◉</span><h3>Discover</h3><p>Browse public posts and find new creators from around the world.</p></article>
-        <article><span>⌁</span><h3>Watch</h3><p>Enjoy public video content right from your modern web browser.</p></article>
-        <article><span>✦</span><h3>Create</h3><p>Download our mobile application to go live, record, and use advanced creator toolsets.</p></article>
-      </div>
-    </section>
-
-    <!-- Download CTA Section -->
+    <!-- Android download -->
     <section class="download" id="download">
-      <div class="app-logo">M</div>
+      <div class="app-logo" aria-hidden="true">M</div>
+
       <div class="download-copy">
         <div class="eyebrow">THE FULL EXPERIENCE</div>
         <h2>Take Megavallia with you.</h2>
-        <p>Creator features are available in the mobile app, not on this website.</p>
+        <p>
+          Get the Android app to access mobile creator features and share
+          your own moments.
+        </p>
       </div>
+
       <div class="download-action">
-        <a class="btn" id="download-link" href="#">Download Android app ↓</a>
-        <small id="download-note">App download link will be configured before launch.</small>
+        <!-- This is the Expo build page, not a direct APK file.
+             Replace with the direct APK URL when available. -->
+        <a
+          class="btn"
+          id="download-link"
+          href="https://expo.dev/accounts/pollodev/projects/megavallia/builds/af145a0d-3d29-44e2-bb33-f6caeb0b58a4"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Get Megavallia for Android ↓</a>
+
+        <small id="download-note">
+          Open the latest Android build to check its status and download
+          the app if an installable APK is available.
+        </small>
       </div>
     </section>
   </main>
 
   <footer>
     <div class="footer-brand">
-      <a class="brand" href="#top"><span class="logo">M</span> mega<span>vallia</span></a>
+      <a class="brand" href="#top" aria-label="Megavallia home">
+        <span class="logo">M</span>
+        mega<span>vallia</span>
+      </a>
+
       <span>Discover publicly. Create in the app.</span>
     </div>
+
     <div class="footer-links">
       <a href="mailto:support@megavallia.com">Support</a>
       <a href="privacy.html">Privacy Policy</a>
       <a href="terms.html">Terms of Service</a>
     </div>
-    <small>© <span id="year"></span> Megavallia. All rights reserved.</small>
+
+    <small>
+      © <span id="year"></span> Megavallia. All rights reserved.
+    </small>
   </footer>
 
+  <script>
+    // Automatically update the footer year.
+    const yearElement = document.getElementById("year");
+
+    if (yearElement) {
+      yearElement.textContent = new Date().getFullYear();
+    }
+  </script>
+
+  <!-- Existing feed, authentication compatibility and live integration. -->
   <script src="app.js"></script>
 </body>
 </html>

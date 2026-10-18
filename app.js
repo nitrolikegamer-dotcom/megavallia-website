@@ -31,12 +31,12 @@ document.addEventListener("DOMContentLoaded", () => {
   const year = document.getElementById("year");
   if (year) year.textContent = new Date().getFullYear();
 
-  setupDownloadLink();
+  setupLink();
   initAuth();
   loadFeed();
 });
 
-/* ---------- DOWNLOAD LINK ---------- */
+/* ----------  LINK ---------- */
 
 function setupDownloadLink() {
   const link = document.getElementById("download-link");
