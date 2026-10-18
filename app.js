@@ -14,11 +14,6 @@ const ANDROID_APK_URL =
 const MAX_FEED_POSTS = 12;
 const REQUEST_TIMEOUT_MS = 20000;
 
-/*
- * Optional website authentication.
- * Leave these empty if the website is for public viewing only.
- * Never put a Supabase service-role or secret key here.
- */
 const SUPABASE_URL = "";
 const SUPABASE_PUBLISHABLE_KEY = "";
 
@@ -149,17 +144,17 @@ function setupDownloadLink() {
   link.target = "_blank";
   link.rel = "noopener noreferrer";
 
+  if (note) {
+    note.textContent =
+      "Open the Android build page to download the app if an installable APK is available.";
+  }
+
   link.addEventListener("click", () => {
     if (note) {
       note.textContent =
         "The Android build page has opened. Download the APK if an installable build is available.";
     }
   });
-
-  if (note) {
-    note.textContent =
-      "Open the Android build page to download the app if an installable APK is available.";
-  }
 
   console.info("[Megavallia] Android download link connected.");
 }
@@ -194,9 +189,7 @@ function setupNavigation() {
         block: "start"
       });
 
-      if (history.replaceState) {
-        history.replaceState(null, "", targetId);
-      }
+      history.replaceState(null, "", targetId);
     });
   });
 }
@@ -217,16 +210,10 @@ function initAuth() {
 
   if (modal) {
     modal.addEventListener("click", (event) => {
-      if (event.target === modal) {
-        closeLoginModal();
-      }
+      if (event.target === modal) closeLoginModal();
     });
   }
 
-  /*
-   * Public-viewing website: if Supabase is not configured,
-   * do not require sign-in to browse public posts.
-   */
   if (!supabaseClient) {
     if (authBtn && !authBtn.hidden) {
       authBtn.addEventListener("click", () => {
@@ -379,6 +366,8 @@ async function logout() {
    PUBLIC FEED
 ========================================================= */
 
+let activeFeedController = null;
+
 async function loadFeed() {
   const feed = $("#feed");
   const status = $("#feed-status");
@@ -388,30 +377,37 @@ async function loadFeed() {
     return;
   }
 
-  if (status) {
-    status.textContent = "Loading public content…";
+  /* Cancel an earlier request if retry is clicked. */
+  if (activeFeedController) {
+    activeFeedController.abort();
   }
+
+  const controller = new AbortController();
+  activeFeedController = controller;
+
+  const timeout = setTimeout(
+    () => controller.abort(),
+    REQUEST_TIMEOUT_MS
+  );
+
+  if (status) status.textContent = "Loading public content…";
 
   feed.replaceChildren();
 
-  const controller = new AbortController();
-
-  const timeout = setTimeout(() => {
-    controller.abort();
-  }, REQUEST_TIMEOUT_MS);
-
   try {
-    const response = await fetch(
-      `${API_BASE_URL}/api/posts`,
-      {
-        method: "GET",
-        headers: {
-          Accept: "application/json"
-        },
-        cache: "no-store",
-        signal: controller.signal
-      }
-    );
+    const endpoint = `${API_BASE_URL}/api/posts`;
+
+    console.info("[Megavallia] Requesting public feed:", endpoint);
+
+    const response = await fetch(endpoint, {
+      method: "GET",
+      headers: {
+        Accept: "application/json"
+      },
+      cache: "no-store",
+      mode: "cors",
+      signal: controller.signal
+    });
 
     if (!response.ok) {
       throw new Error(
@@ -473,9 +469,7 @@ async function loadFeed() {
         Number(b.recommendation_score || 0) -
         Number(a.recommendation_score || 0);
 
-      if (scoreDifference !== 0) {
-        return scoreDifference;
-      }
+      if (scoreDifference !== 0) return scoreDifference;
 
       return (
         new Date(b.created_at || 0).getTime() -
@@ -509,10 +503,7 @@ async function loadFeed() {
     feed.appendChild(fragment);
 
     if (status) {
-      const count = Math.min(
-        activePosts.length,
-        MAX_FEED_POSTS
-      );
+      const count = Math.min(activePosts.length, MAX_FEED_POSTS);
 
       status.textContent =
         `Showing ${count} public post${count === 1 ? "" : "s"}.`;
@@ -522,6 +513,10 @@ async function loadFeed() {
       `[Megavallia] Loaded ${activePosts.length} public post(s).`
     );
   } catch (error) {
+    if (error?.name === "AbortError" && activeFeedController !== controller) {
+      return;
+    }
+
     console.error("[Megavallia] Public feed failed:", error);
 
     if (status) {
@@ -530,18 +525,14 @@ async function loadFeed() {
     }
 
     const errorBox = createElement("div", "empty");
+
     const message = error?.name === "AbortError"
       ? "The request timed out. Please try again."
-      : "Please try again. If the problem continues, the API may be blocking this website.";
+      : "Unable to load public posts. Please try again shortly.";
 
     errorBox.appendChild(createElement("p", "", message));
 
-    const retryButton = createElement(
-      "button",
-      "btn",
-      "Try again"
-    );
-
+    const retryButton = createElement("button", "btn", "Try again");
     retryButton.type = "button";
     retryButton.addEventListener("click", loadFeed);
 
@@ -549,6 +540,10 @@ async function loadFeed() {
     feed.appendChild(errorBox);
   } finally {
     clearTimeout(timeout);
+
+    if (activeFeedController === controller) {
+      activeFeedController = null;
+    }
   }
 }
 
@@ -560,13 +555,16 @@ function renderPost(post) {
   const card = createElement("article", "feed-card");
 
   const profile = post.profile || post.profiles || {};
+
   const username = textValue(
     profile.username || post.username,
     "Megavallia creator"
   );
 
   const avatarUrl = validHttpUrl(
-    profile.avatar_url || post.avatar_url
+    profile.avatar_url ||
+    profile.avatar ||
+    post.avatar_url
   );
 
   const mediaUrl = validHttpUrl(
@@ -579,7 +577,7 @@ function renderPost(post) {
   );
 
   const mediaType = String(
-    post.media_type || ""
+    post.media_type || post.mediaType || ""
   ).toLowerCase();
 
   /* Creator header */
@@ -609,41 +607,33 @@ function renderPost(post) {
   );
 
   author.appendChild(
-    createElement(
-      "span",
-      "feed-date",
-      formatDate(post.created_at)
-    )
+    createElement("span", "feed-date", formatDate(post.created_at))
   );
 
   header.appendChild(author);
   card.appendChild(header);
 
-  /* Post media */
+  /* Media */
   if (mediaUrl) {
     const thumb = createElement("div", "thumb");
 
-    if (mediaType === "video") {
+    if (
+      mediaType.includes("video") ||
+      /\.(mp4|webm|mov|m4v)(?:$|\?)/i.test(mediaUrl)
+    ) {
       const video = createElement("video", "feed-media");
 
       video.src = mediaUrl;
       video.controls = true;
       video.preload = "metadata";
       video.playsInline = true;
-      video.setAttribute(
-        "aria-label",
-        `Video posted by ${username}`
-      );
 
       thumb.appendChild(video);
     } else {
       const image = createElement("img", "feed-media");
 
       image.src = mediaUrl;
-      image.alt = textValue(
-        post.content,
-        `Post shared by ${username}`
-      );
+      image.alt = textValue(post.content, `Post by ${username}`);
       image.loading = "lazy";
       image.decoding = "async";
 
@@ -658,14 +648,14 @@ function renderPost(post) {
     card.appendChild(thumb);
   }
 
-  /* Post details */
+  /* Content and statistics */
   const body = createElement("div", "feed-body");
 
   body.appendChild(
     createElement(
       "span",
       "feed-label",
-      mediaType === "video"
+      mediaType.includes("video")
         ? "PUBLIC CLIP"
         : mediaUrl
           ? "PUBLIC MOMENT"
@@ -673,12 +663,10 @@ function renderPost(post) {
     )
   );
 
-  const content = textValue(post.content);
+  const content = textValue(post.content || post.caption);
 
   if (content) {
-    body.appendChild(
-      createElement("p", "feed-content", content)
-    );
+    body.appendChild(createElement("p", "feed-content", content));
   } else if (!mediaUrl) {
     body.appendChild(
       createElement(
@@ -692,11 +680,7 @@ function renderPost(post) {
   const stats = createElement("div", "feed-stats");
 
   stats.appendChild(
-    createElement(
-      "span",
-      "feed-likes",
-      `♥ ${formatCount(post.like_count)}`
-    )
+    createElement("span", "feed-likes", `♥ ${formatCount(post.like_count)}`)
   );
 
   stats.appendChild(
