@@ -1249,3 +1249,40 @@ footer small {
     transform: none;
   }
 }
+
+/* Megavallia feed: keep creator avatars small */
+.feed-card .feed-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.feed-card .feed-avatar {
+  width: 44px !important;
+  height: 44px !important;
+  min-width: 44px;
+  max-width: 44px;
+  min-height: 44px;
+  max-height: 44px;
+  flex: 0 0 44px;
+  object-fit: cover;
+  border-radius: 50%;
+  display: block;
+}
+
+/* Keep post images and videos separate from profile pictures */
+.feed-card .thumb {
+  width: 100%;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+.feed-card .thumb img,
+.feed-card .thumb video {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  height: auto;
+  object-fit: contain;
+}
