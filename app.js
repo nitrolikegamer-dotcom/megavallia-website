@@ -1,16 +1,24 @@
 
-/* Megavallia Website — Public Feed + Supabase Auth */
+"use strict";
+
+/* =========================================================
+   MEGAVALLIA WEBSITE
+   Public Feed, Optional Supabase Auth, Android Download
+========================================================= */
 
 const API_BASE_URL = "https://megavallia.onrender.com";
 
-// Add the official APK URL when it is ready.
-const ANDROID_APK_URL = "";
+const ANDROID_APK_URL =
+  "https://expo.dev/accounts/pollodev/projects/megavallia/builds/af145a0d-3d29-44e2-bb33-f6caeb0b58a4";
 
-// Supabase Auth is optional for public viewing.
-// Configure these only if you need website sign-in.
-// SUPABASE_URL must look like:
-// https://YOUR_PROJECT_REF.supabase.co
-// Use a public/publishable key, NEVER a secret/service-role key.
+const MAX_FEED_POSTS = 12;
+const REQUEST_TIMEOUT_MS = 20000;
+
+/*
+ * Optional website authentication.
+ * Leave these empty if the website is for public viewing only.
+ * Never put a Supabase service-role or secret key here.
+ */
 const SUPABASE_URL = "";
 const SUPABASE_PUBLISHABLE_KEY = "";
 
@@ -27,103 +35,251 @@ if (
   );
 }
 
-document.addEventListener("DOMContentLoaded", () => {
-  const year = document.getElementById("year");
-  if (year) year.textContent = new Date().getFullYear();
+/* =========================================================
+   HELPERS
+========================================================= */
 
-  setupDownloadLink();
-  initAuth();
-  loadFeed();
-});
+function $(selector, parent = document) {
+  return parent.querySelector(selector);
+}
 
-/* ---------- DOWNLOAD LINK ---------- */
+function createElement(tag, className = "", text = "") {
+  const element = document.createElement(tag);
 
-function setupDownloadLink() {
-  const link = document.getElementById("download-link");
-  const note = document.getElementById("download-note");
+  if (className) element.className = className;
 
-  if (!link || !note) return;
+  if (text !== null && text !== undefined) {
+    element.textContent = String(text);
+  }
 
-  if (ANDROID_APK_URL) {
-    link.href = ANDROID_APK_URL;
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    note.textContent = "Download the official Megavallia Android app.";
-  } else {
-    link.addEventListener("click", event => {
-      event.preventDefault();
-      note.textContent =
-        "The official Android download link is not available yet.";
-    });
+  return element;
+}
+
+function textValue(value, fallback = "") {
+  if (typeof value === "string" && value.trim()) {
+    return value.trim();
+  }
+
+  if (typeof value === "number") {
+    return String(value);
+  }
+
+  return fallback;
+}
+
+function formatCount(value) {
+  const count = Math.max(0, Number(value) || 0);
+
+  return new Intl.NumberFormat(undefined, {
+    notation: count >= 10000 ? "compact" : "standard",
+    maximumFractionDigits: 1
+  }).format(count);
+}
+
+function formatDate(value) {
+  if (!value) return "Recently";
+
+  const date = new Date(value);
+
+  if (Number.isNaN(date.getTime())) {
+    return "Recently";
+  }
+
+  return new Intl.DateTimeFormat(undefined, {
+    dateStyle: "medium",
+    timeStyle: "short"
+  }).format(date);
+}
+
+function validHttpUrl(value) {
+  if (typeof value !== "string" || !value.trim()) {
+    return null;
+  }
+
+  try {
+    const url = new URL(value);
+
+    if (!["https:", "http:"].includes(url.protocol)) {
+      return null;
+    }
+
+    return url.href;
+  } catch {
+    return null;
   }
 }
 
-/* ---------- OPTIONAL SUPABASE AUTH ---------- */
+/* =========================================================
+   INITIALIZATION
+========================================================= */
+
+document.addEventListener("DOMContentLoaded", () => {
+  updateFooterYear();
+  setupDownloadLink();
+  setupNavigation();
+  setupFeedRetry();
+  initAuth();
+  loadFeed();
+
+  console.info("[Megavallia] Website initialized.");
+});
+
+function updateFooterYear() {
+  const year = $("#year");
+
+  if (year) {
+    year.textContent = String(new Date().getFullYear());
+  }
+}
+
+/* =========================================================
+   ANDROID DOWNLOAD
+========================================================= */
+
+function setupDownloadLink() {
+  const link = $("#download-link");
+  const note = $("#download-note");
+
+  if (!link) {
+    console.error("[Megavallia] #download-link was not found.");
+    return;
+  }
+
+  link.href = ANDROID_APK_URL;
+  link.target = "_blank";
+  link.rel = "noopener noreferrer";
+
+  link.addEventListener("click", () => {
+    if (note) {
+      note.textContent =
+        "The Android build page has opened. Download the APK if an installable build is available.";
+    }
+  });
+
+  if (note) {
+    note.textContent =
+      "Open the Android build page to download the app if an installable APK is available.";
+  }
+
+  console.info("[Megavallia] Android download link connected.");
+}
+
+/* =========================================================
+   NAVIGATION
+========================================================= */
+
+function setupNavigation() {
+  document.querySelectorAll('a[href^="#"]').forEach((link) => {
+    link.addEventListener("click", (event) => {
+      const targetId = link.getAttribute("href");
+
+      if (!targetId || targetId === "#") return;
+
+      let target;
+
+      try {
+        target = $(targetId);
+      } catch {
+        return;
+      }
+
+      if (!target) return;
+
+      event.preventDefault();
+
+      target.scrollIntoView({
+        behavior: window.matchMedia(
+          "(prefers-reduced-motion: reduce)"
+        ).matches ? "auto" : "smooth",
+        block: "start"
+      });
+
+      if (history.replaceState) {
+        history.replaceState(null, "", targetId);
+      }
+    });
+  });
+}
+
+/* =========================================================
+   OPTIONAL SUPABASE AUTH
+========================================================= */
 
 function initAuth() {
-  const authBtn = document.getElementById("auth-btn");
-  const closeBtn = document.getElementById("modal-close-btn");
-  const modal = document.getElementById("login-modal");
-  const loginForm = document.getElementById("login-form");
+  const authBtn = $("#auth-btn");
+  const closeBtn = $("#modal-close-btn");
+  const modal = $("#login-modal");
+  const loginForm = $("#login-form");
 
+  if (closeBtn) {
+    closeBtn.addEventListener("click", closeLoginModal);
+  }
+
+  if (modal) {
+    modal.addEventListener("click", (event) => {
+      if (event.target === modal) {
+        closeLoginModal();
+      }
+    });
+  }
+
+  /*
+   * Public-viewing website: if Supabase is not configured,
+   * do not require sign-in to browse public posts.
+   */
   if (!supabaseClient) {
-    if (authBtn) {
-      authBtn.textContent = "Sign In";
-      authBtn.onclick = () => {
+    if (authBtn && !authBtn.hidden) {
+      authBtn.addEventListener("click", () => {
         if (modal) {
           modal.style.display = "flex";
         } else {
           alert("Website sign-in is not configured yet.");
         }
-      };
-    }
-
-    if (closeBtn) closeBtn.onclick = closeLoginModal;
-
-    if (modal) {
-      modal.addEventListener("click", event => {
-        if (event.target === modal) closeLoginModal();
       });
     }
 
     return;
   }
 
-  if (closeBtn) closeBtn.onclick = closeLoginModal;
-
-  if (modal) {
-    modal.addEventListener("click", event => {
-      if (event.target === modal) closeLoginModal();
-    });
-  }
-
   if (loginForm) {
-    loginForm.addEventListener("submit", async event => {
+    loginForm.addEventListener("submit", async (event) => {
       event.preventDefault();
 
-      const email = document.getElementById("login-email")?.value.trim();
-      const password = document.getElementById("login-password")?.value;
-      const errorEl = document.getElementById("login-error");
+      const email = $("#login-email")?.value.trim();
+      const password = $("#login-password")?.value;
+      const submitButton = loginForm.querySelector(
+        'button[type="submit"]'
+      );
 
       if (!email || !password) {
         showLoginError("Enter your email and password.");
         return;
       }
 
-      if (errorEl) errorEl.style.display = "none";
+      showLoginError("");
 
-      const { error } = await supabaseClient.auth.signInWithPassword({
-        email,
-        password
-      });
+      if (submitButton) submitButton.disabled = true;
 
-      if (error) {
-        showLoginError(error.message);
-        return;
+      try {
+        const { error } =
+          await supabaseClient.auth.signInWithPassword({
+            email,
+            password
+          });
+
+        if (error) {
+          showLoginError(error.message);
+          return;
+        }
+
+        closeLoginModal();
+        await checkAuthStatus();
+      } catch (error) {
+        console.error("[Megavallia] Sign-in failed:", error);
+        showLoginError("Unable to sign in. Please try again.");
+      } finally {
+        if (submitButton) submitButton.disabled = false;
       }
-
-      closeLoginModal();
-      await checkAuthStatus();
     });
   }
 
@@ -135,63 +291,75 @@ function initAuth() {
 }
 
 function showLoginError(message) {
-  const errorEl = document.getElementById("login-error");
-  if (!errorEl) {
-    alert(message);
+  const errorElement = $("#login-error");
+
+  if (!errorElement) {
+    if (message) alert(message);
     return;
   }
 
-  errorEl.textContent = message;
-  errorEl.style.display = "block";
+  errorElement.textContent = message;
+  errorElement.style.display = message ? "block" : "none";
 }
 
 function openLoginModal() {
-  const modal = document.getElementById("login-modal");
+  const modal = $("#login-modal");
+
   if (modal) modal.style.display = "flex";
 }
 
 function closeLoginModal() {
-  const modal = document.getElementById("login-modal");
-  const errorEl = document.getElementById("login-error");
+  const modal = $("#login-modal");
+  const errorElement = $("#login-error");
 
   if (modal) modal.style.display = "none";
-  if (errorEl) errorEl.style.display = "none";
+
+  if (errorElement) {
+    errorElement.textContent = "";
+    errorElement.style.display = "none";
+  }
 }
 
 async function checkAuthStatus() {
   if (!supabaseClient) return;
 
-  const { data, error } = await supabaseClient.auth.getSession();
-  if (error) console.error("[Megavallia web] Session check failed:", error);
+  const authBtn = $("#auth-btn");
+  const userDisplay = $("#user-display");
 
-  const session = data?.session;
-  const authBtn = document.getElementById("auth-btn");
-  const userDisplay = document.getElementById("user-display");
+  try {
+    const { data, error } =
+      await supabaseClient.auth.getSession();
 
-  if (!authBtn) return;
+    if (error) throw error;
 
-  if (session?.user) {
-    const user = session.user;
-    const displayName =
-      user.user_metadata?.username ||
-      user.email?.split("@")[0] ||
-      "user";
+    const user = data?.session?.user;
 
-    authBtn.textContent = "Sign Out";
-    authBtn.onclick = logout;
+    if (!authBtn) return;
 
-    if (userDisplay) {
-      userDisplay.textContent = `Hi, @${displayName}`;
-      userDisplay.style.display = "inline";
+    if (user) {
+      const displayName =
+        user.user_metadata?.username ||
+        user.email?.split("@")[0] ||
+        "user";
+
+      authBtn.textContent = "Sign Out";
+      authBtn.onclick = logout;
+
+      if (userDisplay) {
+        userDisplay.textContent = `Hi, @${displayName}`;
+        userDisplay.hidden = false;
+      }
+    } else {
+      authBtn.textContent = "Sign In";
+      authBtn.onclick = openLoginModal;
+
+      if (userDisplay) {
+        userDisplay.textContent = "";
+        userDisplay.hidden = true;
+      }
     }
-  } else {
-    authBtn.textContent = "Sign In";
-    authBtn.onclick = openLoginModal;
-
-    if (userDisplay) {
-      userDisplay.textContent = "";
-      userDisplay.style.display = "none";
-    }
+  } catch (error) {
+    console.error("[Megavallia] Session check failed:", error);
   }
 }
 
@@ -201,136 +369,79 @@ async function logout() {
   const { error } = await supabaseClient.auth.signOut();
 
   if (error) {
-    console.error("[Megavallia web] Sign out failed:", error);
+    console.error("[Megavallia] Sign-out failed:", error);
   }
 
   await checkAuthStatus();
 }
 
-/* ---------- PUBLIC FEED ---------- */
-
-function textValue(value, fallback = "") {
-  return typeof value === "string" && value.trim()
-    ? value.trim()
-    : fallback;
-}
-
-function renderPost(post) {
-  const card = document.createElement("article");
-  card.className = "feed-card";
-
-  const thumb = document.createElement("div");
-  thumb.className = "thumb";
-
-  const mediaUrl = textValue(
-    post.media_url ||
-    post.image_url ||
-    post.imageUrl ||
-    post.thumbnail_url
-  );
-
-  if (mediaUrl && /^https?:\/\//i.test(mediaUrl)) {
-    const isVideo =
-      String(post.media_type || "").toLowerCase() === "video";
-
-    const media = document.createElement(isVideo ? "video" : "img");
-    media.src = mediaUrl;
-    media.loading = "lazy";
-
-    if (isVideo) {
-      media.controls = true;
-      media.preload = "metadata";
-      media.playsInline = true;
-    } else {
-      media.alt = textValue(post.content, "Megavallia public post");
-    }
-
-    media.onerror = () => {
-      media.remove();
-      if (!thumb.querySelector("img, video")) {
-        thumb.textContent = "✦";
-      }
-    };
-
-    thumb.appendChild(media);
-  } else {
-    thumb.textContent = "✦";
-    thumb.classList.add("text-only");
-  }
-
-  const body = document.createElement("div");
-  body.className = "feed-body";
-
-  const label = document.createElement("span");
-  label.className = "feed-label";
-  label.textContent =
-    String(post.media_type || "").toLowerCase() === "video"
-      ? "PUBLIC CLIP"
-      : "PUBLIC POST";
-
-  const title = document.createElement("h3");
-  title.textContent = textValue(
-    post.content,
-    "A moment on Megavallia"
-  );
-
-  const desc = document.createElement("p");
-  const profile = post.profile || post.profiles || {};
-  const username = textValue(profile.username || post.username);
-
-  const likes = Number(post.like_count || 0);
-  const views = Number(post.views_count || 0);
-
-  desc.textContent = username
-    ? `By @${username} · ♥ ${likes} · ${views} views`
-    : `♥ ${likes} · ${views} views`;
-
-  body.append(label, title, desc);
-  card.append(thumb, body);
-
-  return card;
-}
+/* =========================================================
+   PUBLIC FEED
+========================================================= */
 
 async function loadFeed() {
-  const feed = document.getElementById("feed");
-  const status = document.getElementById("feed-status");
+  const feed = $("#feed");
+  const status = $("#feed-status");
 
-  if (!feed || !status) return;
+  if (!feed) {
+    console.error("[Megavallia] Missing #feed element.");
+    return;
+  }
 
-  status.textContent = "Loading public content…";
+  if (status) {
+    status.textContent = "Loading public content…";
+  }
+
   feed.replaceChildren();
 
+  const controller = new AbortController();
+
+  const timeout = setTimeout(() => {
+    controller.abort();
+  }, REQUEST_TIMEOUT_MS);
+
   try {
-    const response = await fetch(`${API_BASE_URL}/api/posts`, {
-      method: "GET",
-      headers: { Accept: "application/json" }
-    });
+    const response = await fetch(
+      `${API_BASE_URL}/api/posts`,
+      {
+        method: "GET",
+        headers: {
+          Accept: "application/json"
+        },
+        cache: "no-store",
+        signal: controller.signal
+      }
+    );
 
     if (!response.ok) {
-      throw new Error(`Feed request failed (${response.status})`);
+      throw new Error(
+        `Public feed request failed (HTTP ${response.status}).`
+      );
     }
 
     const result = await response.json();
 
-    // The current backend returns { posts: [...] }.
     const posts = Array.isArray(result)
       ? result
-      : result.posts;
+      : result && Array.isArray(result.posts)
+        ? result.posts
+        : null;
 
-    if (!Array.isArray(posts)) {
-      throw new Error("The API response did not contain a posts array.");
+    if (!posts) {
+      throw new Error("The API did not return a posts array.");
     }
 
     const now = Date.now();
 
-    // Respect expiry. Do not assume posts are public if the backend
-    // provides an explicit visibility field.
-    const active = posts.filter(post => {
+    const activePosts = posts.filter((post) => {
       if (!post || typeof post !== "object") return false;
 
       if (post.expires_at) {
         const expiry = new Date(post.expires_at).getTime();
-        if (!Number.isFinite(expiry) || expiry <= now) return false;
+
+        if (!Number.isFinite(expiry) || expiry <= now) {
+          return false;
+        }
       }
 
       const visibility =
@@ -347,30 +458,283 @@ async function loadFeed() {
         return false;
       }
 
-      if (post.is_public === false || post.is_private === true) {
+      if (
+        post.is_public === false ||
+        post.is_private === true
+      ) {
         return false;
       }
 
-      return true;
+      return Boolean(post.id);
     });
 
-    if (!active.length) {
-      status.textContent = "No active public posts to show right now.";
+    activePosts.sort((a, b) => {
+      const scoreDifference =
+        Number(b.recommendation_score || 0) -
+        Number(a.recommendation_score || 0);
+
+      if (scoreDifference !== 0) {
+        return scoreDifference;
+      }
+
+      return (
+        new Date(b.created_at || 0).getTime() -
+        new Date(a.created_at || 0).getTime()
+      );
+    });
+
+    if (!activePosts.length) {
+      if (status) {
+        status.textContent =
+          "No active public posts to show right now.";
+      }
+
+      feed.appendChild(
+        createElement(
+          "p",
+          "empty",
+          "New public moments will appear here when creators share them."
+        )
+      );
+
       return;
     }
 
-    feed.replaceChildren(...active.slice(0, 12).map(renderPost));
-    status.textContent = "Latest public posts from Megavallia";
+    const fragment = document.createDocumentFragment();
+
+    activePosts.slice(0, MAX_FEED_POSTS).forEach((post) => {
+      fragment.appendChild(renderPost(post));
+    });
+
+    feed.appendChild(fragment);
+
+    if (status) {
+      const count = Math.min(
+        activePosts.length,
+        MAX_FEED_POSTS
+      );
+
+      status.textContent =
+        `Showing ${count} public post${count === 1 ? "" : "s"}.`;
+    }
+
+    console.info(
+      `[Megavallia] Loaded ${activePosts.length} public post(s).`
+    );
   } catch (error) {
-    console.error("[Megavallia web] Feed failed:", error);
-    status.textContent =
-      "The public feed could not be loaded right now.";
+    console.error("[Megavallia] Public feed failed:", error);
 
-    const message = document.createElement("div");
-    message.className = "empty";
-    message.textContent =
-      "Please try again later. If this continues, check that the Megavallia API is online and allows website requests.";
+    if (status) {
+      status.textContent =
+        "The public feed could not be loaded right now.";
+    }
 
-    feed.replaceChildren(message);
+    const errorBox = createElement("div", "empty");
+    const message = error?.name === "AbortError"
+      ? "The request timed out. Please try again."
+      : "Please try again. If the problem continues, the API may be blocking this website.";
+
+    errorBox.appendChild(createElement("p", "", message));
+
+    const retryButton = createElement(
+      "button",
+      "btn",
+      "Try again"
+    );
+
+    retryButton.type = "button";
+    retryButton.addEventListener("click", loadFeed);
+
+    errorBox.appendChild(retryButton);
+    feed.appendChild(errorBox);
+  } finally {
+    clearTimeout(timeout);
   }
 }
+
+/* =========================================================
+   RENDER A POST
+========================================================= */
+
+function renderPost(post) {
+  const card = createElement("article", "feed-card");
+
+  const profile = post.profile || post.profiles || {};
+  const username = textValue(
+    profile.username || post.username,
+    "Megavallia creator"
+  );
+
+  const avatarUrl = validHttpUrl(
+    profile.avatar_url || post.avatar_url
+  );
+
+  const mediaUrl = validHttpUrl(
+    post.media_url ||
+    post.mediaUrl ||
+    post.image_url ||
+    post.imageUrl ||
+    post.video_url ||
+    post.thumbnail_url
+  );
+
+  const mediaType = String(
+    post.media_type || ""
+  ).toLowerCase();
+
+  /* Creator header */
+  const header = createElement("div", "feed-header");
+
+  if (avatarUrl) {
+    const avatar = createElement("img", "feed-avatar");
+
+    avatar.src = avatarUrl;
+    avatar.alt = `${username}'s profile picture`;
+    avatar.width = 44;
+    avatar.height = 44;
+    avatar.loading = "lazy";
+    avatar.decoding = "async";
+
+    avatar.addEventListener("error", () => {
+      avatar.remove();
+    }, { once: true });
+
+    header.appendChild(avatar);
+  }
+
+  const author = createElement("div", "feed-author");
+
+  author.appendChild(
+    createElement("strong", "feed-username", username)
+  );
+
+  author.appendChild(
+    createElement(
+      "span",
+      "feed-date",
+      formatDate(post.created_at)
+    )
+  );
+
+  header.appendChild(author);
+  card.appendChild(header);
+
+  /* Post media */
+  if (mediaUrl) {
+    const thumb = createElement("div", "thumb");
+
+    if (mediaType === "video") {
+      const video = createElement("video", "feed-media");
+
+      video.src = mediaUrl;
+      video.controls = true;
+      video.preload = "metadata";
+      video.playsInline = true;
+      video.setAttribute(
+        "aria-label",
+        `Video posted by ${username}`
+      );
+
+      thumb.appendChild(video);
+    } else {
+      const image = createElement("img", "feed-media");
+
+      image.src = mediaUrl;
+      image.alt = textValue(
+        post.content,
+        `Post shared by ${username}`
+      );
+      image.loading = "lazy";
+      image.decoding = "async";
+
+      image.addEventListener("error", () => {
+        image.alt = "Post media could not be loaded.";
+        image.classList.add("media-load-error");
+      }, { once: true });
+
+      thumb.appendChild(image);
+    }
+
+    card.appendChild(thumb);
+  }
+
+  /* Post details */
+  const body = createElement("div", "feed-body");
+
+  body.appendChild(
+    createElement(
+      "span",
+      "feed-label",
+      mediaType === "video"
+        ? "PUBLIC CLIP"
+        : mediaUrl
+          ? "PUBLIC MOMENT"
+          : "PUBLIC POST"
+    )
+  );
+
+  const content = textValue(post.content);
+
+  if (content) {
+    body.appendChild(
+      createElement("p", "feed-content", content)
+    );
+  } else if (!mediaUrl) {
+    body.appendChild(
+      createElement(
+        "p",
+        "feed-content",
+        "A moment shared on Megavallia."
+      )
+    );
+  }
+
+  const stats = createElement("div", "feed-stats");
+
+  stats.appendChild(
+    createElement(
+      "span",
+      "feed-likes",
+      `♥ ${formatCount(post.like_count)}`
+    )
+  );
+
+  stats.appendChild(
+    createElement(
+      "span",
+      "feed-comments",
+      `Comments ${formatCount(post.comment_count)}`
+    )
+  );
+
+  stats.appendChild(
+    createElement(
+      "span",
+      "feed-views",
+      `Views ${formatCount(post.views_count)}`
+    )
+  );
+
+  body.appendChild(stats);
+  card.appendChild(body);
+
+  return card;
+}
+
+/* =========================================================
+   FEED RETRY
+========================================================= */
+
+function setupFeedRetry() {
+  const retryButton = $("#retry-feed");
+
+  if (retryButton) {
+    retryButton.addEventListener("click", loadFeed);
+  }
+}
+
+/* =========================================================
+   GLOBAL REFRESH HELPER
+========================================================= */
+
+window.megavalliaRefreshFeed = loadFeed;
