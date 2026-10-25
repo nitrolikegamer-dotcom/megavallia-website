@@ -1,0 +1,708 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090914">
+  <meta name="description" content="Promote your music with Megavallia. Explore artist branding, music release campaigns and promotional content for independent artists worldwide.">
+  <meta property="og:title" content="Megavallia Artist Promotion | Your Music, Your World">
+  <meta property="og:description" content="Build your artist identity. Prepare your next release. Make your music promotion count.">
+  <title>Artist Promotion Worldwide | Megavallia</title>
+
+  <style>
+    :root {
+      --bg: #090914;
+      --panel: #131326;
+      --panel2: #1b1834;
+      --text: #faf8ff;
+      --muted: #b9b5ce;
+      --pink: #ff4fa3;
+      --purple: #a27bff;
+      --line: rgba(255,255,255,.12);
+      --success: #9cebc6;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: 90px; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(ellipse at 85% 0%, rgba(162,123,255,.17), transparent 32%),
+        radial-gradient(ellipse at 0% 28%, rgba(255,79,163,.09), transparent 30%),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont,
+        "Segoe UI", sans-serif;
+      line-height: 1.65;
+    }
+
+    a { color: inherit; text-decoration: none; }
+    button, input, select, textarea { font: inherit; }
+
+    .container { width: min(1120px, 90%); margin: auto; }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(9,9,20,.91);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--line);
+    }
+
+    .nav {
+      min-height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .logo {
+      font-size: 1.4rem;
+      font-weight: 950;
+      letter-spacing: -1px;
+      white-space: nowrap;
+    }
+
+    .logo span { color: var(--pink); }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 22px;
+      font-size: .91rem;
+      color: var(--muted);
+    }
+
+    .nav-links a:hover { color: white; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,.045);
+      color: white;
+      padding: 13px 19px;
+      border-radius: 12px;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .2s, opacity .2s;
+      text-align: center;
+    }
+
+    .btn:hover { transform: translateY(-2px); }
+
+    .btn-primary {
+      color: #170b23;
+      background: linear-gradient(110deg, var(--pink), #c2a0ff);
+      border-color: transparent;
+    }
+
+    .hero { padding: 90px 0 75px; }
+
+    .hero-grid {
+      display: grid;
+      grid-template-columns: 1.1fr .9fr;
+      align-items: center;
+      gap: 55px;
+    }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 7px 12px;
+      border: 1px solid rgba(255,79,163,.34);
+      background: rgba(255,79,163,.09);
+      color: #ffb5d9;
+      border-radius: 100px;
+      font-size: .76rem;
+      font-weight: 850;
+      letter-spacing: 1px;
+      text-transform: uppercase;
+    }
+
+    h1 {
+      font-size: clamp(2.8rem, 6.5vw, 5.4rem);
+      line-height: 1.02;
+      letter-spacing: -3px;
+      margin: 23px 0;
+    }
+
+    .gradient {
+      background: linear-gradient(100deg, #ff69b6, #b99cff);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero-copy, .section-intro {
+      color: var(--muted);
+      font-size: 1.08rem;
+      max-width: 660px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-top: 27px;
+    }
+
+    .small-note {
+      color: var(--muted);
+      font-size: .85rem;
+      margin-top: 19px;
+    }
+
+    .hero-art {
+      min-height: 390px;
+      border: 1px solid var(--line);
+      border-radius: 28px;
+      padding: 25px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 70% 25%, rgba(255,79,163,.32), transparent 28%),
+        radial-gradient(circle at 25% 75%, rgba(162,123,255,.36), transparent 38%),
+        linear-gradient(145deg, #241b40, #101020 72%);
+      box-shadow: 0 25px 90px rgba(0,0,0,.3);
+    }
+
+    .art-top, .art-bottom {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .art-label {
+      color: #dcd5ff;
+      font-size: .76rem;
+      letter-spacing: 1.5px;
+      font-weight: 850;
+    }
+
+    .vinyl {
+      align-self: center;
+      width: min(235px, 70%);
+      aspect-ratio: 1;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: repeating-radial-gradient(
+        circle, #27233c 0, #27233c 5px, #0e0d19 7px, #0e0d19 10px
+      );
+      box-shadow: 0 15px 50px #0008;
+    }
+
+    .vinyl-center {
+      width: 34%;
+      aspect-ratio: 1;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      color: white;
+      font-size: 1.6rem;
+      font-weight: 950;
+      background: linear-gradient(135deg, var(--pink), var(--purple));
+    }
+
+    .art-bottom strong { font-size: 1.1rem; }
+
+    section { padding: 72px 0; }
+
+    .section-heading {
+      max-width: 700px;
+      margin-bottom: 32px;
+    }
+
+    h2 {
+      font-size: clamp(2rem, 4.3vw, 3.1rem);
+      line-height: 1.15;
+      letter-spacing: -1.4px;
+      margin: 13px 0;
+    }
+
+    h3 { margin: 0 0 10px; line-height: 1.35; }
+
+    .grid-3 {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0,1fr));
+      gap: 18px;
+    }
+
+    .card {
+      padding: 25px;
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      background: linear-gradient(145deg, rgba(255,255,255,.055), rgba(255,255,255,.018));
+    }
+
+    .card p, .card li { color: var(--muted); }
+
+    .icon {
+      width: 47px;
+      height: 47px;
+      display: grid;
+      place-items: center;
+      border-radius: 14px;
+      background: rgba(162,123,255,.15);
+      margin-bottom: 18px;
+      font-size: 1.4rem;
+    }
+
+    .pricing { background: rgba(255,255,255,.018); }
+
+    .price-card {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .price-card.featured {
+      border-color: rgba(255,79,163,.65);
+      background:
+        linear-gradient(145deg, rgba(255,79,163,.10), rgba(162,123,255,.08)),
+        var(--panel);
+    }
+
+    .popular {
+      align-self: flex-start;
+      background: rgba(255,79,163,.15);
+      color: #ffb6da;
+      padding: 5px 10px;
+      border-radius: 50px;
+      font-size: .74rem;
+      font-weight: 850;
+      margin-bottom: 15px;
+    }
+
+    .price {
+      font-size: 2.55rem;
+      font-weight: 950;
+      letter-spacing: -1.5px;
+      margin: 10px 0 0;
+    }
+
+    .price small {
+      font-size: .85rem;
+      color: var(--muted);
+      font-weight: 500;
+      letter-spacing: 0;
+    }
+
+    .price-card ul {
+      list-style: none;
+      padding: 0;
+      margin: 20px 0 25px;
+    }
+
+    .price-card li { margin: 11px 0; }
+
+    .price-card li::before {
+      content: "✓";
+      color: #ff81be;
+      font-weight: 900;
+      margin-right: 9px;
+    }
+
+    .price-card .btn { margin-top: auto; }
+
+    .note {
+      color: var(--muted);
+      font-size: .87rem;
+      margin-top: 22px;
+    }
+
+    .process {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0,1fr));
+      gap: 17px;
+    }
+
+    .step-number {
+      color: var(--pink);
+      font-weight: 900;
+      font-size: .82rem;
+      letter-spacing: 1px;
+      margin-bottom: 12px;
+    }
+
+    .form-layout {
+      display: grid;
+      grid-template-columns: .8fr 1.2fr;
+      gap: 38px;
+      align-items: start;
+    }
+
+    .form-panel {
+      padding: 28px;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 22px;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 16px;
+    }
+
+    .field { display: flex; flex-direction: column; gap: 7px; }
+    .field.full { grid-column: 1 / -1; }
+
+    label {
+      color: #e7e3f7;
+      font-size: .9rem;
+      font-weight: 750;
+    }
+
+    input, select, textarea {
+      width: 100%;
+      padding: 13px 14px;
+      border-radius: 10px;
+      border: 1px solid rgba(255,255,255,.15);
+      background: #0c0c19;
+      color: white;
+      outline: none;
+    }
+
+    input:focus, select:focus, textarea:focus {
+      border-color: var(--pink);
+    }
+
+    textarea { min-height: 115px; resize: vertical; }
+
+    .form-panel button { width: 100%; margin-top: 19px; }
+
+    .form-status {
+      display: none;
+      color: var(--success);
+      font-size: .9rem;
+      margin-top: 15px;
+      overflow-wrap: anywhere;
+    }
+
+    .faq details {
+      border-bottom: 1px solid var(--line);
+      padding: 19px 0;
+    }
+
+    .faq summary { cursor: pointer; font-weight: 800; }
+    .faq details p { color: var(--muted); }
+
+    .final-cta {
+      padding: 45px;
+      border: 1px solid rgba(255,79,163,.25);
+      border-radius: 26px;
+      text-align: center;
+      background:
+        radial-gradient(ellipse at top, rgba(162,123,255,.18), transparent 65%),
+        var(--panel);
+    }
+
+    .final-cta .section-intro { margin: 0 auto 24px; }
+
+    footer {
+      padding: 30px 0;
+      border-top: 1px solid var(--line);
+      color: var(--muted);
+      font-size: .88rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 850px) {
+      .hero-grid, .form-layout { grid-template-columns: 1fr; }
+      .hero { padding-top: 60px; }
+      .hero-art { min-height: 320px; }
+      .grid-3 { grid-template-columns: 1fr; }
+      .process { grid-template-columns: 1fr 1fr; }
+      .nav-links a:not(.nav-cta) { display: none; }
+      h1 { letter-spacing: -1.8px; }
+    }
+
+    @media (max-width: 480px) {
+      .form-grid, .process { grid-template-columns: 1fr; }
+      .field.full { grid-column: auto; }
+      .final-cta { padding: 28px 19px; }
+      .nav { min-height: 65px; }
+      .btn { padding: 12px 14px; }
+    }
+  </style>
+</head>
+
+<body>
+<header>
+  <div class="container nav">
+    <a class="logo" href="index.html" aria-label="Megavallia home">
+      Mega<span>vallia</span>
+    </a>
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="#services">Services</a>
+      <a href="#packages">Packages</a>
+      <a href="#process">How it works</a>
+      <a href="opportunities.html">Opportunities</a>
+      <a class="btn btn-primary nav-cta" href="#request">Promote my music</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+  <section class="hero">
+    <div class="container hero-grid">
+      <div>
+        <span class="eyebrow">Artist promotion · Worldwide</span>
+        <h1>Your music deserves a <span class="gradient">global stage.</span></h1>
+        <p class="hero-copy">
+          Your sound is unique. Your story deserves to be told.
+          Megavallia helps independent artists prepare professional music
+          promotion content and campaigns built around their creative vision.
+        </p>
+        <div class="actions">
+          <a class="btn btn-primary" href="#packages">Explore packages ↗</a>
+          <a class="btn" href="#request">Submit your project</a>
+        </div>
+        <p class="small-note">
+          For independent artists, singers, rappers, producers, DJs and labels
+          around the world.
+        </p>
+      </div>
+
+      <div class="hero-art" role="img" aria-label="Original Megavallia music-themed artwork">
+        <div class="art-top">
+          <span class="art-label">MEGAVALLIA MUSIC</span>
+          <span>✦</span>
+        </div>
+        <div class="vinyl">
+          <div class="vinyl-center">M</div>
+        </div>
+        <div class="art-bottom">
+          <div>
+            <strong>Your sound. Your story.</strong><br>
+            <span class="art-label">BUILD YOUR NEXT CHAPTER</span>
+          </div>
+          <span style="font-size:2rem">♫</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="services">
+    <div class="container">
+      <div class="section-heading">
+        <span class="eyebrow">Make your next move</span>
+        <h2>More than a post. <span class="gradient">A plan.</span></h2>
+        <p class="section-intro">
+          Create a consistent artist identity, communicate your release
+          clearly and prepare content that helps you share your music
+          across your own channels.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <article class="card">
+          <div class="icon">🎤</div>
+          <h3>Artist branding</h3>
+          <p>
+            Artist biographies, profile copy and promotional messaging
+            that communicate your identity and sound.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="icon">🚀</div>
+          <h3>Release campaigns</h3>
+          <p>
+            Release announcements, campaign captions and a practical
+            content schedule for your next song or project.
+          </p>
+        </article>
+
+        <article class="card">
+          <div class="icon">🎨</div>
+          <h3>Promotional content</h3>
+          <p>
+            Simple promotional graphics and copy designed to help
+            communicate your release and direct fans to your links.
+          </p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section class="pricing" id="packages">
+    <div class="container">
+      <div class="section-heading">
+        <span class="eyebrow">Transparent pricing · USD</span>
+        <h2>Choose your next move.</h2>
+        <p class="section-intro">
+          Start with a focused package or choose a more complete release
+          campaign. All prices below are displayed in US dollars.
+        </p>
+      </div>
+
+      <div class="grid-3">
+        <article class="card price-card">
+          <h3>Artist Spotlight</h3>
+          <p>Strengthen your artist presentation.</p>
+          <div class="price">$5 <small>USD</small></div>
+          <ul>
+            <li>Artist bio or profile copy</li>
+            <li>One music promotional write-up</li>
+            <li>Review of your artist links and call to action</li>
+          </ul>
+          <a class="btn" href="#request" data-package="spotlight">
+            Choose Spotlight
+          </a>
+        </article>
+
+        <article class="card price-card featured">
+          <span class="popular">FEATURED PACKAGE</span>
+          <h3>Release Promotion Kit</h3>
+          <p>Prepare content for your next release.</p>
+          <div class="price">$10 <small>USD</small></div>
+          <ul>
+            <li>Three promotional captions</li>
+            <li>Up to three simple graphics</li>
+            <li>One release announcement</li>
+            <li>Suggested posting schedule</li>
+          </ul>
+          <a class="btn btn-primary" href="#request" data-package="release-kit">
+            Choose Release Kit
+          </a>
+        </article>
+
+        <article class="card price-card">
+          <h3>Release Campaign</h3>
+          <p>Build a more complete release-content plan.</p>
+          <div class="price">$20 <small>USD</small></div>
+          <ul>
+            <li>Artist bio and release copy</li>
+            <li>Promotional captions and graphics</li>
+            <li>Release content calendar</li>
+            <li>Campaign messaging suggestions</li>
+          </ul>
+          <a class="btn" href="#request" data-package="campaign">
+            Choose Campaign
+          </a>
+        </article>
+      </div>
+
+      <p class="note">
+        These are introductory prices proposed by Megavallia and should be
+        confirmed before launch. Packages cover the deliverables described
+        above, not guaranteed audience growth. Advertising budgets, influencer
+        fees, distribution fees and third-party placements are excluded unless
+        explicitly agreed in writing.
+      </p>
+    </div>
+  </section>
+
+  <section id="process">
+    <div class="container">
+      <div class="section-heading">
+        <span class="eyebrow">Simple and clear</span>
+        <h2>From your idea to your campaign.</h2>
+      </div>
+
+      <div class="process">
+        <article class="card">
+          <div class="step-number">STEP 01</div>
+          <h3>Share your music</h3>
+          <p>Tell us about your artist project and provide a music or profile link.</p>
+        </article>
+        <article class="card">
+          <div class="step-number">STEP 02</div>
+          <h3>Select a package</h3>
+          <p>Choose a service that fits your project, goals and budget.</p>
+        </article>
+        <article class="card">
+          <div class="step-number">STEP 03</div>
+          <h3>Confirm the details</h3>
+          <p>Agree on deliverables, timing and payment before work begins.</p>
+        </article>
+        <article class="card">
+          <div class="step-number">STEP 04</div>
+          <h3>Prepare your release</h3>
+          <p>Receive the agreed promotional materials for your campaign.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <section id="request">
+    <div class="container form-layout">
+      <div>
+        <span class="eyebrow">Artist enquiries worldwide</span>
+        <h2>Let's talk about your <span class="gradient">next release.</span></h2>
+        <p class="section-intro">
+          Submit your details and tell us what you're working on.
+          We'll use your enquiry to understand your needs and discuss
+          the next steps.
+        </p>
+        <p class="small-note">
+          Submitting this form does not confirm a booking or payment.
+          We'll confirm the service and timeline with you first.
+        </p>
+      </div>
+
+      <form class="form-panel" id="artistForm">
+        <div class="form-grid">
+          <div class="field">
+            <label for="artistName">Artist or stage name *</label>
+            <input id="artistName" name="artistName" required maxlength="100"
+                   autocomplete="organization" placeholder="Your artist name">
+          </div>
+
+          <div class="field">
+            <label for="contactName">Contact name *</label>
+            <input id="contactName" name="contactName" required maxlength="100"
+                   autocomplete="name" placeholder="Your name">
+          </div>
+
+          <div class="field">
+            <label for="email">Email address *</label>
+            <input id="email" name="email" type="email" required maxlength="150"
+                   autocomplete="email" placeholder="you@example.com">
+          </div>
+
+          <div class="field">
+            <label for="country">Country or region</label>
+            <input id="country" name="country" maxlength="100"
+                   autocomplete="country-name" placeholder="Your country">
+          </div>
+
+          <div class="field">
+            <label for="genre">Music genre</label>
+            <select id="genre" name="genre">
+              <option value="">Choose a genre</option>
+              <option>Afrobeats</option>
+              <option>Hip-hop / Rap</option>
+              <option>Pop</option>
+              <option>R&B / Soul</option>
+              <option>Rock / Alternative</option>
+              <option>Electronic / Dance</option>
+              <option>Reggae / Dancehall</option>
+              <option>Gospel / Christian</option>
+              <option>Classical / Instrumental</option>
+              <option>Jazz / Blues</option>
+              <option>Folk / Country</option>
+              <option>Other</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="package">Package *</label>
+            <select id="package" name="package" required>
+             
