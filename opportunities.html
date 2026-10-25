@@ -1,0 +1,746 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090817">
+  <meta name="description" content="Discover jobs, freelance gigs, paid opportunities and music promotion with Megavallia. Connect talent, businesses and creators.">
+  <title>Jobs, Gigs & Music Promotion | Megavallia</title>
+
+  <style>
+    :root {
+      --bg: #090817;
+      --surface: #121126;
+      --surface2: #191630;
+      --text: #f8f7ff;
+      --muted: #aaa8c4;
+      --purple: #b66cff;
+      --pink: #ff69b4;
+      --cyan: #74e7ff;
+      --border: rgba(255,255,255,.11);
+      --gradient: linear-gradient(110deg,#b66cff,#ff69b4);
+      --radius: 22px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 90px;
+    }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(ellipse at 50% -15%,rgba(132,64,255,.20),transparent 45%),
+        var(--bg);
+      color: var(--text);
+      font: 16px/1.65 Inter, ui-sans-serif, system-ui, -apple-system,
+            BlinkMacSystemFont, "Segoe UI", sans-serif;
+    }
+
+    a { color: inherit; }
+    button, input, select, textarea { font: inherit; }
+
+    a:focus-visible, button:focus-visible,
+    input:focus-visible, select:focus-visible,
+    textarea:focus-visible {
+      outline: 2px solid var(--cyan);
+      outline-offset: 4px;
+    }
+
+    .container {
+      width: min(1160px, 91%);
+      margin-inline: auto;
+    }
+
+    .announcement {
+      padding: 9px 15px;
+      text-align: center;
+      background: rgba(182,108,255,.10);
+      border-bottom: 1px solid var(--border);
+      color: #e5d5ff;
+      font-size: .84rem;
+    }
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      background: rgba(9,8,23,.90);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .nav {
+      min-height: 74px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 22px;
+    }
+
+    .brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      font-size: 1.35rem;
+      font-weight: 900;
+      letter-spacing: -.7px;
+    }
+
+    .brand-mark {
+      display: grid;
+      place-items: center;
+      width: 39px;
+      height: 39px;
+      border-radius: 13px;
+      color: white;
+      background: var(--gradient);
+      box-shadow: 0 5px 25px rgba(182,108,255,.25);
+    }
+
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 25px;
+    }
+
+    .nav-links a {
+      color: var(--muted);
+      font-size: .92rem;
+      text-decoration: none;
+      transition: color .2s;
+    }
+
+    .nav-links a:hover { color: white; }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      min-height: 47px;
+      padding: 12px 19px;
+      border: 1px solid transparent;
+      border-radius: 12px;
+      text-decoration: none;
+      font-weight: 800;
+      font-size: .94rem;
+      cursor: pointer;
+      transition: transform .2s, filter .2s, border-color .2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+      filter: brightness(1.09);
+    }
+
+    .btn-primary {
+      background: var(--gradient);
+      color: #150d24;
+      box-shadow: 0 8px 25px rgba(182,108,255,.15);
+    }
+
+    .btn-outline {
+      border-color: var(--border);
+      background: rgba(255,255,255,.035);
+      color: white;
+    }
+
+    .btn-small {
+      min-height: 39px;
+      padding: 9px 14px;
+      font-size: .86rem;
+    }
+
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: 88px 0 76px;
+      text-align: center;
+    }
+
+    .hero::before, .hero::after {
+      content: "";
+      position: absolute;
+      z-index: -1;
+      width: 250px;
+      height: 250px;
+      border-radius: 50%;
+      filter: blur(100px);
+      opacity: .2;
+      pointer-events: none;
+    }
+
+    .hero::before {
+      background: var(--purple);
+      top: 15%;
+      left: -170px;
+    }
+
+    .hero::after {
+      background: var(--pink);
+      right: -170px;
+      bottom: 0;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 9px;
+      padding: 7px 13px;
+      border: 1px solid rgba(182,108,255,.3);
+      border-radius: 100px;
+      background: rgba(182,108,255,.08);
+      color: #e0c5ff;
+      font-size: .78rem;
+      font-weight: 850;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .eyebrow::before {
+      content: "";
+      width: 7px;
+      height: 7px;
+      background: var(--pink);
+      border-radius: 50%;
+      box-shadow: 0 0 12px var(--pink);
+    }
+
+    h1, h2, h3, p { margin-top: 0; }
+
+    .hero h1 {
+      max-width: 900px;
+      margin: 25px auto 20px;
+      font-size: clamp(2.65rem,7.3vw,5.5rem);
+      line-height: 1.03;
+      letter-spacing: -.065em;
+    }
+
+    .gradient-text {
+      background: var(--gradient);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
+
+    .hero-copy {
+      max-width: 670px;
+      margin: 0 auto;
+      color: var(--muted);
+      font-size: clamp(1rem,2vw,1.18rem);
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 13px;
+      margin-top: 30px;
+    }
+
+    .trust-line {
+      margin: 23px 0 0;
+      color: #8986a5;
+      font-size: .83rem;
+    }
+
+    .quick-links {
+      display: grid;
+      grid-template-columns: repeat(4,minmax(0,1fr));
+      gap: 13px;
+      margin-bottom: 65px;
+    }
+
+    .quick-card {
+      padding: 21px 18px;
+      border: 1px solid var(--border);
+      border-radius: 17px;
+      background: rgba(255,255,255,.035);
+      text-decoration: none;
+      transition: background .2s, border-color .2s, transform .2s;
+    }
+
+    .quick-card:hover {
+      background: var(--surface2);
+      border-color: rgba(182,108,255,.5);
+      transform: translateY(-3px);
+    }
+
+    .quick-icon {
+      display: grid;
+      place-items: center;
+      width: 43px;
+      height: 43px;
+      margin-bottom: 13px;
+      border-radius: 13px;
+      background: rgba(182,108,255,.13);
+      font-size: 1.35rem;
+    }
+
+    .quick-card h3 { margin-bottom: 5px; font-size: 1rem; }
+    .quick-card p { margin: 0; color: var(--muted); font-size: .86rem; }
+
+    .section { padding: 66px 0; }
+
+    .section-heading {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 20px;
+      margin-bottom: 28px;
+    }
+
+    .section-heading h2 {
+      margin: 12px 0 8px;
+      font-size: clamp(1.9rem,4vw,3rem);
+      line-height: 1.12;
+      letter-spacing: -.04em;
+    }
+
+    .section-heading p {
+      max-width: 600px;
+      margin-bottom: 0;
+      color: var(--muted);
+    }
+
+    .section-label {
+      color: var(--purple);
+      font-size: .77rem;
+      font-weight: 850;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+    }
+
+    .search-panel {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr auto;
+      gap: 12px;
+      padding: 17px;
+      margin-bottom: 24px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 17px;
+    }
+
+    .field {
+      width: 100%;
+      min-width: 0;
+      padding: 13px 14px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      background: #0c0b1b;
+      color: white;
+    }
+
+    .field::placeholder { color: #8885a3; }
+
+    .cards {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 18px;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      padding: 25px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: linear-gradient(150deg,rgba(255,255,255,.045),rgba(255,255,255,.012));
+      transition: border-color .2s, transform .2s;
+    }
+
+    .card:hover {
+      border-color: rgba(182,108,255,.4);
+      transform: translateY(-3px);
+    }
+
+    .card h3 { margin: 14px 0 9px; font-size: 1.23rem; }
+    .card p { color: var(--muted); font-size: .93rem; }
+
+    .card .btn { margin-top: auto; align-self: flex-start; }
+
+    .tag {
+      display: inline-flex;
+      align-self: flex-start;
+      padding: 5px 10px;
+      border: 1px solid rgba(182,108,255,.25);
+      border-radius: 100px;
+      background: rgba(182,108,255,.09);
+      color: #e4caff;
+      font-size: .76rem;
+      font-weight: 750;
+    }
+
+    .tag-pink {
+      border-color: rgba(255,105,180,.25);
+      background: rgba(255,105,180,.08);
+      color: #ffc2e0;
+    }
+
+    .job-meta {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px 13px;
+      margin: 0 0 18px;
+      color: #a9a6c2;
+      font-size: .82rem;
+    }
+
+    .callout {
+      display: grid;
+      grid-template-columns: 1fr auto;
+      align-items: center;
+      gap: 25px;
+      padding: clamp(25px,5vw,48px);
+      margin-top: 28px;
+      border: 1px solid rgba(182,108,255,.28);
+      border-radius: 25px;
+      background:
+        radial-gradient(ellipse at 100% 0%,rgba(255,105,180,.14),transparent 45%),
+        linear-gradient(115deg,#18132f,#111022);
+    }
+
+    .callout h3 {
+      margin-bottom: 10px;
+      font-size: clamp(1.5rem,3.2vw,2.3rem);
+      letter-spacing: -.04em;
+    }
+
+    .callout p { max-width: 650px; margin-bottom: 0; color: var(--muted); }
+
+    .artist-banner {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(28px,6vw,60px);
+      border: 1px solid rgba(255,105,180,.25);
+      border-radius: 27px;
+      background:
+        radial-gradient(ellipse at 85% 10%,rgba(255,105,180,.22),transparent 38%),
+        radial-gradient(ellipse at 0% 100%,rgba(120,75,255,.18),transparent 45%),
+        var(--surface);
+    }
+
+    .artist-banner h2 {
+      max-width: 720px;
+      margin: 16px 0;
+      font-size: clamp(2.1rem,5vw,4rem);
+      line-height: 1.07;
+      letter-spacing: -.05em;
+    }
+
+    .artist-banner > p {
+      max-width: 690px;
+      color: var(--muted);
+    }
+
+    .price {
+      margin: 18px 0 4px;
+      font-size: 2rem;
+      font-weight: 900;
+      letter-spacing: -.05em;
+    }
+
+    .price-note { font-size: .8rem; color: var(--muted); }
+
+    .steps {
+      display: grid;
+      grid-template-columns: repeat(3,minmax(0,1fr));
+      gap: 18px;
+      margin-top: 28px;
+    }
+
+    .step {
+      padding: 23px;
+      border-top: 1px solid var(--border);
+      background: rgba(255,255,255,.025);
+      border-radius: 0 0 15px 15px;
+    }
+
+    .step-number {
+      color: var(--purple);
+      font-size: .83rem;
+      font-weight: 900;
+      letter-spacing: 1px;
+    }
+
+    .step h3 { margin: 10px 0 7px; }
+    .step p { margin: 0; color: var(--muted); font-size: .9rem; }
+
+    .faq { display: grid; gap: 12px; max-width: 850px; }
+    details {
+      padding: 19px 21px;
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      background: var(--surface);
+    }
+
+    summary { cursor: pointer; font-weight: 800; }
+    details p { margin: 12px 0 0; color: var(--muted); }
+
+    .disclaimer {
+      padding: 17px;
+      border: 1px solid var(--border);
+      border-radius: 13px;
+      color: var(--muted);
+      font-size: .83rem;
+    }
+
+    footer {
+      padding: 36px 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+    }
+
+    .footer-inner {
+      display: flex;
+      justify-content: space-between;
+      flex-wrap: wrap;
+      gap: 18px;
+    }
+
+    .footer-links { display: flex; gap: 18px; flex-wrap: wrap; }
+    .footer-links a { text-decoration: none; font-size: .9rem; }
+    .footer-links a:hover { color: white; }
+
+    .empty {
+      grid-column: 1 / -1;
+      padding: 25px;
+      text-align: center;
+      color: var(--muted);
+      border: 1px dashed var(--border);
+      border-radius: 15px;
+    }
+
+    @media (max-width: 850px) {
+      .nav-links { gap: 13px; }
+      .nav-links .nav-secondary { display: none; }
+      .quick-links { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      .cards { grid-template-columns: repeat(2,minmax(0,1fr)); }
+      .search-panel { grid-template-columns: 1fr 1fr; }
+      .search-panel .btn { grid-column: 1 / -1; }
+    }
+
+    @media (max-width: 560px) {
+      .nav { min-height: 65px; }
+      .nav-links > a:not(.btn) { display: none; }
+      .hero { padding: 65px 0 50px; }
+      .quick-links { gap: 10px; margin-bottom: 35px; }
+      .quick-card { padding: 16px 13px; }
+      .section { padding: 48px 0; }
+      .section-heading { align-items: flex-start; flex-direction: column; }
+      .cards, .steps { grid-template-columns: 1fr; }
+      .search-panel { grid-template-columns: 1fr; }
+      .search-panel .btn { grid-column: auto; }
+      .callout { grid-template-columns: 1fr; }
+      .artist-banner { padding: 25px 20px; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html { scroll-behavior: auto; }
+      *, *::before, *::after {
+        transition-duration: .01ms !important;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <div class="announcement">
+    Opportunities for talent, businesses and independent creators.
+    <a href="#post-job">List an opportunity →</a>
+  </div>
+
+  <header>
+    <nav class="container nav" aria-label="Main navigation">
+      <a class="brand" href="/">
+        <span class="brand-mark">M</span>
+        Megavallia
+      </a>
+
+      <div class="nav-links">
+        <a href="#jobs">Find jobs</a>
+        <a class="nav-secondary" href="#gigs">Paid gigs</a>
+        <a class="nav-secondary" href="#artists">Artists</a>
+        <a class="btn btn-primary btn-small" href="#post-job">Post an opportunity</a>
+      </div>
+    </nav>
+  </header>
+
+  <main>
+    <section class="hero container">
+      <span class="eyebrow">Work · Opportunity · Creativity</span>
+      <h1>
+        Your next opportunity<br>
+        starts <span class="gradient-text">right here.</span>
+      </h1>
+      <p class="hero-copy">
+        Find work, discover paid gigs, connect with businesses
+        and put your talent in the spotlight. Megavallia brings
+        opportunity and creativity together.
+      </p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#jobs">Explore opportunities ↗</a>
+        <a class="btn btn-outline" href="#artists">Promote your music</a>
+      </div>
+      <p class="trust-line">
+        For job seekers · Employers · Freelancers · Artists · Businesses
+      </p>
+    </section>
+
+    <section class="container quick-links" aria-label="Explore Megavallia">
+      <a class="quick-card" href="#jobs">
+        <span class="quick-icon">💼</span>
+        <h3>Find a job</h3>
+        <p>Explore employment and remote roles.</p>
+      </a>
+      <a class="quick-card" href="#post-job">
+        <span class="quick-icon">📣</span>
+        <h3>Post a job</h3>
+        <p>Connect your vacancy with potential applicants.</p>
+      </a>
+      <a class="quick-card" href="#gigs">
+        <span class="quick-icon">⚡</span>
+        <h3>Paid opportunities</h3>
+        <p>Discover freelance work and creative gigs.</p>
+      </a>
+      <a class="quick-card" href="#artists">
+        <span class="quick-icon">🎵</span>
+        <h3>Artist promotion</h3>
+        <p>Give your next music release a professional push.</p>
+      </a>
+    </section>
+
+    <section class="section container" id="jobs">
+      <div class="section-heading">
+        <div>
+          <span class="section-label">Your next move</span>
+          <h2>Find work that moves you forward.</h2>
+          <p>
+            Search trusted job platforms for opportunities in Kenya
+            and beyond. Always confirm requirements and application deadlines.
+          </p>
+        </div>
+      </div>
+
+      <form class="search-panel" id="job-search">
+        <input class="field" id="job-keyword"
+          placeholder="What work are you looking for?"
+          aria-label="Job title or keyword">
+        <select class="field" id="job-type" aria-label="Job category">
+          <option value="all">All job categories</option>
+          <option value="technology">IT & technology</option>
+          <option value="remote">Remote work</option>
+          <option value="creative">Creative & media</option>
+          <option value="business">Business & administration</option>
+          <option value="technical">Technical & skilled work</option>
+        </select>
+        <button class="btn btn-primary" type="submit">Search jobs ↗</button>
+      </form>
+
+      <div class="cards">
+        <article class="card">
+          <span class="tag">Kenya</span>
+          <h3>BrighterMonday</h3>
+          <p>
+            Explore vacancies across industries, experience levels
+            and locations in Kenya.
+          </p>
+          <div class="job-meta">Employment · Local opportunities</div>
+          <a class="btn btn-outline" target="_blank"
+             rel="noopener noreferrer"
+             href="https://www.brightermonday.co.ke/">
+            Browse vacancies ↗
+          </a>
+        </article>
+
+        <article class="card">
+          <span class="tag">Career growth</span>
+          <h3>Fuzu</h3>
+          <p>
+            Look for job opportunities and career-development resources.
+          </p>
+          <div class="job-meta">Careers · Skills</div>
+          <a class="btn btn-outline" target="_blank"
+             rel="noopener noreferrer" href="https://www.fuzu.com/">
+            Explore Fuzu ↗
+          </a>
+        </article>
+
+        <article class="card">
+          <span class="tag">Professional</span>
+          <h3>LinkedIn Jobs</h3>
+          <p>
+            Search professional roles, technical vacancies and
+            remote opportunities.
+          </p>
+          <div class="job-meta">Local · International · Remote</div>
+          <a class="btn btn-outline" target="_blank"
+             rel="noopener noreferrer"
+             href="https://www.linkedin.com/jobs/">
+            Search LinkedIn ↗
+          </a>
+        </article>
+      </div>
+
+      <p class="disclaimer" style="margin-top:20px">
+        These are external job-search resources, not vacancies verified
+        or supplied by Megavallia. Availability, eligibility and deadlines
+        are determined by the respective providers.
+      </p>
+    </section>
+
+    <section class="section container" id="gigs">
+      <div class="section-heading">
+        <div>
+          <span class="section-label">Skills create value</span>
+          <h2>Find your next paid opportunity.</h2>
+          <p>
+            Your skills can open doors to freelance projects, creative work
+            and business services. Start with what you can genuinely deliver.
+          </p>
+        </div>
+      </div>
+
+      <div class="cards">
+        <article class="card">
+          <span class="tag">Freelance</span>
+          <h3>Digital services</h3>
+          <p>
+            Explore work in website development, writing, graphic design,
+            social media and virtual assistance.
+          </p>
+          <a class="btn btn-outline" target="_blank"
+             rel="noopener noreferrer" href="https://www.upwork.com/">
+            Explore freelance work ↗
+          </a>
+        </article>
+
+        <article class="card">
+          <span class="tag">Creative work</span>
+          <h3>Music & media gigs</h3>
+          <p>
+            Look for opportunities in video editing, event support,
+            design, music production and content creation.
+          </p>
+          <a class="btn btn-primary" href="#artists">
+            Explore creator services ↓
+          </a>
+        </article>
+
+        <article class="card">
+          <span class="tag">Local business</span>
+          <h3>Offer your skills</h3>
+          <p>
+            Help local businesses with repairs, technical support,
+            online presence or other services you are qualified to provide.
+          </p>
+          <a class="btn btn-outline" href="#post-job">
+            Connect about a project →
+          </a>
+        </arti
