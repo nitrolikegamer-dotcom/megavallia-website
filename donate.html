@@ -1,0 +1,222 @@
+
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090b14">
+  <meta name="description" content="Support Megavallia and help us develop tools and experiences for creators around the world.">
+  <title>Support Megavallia | Donations</title>
+  <link rel="canonical" href="https://www.megavallia.com/donate.html">
+  <link rel="stylesheet" href="styles.css">
+
+  <style>
+    body {
+      margin: 0;
+      background: #090b14;
+      color: #f6f7ff;
+      font-family: system-ui, -apple-system, "Segoe UI", sans-serif;
+      line-height: 1.7;
+    }
+    .header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 15px;
+      padding: 18px 22px;
+      border-bottom: 1px solid rgba(255,255,255,.1);
+    }
+    .brand {
+      color: white;
+      font-size: 21px;
+      font-weight: 900;
+      text-decoration: none;
+    }
+    .brand span { color: #c4b5fd; }
+    .header a:not(.brand) {
+      color: #d6c7ff;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .container {
+      width: min(850px, calc(100% - 36px));
+      margin: auto;
+    }
+    .donation {
+      padding: 65px 0 80px;
+    }
+    .card {
+      padding: clamp(24px,5vw,46px);
+      background: linear-gradient(145deg,#17152a,#101321);
+      border: 1px solid rgba(255,255,255,.12);
+      border-radius: 24px;
+    }
+    .heart {
+      display: grid;
+      place-items: center;
+      width: 68px;
+      height: 68px;
+      border-radius: 20px;
+      background: rgba(139,92,246,.18);
+      font-size: 32px;
+      margin-bottom: 22px;
+    }
+    .eyebrow {
+      color: #c4b5fd;
+      font-size: 12px;
+      font-weight: 800;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    h1 {
+      font-size: clamp(36px,7vw,58px);
+      line-height: 1.1;
+      letter-spacing: -2px;
+      margin: 12px 0 20px;
+    }
+    h2 { font-size: 23px; }
+    p { color: #b5bad0; }
+    .reasons {
+      display: grid;
+      grid-template-columns: repeat(2,minmax(0,1fr));
+      gap: 12px;
+      margin: 28px 0;
+    }
+    .reason {
+      padding: 17px;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 14px;
+      background: rgba(255,255,255,.025);
+    }
+    .reason strong { display: block; margin-bottom: 5px; }
+    .reason span { color: #aab0c8; font-size: 13px; }
+    .button {
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 50px;
+      padding: 0 22px;
+      border-radius: 12px;
+      background: linear-gradient(135deg,#8b5cf6,#ec4899);
+      color: white;
+      font-weight: 850;
+      text-decoration: none;
+      border: 0;
+      cursor: pointer;
+    }
+    .button.disabled {
+      opacity: .65;
+      cursor: not-allowed;
+    }
+    .note {
+      margin-top: 22px;
+      padding: 15px;
+      border: 1px solid rgba(255,255,255,.1);
+      border-radius: 12px;
+      font-size: 13px;
+    }
+    footer {
+      border-top: 1px solid rgba(255,255,255,.1);
+      padding: 25px 18px;
+      text-align: center;
+      color: #969db7;
+      font-size: 13px;
+    }
+    footer a { color: #c4b5fd; text-decoration: none; }
+    @media (max-width: 560px) {
+      .reasons { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <header class="header">
+    <a class="brand" href="index.html">mega<span>vallia</span></a>
+    <a href="index.html">← Back to home</a>
+  </header>
+
+  <main class="container donation">
+    <article class="card">
+      <div class="heart" aria-hidden="true">💜</div>
+
+      <div class="eyebrow">Help us grow</div>
+      <h1>Support Megavallia.</h1>
+
+      <p>
+        Megavallia is building a platform to help people discover
+        creators, explore public content, and connect through live
+        experiences.
+      </p>
+
+      <p>
+        If you believe in this mission, a voluntary contribution can
+        help support our ongoing development and infrastructure.
+      </p>
+
+      <div class="reasons">
+        <div class="reason">
+          <strong>⚙️ Platform development</strong>
+          <span>Help us improve the website and creator experience.</span>
+        </div>
+
+        <div class="reason">
+          <strong>🌐 Hosting and infrastructure</strong>
+          <span>Help cover the costs of keeping online services running.</span>
+        </div>
+
+        <div class="reason">
+          <strong>🎨 Creator tools</strong>
+          <span>Support continued work on features for artists and creators.</span>
+        </div>
+
+        <div class="reason">
+          <strong>🚀 Long-term vision</strong>
+          <span>Help Megavallia continue developing for a global audience.</span>
+        </div>
+      </div>
+
+      <h2>Make a contribution</h2>
+      <p>
+        Donations are voluntary. Choose an amount through the official
+        PayPal checkout when it is available.
+      </p>
+
+      <!-- SETUP REQUIRED:
+           Replace this placeholder with your real PayPal donation URL.
+           Do not activate until the URL has been created and tested. -->
+      <a
+        class="button disabled"
+        href="#"
+        aria-disabled="true"
+        onclick="return false;"
+      >PayPal donations coming soon</a>
+
+      <div class="note">
+        <strong>Transparency:</strong>
+        Contributions are intended to support Megavallia's development
+        and operating costs. Donations do not guarantee rewards, returns,
+        ownership, or any particular platform feature.
+      </div>
+
+      <p>
+        Questions?
+        <a href="mailto:support@megavallia.com" style="color:#c4b5fd">
+          support@megavallia.com
+        </a>
+      </p>
+    </article>
+  </main>
+
+  <footer>
+    © <span id="year"></span> Megavallia ·
+    <a href="founder.html">Founder</a> ·
+    <a href="privacy.html">Privacy</a> ·
+    <a href="terms.html">Terms</a>
+  </footer>
+
+  <script>
+    document.getElementById("year").textContent =
+      new Date().getFullYear();
+  </script>
+</body>
+</html>
