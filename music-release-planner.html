@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090b14">
+  <meta name="description" content="Plan your next music release with Megavallia's free music release planner. Build your release timeline, organize promotion tasks and create social media captions.">
+  <meta name="keywords" content="music release planner, music promotion, independent artists, song release checklist, music marketing, promote my music">
+  <meta property="og:title" content="Free Music Release Planner | Megavallia">
+  <meta property="og:description" content="Organize your next song release with a practical timeline, promotion checklist and ready-to-customize captions.">
+  <meta property="og:type" content="website">
+  <title>Free Music Release Planner | Megavallia</title>
+  <link rel="canonical" href="https://www.megavallia.com/music-release-planner.html">
+
+  <style>
+    :root {
+      color-scheme: dark;
+      --bg: #090b14;
+      --panel: #111525;
+      --panel2: #171c30;
+      --text: #f6f7ff;
+      --muted: #a7afc7;
+      --pink: #ff4fba;
+      --purple: #9b7bff;
+      --line: rgba(255,255,255,.1);
+      --green: #55e5ad;
+    }
+
+    * { box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      margin: 0;
+      background:
+        radial-gradient(ellipse at 10% 0%, rgba(155,123,255,.16), transparent 36rem),
+        radial-gradient(ellipse at 90% 8%, rgba(255,79,186,.12), transparent 32rem),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.6;
+    }
+
+    a { color: inherit; }
+
+    button, input, select, textarea { font: inherit; }
+
+    button, .button {
+      cursor: pointer;
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 17px;
+      font-weight: 750;
+      text-decoration: none;
+      display: inline-flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      transition: transform .18s ease, opacity .18s ease;
+    }
+
+    button:hover, .button:hover { transform: translateY(-1px); }
+    button:focus-visible, a:focus-visible, input:focus-visible,
+    select:focus-visible, textarea:focus-visible {
+      outline: 2px solid var(--pink);
+      outline-offset: 3px;
+    }
+
+    .primary {
+      color: #090b14;
+      background: linear-gradient(110deg, var(--pink), #c3a5ff);
+    }
+
+    .secondary {
+      color: var(--text);
+      background: var(--panel2);
+      border: 1px solid var(--line);
+    }
+
+    .wrap { width: min(1080px, 92%); margin: auto; }
+
+    header {
+      border-bottom: 1px solid var(--line);
+      background: rgba(9,11,20,.82);
+    }
+
+    .nav {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 18px;
+    }
+
+    .brand {
+      text-decoration: none;
+      font-size: 1.22rem;
+      font-weight: 900;
+      letter-spacing: -.5px;
+    }
+
+    .brand span { color: var(--pink); }
+
+    .navlinks {
+      display: flex;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 19px;
+    }
+
+    .navlinks a {
+      color: var(--muted);
+      font-size: .92rem;
+      text-decoration: none;
+    }
+
+    .navlinks a:hover { color: white; }
+
+    .hero { padding: 76px 0 48px; text-align: center; }
+
+    .eyebrow {
+      display: inline-block;
+      padding: 6px 12px;
+      border: 1px solid rgba(255,79,186,.32);
+      border-radius: 100px;
+      color: #ffb5e2;
+      background: rgba(255,79,186,.08);
+      font-size: .82rem;
+      font-weight: 750;
+    }
+
+    h1 {
+      max-width: 850px;
+      margin: 20px auto 15px;
+      font-size: clamp(2.35rem, 6vw, 4.5rem);
+      letter-spacing: -2.5px;
+      line-height: 1.08;
+    }
+
+    .gradient {
+      background: linear-gradient(100deg, var(--pink), #b8a2ff);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+    }
+
+    .hero p {
+      max-width: 680px;
+      margin: 0 auto 25px;
+      color: var(--muted);
+      font-size: 1.08rem;
+    }
+
+    .hero-actions {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .section { padding: 28px 0 42px; }
+
+    .section-heading { margin-bottom: 20px; }
+
+    .section-heading h2 {
+      margin: 0 0 6px;
+      font-size: clamp(1.5rem, 4vw, 2.15rem);
+      letter-spacing: -.7px;
+    }
+
+    .section-heading p, .muted { color: var(--muted); }
+
+    .panel {
+      background: linear-gradient(145deg, rgba(23,28,48,.95), rgba(15,19,34,.97));
+      border: 1px solid var(--line);
+      border-radius: 20px;
+      padding: 24px;
+    }
+
+    .setup-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .field { display: flex; flex-direction: column; gap: 7px; }
+
+    .field label { font-size: .91rem; font-weight: 700; }
+
+    .field input, .field select, .field textarea {
+      width: 100%;
+      color: var(--text);
+      background: #0b0e1a;
+      border: 1px solid var(--line);
+      border-radius: 11px;
+      padding: 12px 13px;
+    }
+
+    .field textarea { min-height: 95px; resize: vertical; }
+
+    .full { grid-column: 1 / -1; }
+
+    .progress-top {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: center;
+      margin: 18px 0 8px;
+      font-size: .92rem;
+    }
+
+    .progress-track {
+      height: 9px;
+      border-radius: 50px;
+      overflow: hidden;
+      background: #292e43;
+    }
+
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      border-radius: inherit;
+      background: linear-gradient(90deg, var(--pink), var(--purple));
+      transition: width .2s ease;
+    }
+
+    .timeline { display: grid; gap: 15px; }
+
+    .phase {
+      background: rgba(17,21,37,.82);
+      border: 1px solid var(--line);
+      border-radius: 17px;
+      overflow: hidden;
+    }
+
+    .phase summary {
+      cursor: pointer;
+      padding: 17px 19px;
+      font-weight: 800;
+      list-style-position: inside;
+    }
+
+    .phase summary span {
+      color: var(--pink);
+      margin-right: 7px;
+    }
+
+    .phase-content { padding: 0 19px 18px; }
+
+    .task {
+      display: flex;
+      align-items: flex-start;
+      gap: 11px;
+      padding: 12px 0;
+      border-top: 1px solid rgba(255,255,255,.065);
+    }
+
+    .task input {
+      width: 19px;
+      height: 19px;
+      margin-top: 3px;
+      accent-color: var(--pink);
+      flex-shrink: 0;
+    }
+
+    .task label { cursor: pointer; flex: 1; }
+
+    .task input:checked + label {
+      color: #929bb3;
+      text-decoration: line-through;
+    }
+
+    .task small {
+      display: block;
+      color: var(--muted);
+      text-decoration: none;
+      margin-top: 3px;
+    }
+
+    .caption-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 15px;
+    }
+
+    .caption-card {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 12px;
+    }
+
+    .caption-card h3 { margin: 0; font-size: 1.05rem; }
+    .caption-card p { margin: 0; color: var(--muted); font-size: .94rem; }
+    .caption-card button { margin-top: auto; }
+
+    .caption-text {
+      padding: 12px;
+      width: 100%;
+      background: #0b0e1a;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      font-size: .9rem;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+    }
+
+    .cta {
+      padding: 35px;
+      border-radius: 22px;
+      background: linear-gradient(120deg, rgba(255,79,186,.14), rgba(155,123,255,.15));
+      border: 1px solid rgba(194,157,255,.24);
+    }
+
+    .cta h2 { margin-top: 0; }
+    .cta p { color: var(--muted); max-width: 700px; }
+
+    .cta-actions { display: flex; flex-wrap: wrap; gap: 12px; }
+
+    .notice {
+      color: var(--muted);
+      font-size: .85rem;
+      margin-top: 16px;
+    }
+
+    footer {
+      border-top: 1px solid var(--line);
+      margin-top: 30px;
+      padding: 28px 0;
+      color: var(--muted);
+      font-size: .9rem;
+    }
+
+    .footer-inner {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: space-between;
+      gap: 15px;
+    }
+
+    footer a { color: #e1d8ff; text-decoration: none; }
+
+    @media (max-width: 760px) {
+      .nav { align-items: flex-start; padding: 17px 0; flex-direction: column; }
+      .navlinks { gap: 12px; }
+      .hero { padding-top: 52px; }
+      .setup-grid, .caption-grid { grid-template-columns: 1fr; }
+      .panel { padding: 18px; }
+      .cta { padding: 23px; }
+      h1 { letter-spacing: -1.4px; }
+    }
+
+    @media print {
+      header, .hero-actions, .no-print, footer { display: none !important; }
+      body { color: #111; background: white; }
+      .panel, .phase, .cta { background: white; border: 1px solid #ddd; }
+      .muted, .section-heading p, .task small { color: #444; }
+      .task { break-inside: avoid; }
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="https://www.megavallia.com/">Mega<span>vallia</span></a>
+      <nav class="navlinks" aria-label="Main navigation">
+        <a href="https://www.megavallia.com/">Home</a>
+        <a href="https://www.megavallia.com/artist-promotion.html">Artist Promotion</a>
+        <a href="https://www.megavallia.com/opportunities.html">Opportunities</a>
+      </nav>
+    </div>
+  </header>
+
+  <main>
+    <section class="hero wrap">
+      <span class="eyebrow">FREE TOOL FOR INDEPENDENT ARTISTS</span>
+      <h1>Your next release deserves a <span class="gradient">real plan.</span></h1>
+      <p>
+        Organize your music release, stay on top of promotion tasks,
+        and prepare social captions with a practical planner built for artists worldwide.
+      </p>
+      <div class="hero-actions">
+        <a class="button primary" href="#planner">Build my release plan →</a>
+        <a class="button secondary" href="#captions">Get caption ideas</a>
+      </div>
+    </section>
+
+    <section class="section wrap" id="planner">
+      <div class="section-heading">
+        <h2>1. Set up your release</h2>
+        <p>Add your details to personalize your plan. Your entries stay in this browser on this device.</p>
+      </div>
+
+      <div class="panel">
+        <div class="setup-grid">
+          <div class="field">
+            <label for="artistName">Artist or stage name</label>
+            <input id="artistName" maxlength="100" placeholder="e.g. Alex Nova">
+          </div>
+
+          <div class="field">
+            <label for="songTitle">Song or project title</label>
+            <input id="songTitle" maxlength="150" placeholder="e.g. Midnight Dreams">
+          </div>
+
+          <div class="field">
+            <label for="releaseDate">Planned release date</label>
+            <input id="releaseDate" type="date" required>
+          </div>
+
+          <div class="field">
+            <label for="releaseType">Release type</label>
+            <select id="releaseType">
+              <option value="Single">Single</option>
+              <option value="EP">EP</option>
+              <option value="Album">Album</option>
+              <option value="Music video">Music video</option>
+              <option value="Other project">Other project</option>
+            </select>
+          </div>
+
+          <div class="field full">
+            <label for="goal">Main goal for this release</label>
+            <select id="goal">
+              <option>Reach new listeners</option>
+              <option>Build my fan community</option>
+              <option>Increase genuine streams and saves</option>
+              <option>Promote a music video</option>
+              <option>Find collaborators or industry opportunities</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="progress-top">
+          <strong>Your campaign progress</strong>
+          <span id="progressText" aria-live="polite">0 of 0 completed</span>
+        </div>
+        <div class="progress-track" role="progressbar" aria-label="Release checklist progress" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="progressBar">
+          <div class="progress-fill" id="progressFill"></div>
+        </div>
+
+        <p class="notice">Tip: Many artists prepare several weeks in advance. Adapt the timeline to your distributor, budget, and audience.</p>
+        <div class="hero-actions no-print" style="justify-content:flex-start;margin-top:16px">
+          <button class="primary" id="savePlan" type="button">Save plan on this device</button>
+          <button class="secondary" id="printPlan" type="button">Print / Save as PDF</button>
+          <button class="secondary" id="resetPlan" type="button">Reset checklist</button>
+        </div>
+        <p id="saveStatus" class="notice" role="status"></p>
+      </div>
+    </section>
+
+    <section class="section wrap">
+      <div class="section-heading">
+        <h2>2. Your release timeline</h2>
+        <p>Check off each task as you complete it. Open a stage to see its tasks.</p>
+      </div>
+
+      <div class="timeline" id="timeline">
+        <details class="phase" open>
+          <summary><span>WEEK 4+</span> Preparation and foundations</summary>
+          <div class="phase-content">
+            <div class="task"><input type="checkbox" id="t1"><label for="t1">Finalize the song, mix, and master.<small>Keep approved final files backed up.</small></label></div>
+            <div class="task"><input type="checkbox" id="t2"><label for="t2">Confirm artwork and visual identity.<small>Check the requirements of your distributor.</small></label></div>
+            <div class="task"><input type="checkbox" id="t3"><label for="t3">Choose a realistic release date.<small>Allow enough time for distribution and any editorial submissions.</small></label></div>
+            <div class="task"><input type="checkbox" id="t4"><label for="t4">Review artist profiles and biography.<small>Make sure your public links and profile information are current.</small></label></div>
+            <div class="task"><input type="checkbox" id="t5"><label for="t5">Set a campaign budget and goal.<small>Decide what success means for this release.</small></label></div>
+          </div>
+        </details>
+
+        <details class="phase" open>
+          <summary><span>WEEKS 3–2</span> Distribution and audience building</summary>
+          <div class="phase-content">
+            <div class="task"><input type="checkbox" id="t6"><label for="t6">Submit the release to your distributor.<small>Confirm delivery dates and platform availability.</small></label></div>
+            <div class="task"><input type="checkbox" id="t7"><label for="t7">Prepare short video clips and behind-the-scenes content.<small>Create several distinct pieces instead of repeating one post.</small></label></div>
+            <div class="task"><input type="checkbox" id="t8"><label for="t8">Tell your existing fans the release is coming.<small>Invite people to follow your official artist profiles.</small></label></div>
+            <div class="task"><input type="checkbox" id="t9"><label for="t9">Prepare a press or collaborator message.<small>Include a short bio, music link when available, and release details.</small></label></div>
+            <div class="task"><input type="checkbox" id="t10"><label for="t10">Check platform artist tools and submission deadlines.<small>Use official platform tools where available; placement is never guaranteed.</small></label></div>
+          </div>
+        </details>
+
+        <details class="phase" open>
+          <summary><span>WEEK 1</span> Countdown and final checks</summary>
+          <div class="phase-content">
+            <div class="task"><input type="checkbox" id="t11"><label for="t11">Verify pre-save or pre-release links.<small>Test every link on mobile and desktop.</small></label></div>
+            <div class="task"><input type="checkbox" id="t12"><label for="t12">Schedule release-week content.<small>Mix previews, personal stories, visuals, and direct calls to action.</small></label></div>
+            <div class="task"><input type="checkbox" id="t13"><label for="t13">Prepare the official release announcement.<small>Include the correct release link and credits.</small></label></div>
+            <div class="task"><input type="checkbox" id="t14"><label for="t14">Confirm credits, metadata, and artist links.<small>Fix any errors with your distributor before release.</small></label></div>
+          </div>
+        </details>
+
+        <details class="phase" open>
+          <summary><span>RELEASE DAY</span> Launch and connect</summary>
+          <div class="phase-content">
+            <div class="task"><input type="checkbox" id="t15"><label for="t15">Confirm the release is live on the intended platforms.<small>Report delivery issues to your distributor if needed.</small></label></div>
+            <div class="task"><input type="checkbox" id="t16"><label for="t16">Publish the release announcement and music link.<small>Make it easy for listeners to find the official release.</small></label></div>
+            <div class="task"><input type="checkbox" id="t17"><label for="t17">Thank early listeners and respond to comments.<small>Build genuine relationships rather than chasing numbers alone.</small></label></div>
+            <div class="task"><input type="checkbox" id="t18"><label for="t18">Share a short clip or story about the song.<small>Give listeners a reason to connect with the music.</small></label></div>
+          </div>
+        </details>
+
+        <details class="phase" open>
+          <summary><span>WEEK 1 AFTER</span> Continue the conversation</summary>
+          <div class="phase-content">
+            <div class="task"><input type="checkbox" id="t19"><label for="t19">Share a new angle or story behind the track.<small>Try a lyric, process clip, live performance, or fan reaction.</small></label></div>
+            <div class="task"><input type="checkbox" id="t20"><label for="t20">Review available platform analytics.<small>Look at engagement, saves, audience locations, and traffic sources where available.</small></label></div>
+            <div class="task"><input type="checkbox" id="t21"><label for="t21">Reach out to relevant collaborators and communities.<small>Keep messages personal and follow each community's rules.</small></label></div>
+          </div>
+        </details>
+
+        <details class="phase" open>
+          <summary><span>WEEK 2 AFTER</span> Learn and plan what's next</summary>
+          <div class="phase-content">
+            <div class="task"><input type="checkbox" id="t22"><label for="t22">Identify which content resonated most.<small>Use the results to guide future posts.</small></label></div>
+            <div class="task"><input type="checkbox" id="t23"><label for="t23">Thank your audience and collaborators.<small>Keep growing your community beyond release week.</small></label></div>
+            <div class="task"><input type="checkbox" id="t24"><label for="t24">Write down lessons and choose the next milestone.<small>Plan your next single, video, live session, or collaboration.</small></label></div>
+          </div>
+        </details>
+      </div>
+    </section>
+
+    <section class="section wrap" id="captions">
+      <div class="section-heading">
+        <h2>3. Ready-to-customize music captions</h2>
+        <p>Replace the placeholders with your details. Copy a caption and adapt it to your own voice.</p>
+      </div>
+
+      <div class="caption-grid">
+        <article class="panel caption-card">
+          <h3>Coming soon</h3>
+          <p>Build anticipation before release day.</p>
+          <div class="caption-text" id="caption1">Something new is on the way. 🎶
+
+My next release, [SONG TITLE], arrives on [RELEASE DATE].
+
+I've put a lot into this one, and I can't wait for you to hear it. Follow along for updates.
+
+#NewMusic #IndependentArtist</div>
+          <button class="secondary copy-caption" data-target="caption1" type="button">Copy caption</button>
+        
