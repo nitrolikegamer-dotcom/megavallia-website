@@ -3,16 +3,26 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="theme-color" content="#090b14">
-  <meta name="description" content="Learn music, content creation, promotion and creator business skills with Megavallia Academy.">
+
   <title>Megavallia Academy | Learn, Create & Grow</title>
+
+  <meta name="description" content="Learn music production, content creation, promotion, photography and creator monetization with Megavallia Academy.">
+
+  <link rel="canonical" href="https://www.megavallia.com/academy.html">
+
+  <!-- Google AdSense -->
+  <meta name="google-adsense-account" content="ca-pub-1576067675286796">
+  <script async
+    src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1576067675286796"
+    crossorigin="anonymous"></script>
 
   <style>
     :root {
       --bg: #090b14;
-      --surface: #111827;
-      --surface-light: #171e30;
+      --card: #111827;
+      --card2: #171e30;
       --text: #f8fafc;
       --muted: #a5aec2;
       --purple: #a855f7;
@@ -21,9 +31,9 @@
     }
 
     * {
-      box-sizing: border-box;
       margin: 0;
       padding: 0;
+      box-sizing: border-box;
     }
 
     html {
@@ -43,15 +53,15 @@
     }
 
     .container {
-      width: min(1120px, 92%);
+      width: min(1150px, 92%);
       margin: auto;
     }
 
     header {
       position: sticky;
       top: 0;
-      z-index: 10;
-      background: rgba(9,11,20,.94);
+      z-index: 100;
+      background: rgba(9,11,20,.95);
       backdrop-filter: blur(14px);
       border-bottom: 1px solid var(--border);
     }
@@ -65,9 +75,9 @@
     }
 
     .logo {
-      font-size: 1.45rem;
-      font-weight: 800;
-      letter-spacing: -.7px;
+      font-size: 1.5rem;
+      font-weight: 900;
+      letter-spacing: -1px;
     }
 
     .logo span {
@@ -77,14 +87,13 @@
     .nav-links {
       display: flex;
       align-items: center;
-      gap: 24px;
       flex-wrap: wrap;
+      gap: 22px;
     }
 
     .nav-links a {
+      font-size: .9rem;
       color: var(--muted);
-      font-size: .92rem;
-      transition: color .2s;
     }
 
     .nav-links a:hover {
@@ -92,33 +101,35 @@
     }
 
     .hero {
-      padding: 85px 0 65px;
+      padding: 90px 0 75px;
       text-align: center;
       background:
-        radial-gradient(ellipse at 50% 0%, rgba(168,85,247,.22), transparent 55%),
-        radial-gradient(ellipse at 85% 40%, rgba(236,72,153,.10), transparent 40%);
+        radial-gradient(ellipse at 50% 0%, rgba(168,85,247,.23), transparent 58%),
+        radial-gradient(ellipse at 90% 50%, rgba(236,72,153,.10), transparent 42%);
     }
 
     .eyebrow {
       display: inline-block;
-      color: #e9b8ff;
-      background: rgba(168,85,247,.13);
-      border: 1px solid rgba(168,85,247,.3);
-      border-radius: 30px;
       padding: 7px 15px;
-      font-size: .82rem;
+      border-radius: 30px;
+      border: 1px solid rgba(168,85,247,.4);
+      background: rgba(168,85,247,.12);
+      color: #e9c5ff;
+      font-size: .8rem;
+      font-weight: 700;
+      letter-spacing: 1px;
       margin-bottom: 20px;
     }
 
     .hero h1 {
-      font-size: clamp(2.3rem, 6vw, 4.5rem);
+      max-width: 900px;
+      margin: auto auto 20px;
+      font-size: clamp(2.5rem, 6vw, 4.7rem);
       line-height: 1.08;
       letter-spacing: -2px;
-      max-width: 850px;
-      margin: 0 auto 20px;
     }
 
-    .gradient-text {
+    .gradient {
       background: linear-gradient(90deg, #c084fc, #f472b6);
       -webkit-background-clip: text;
       background-clip: text;
@@ -126,61 +137,61 @@
     }
 
     .hero p {
-      max-width: 690px;
+      max-width: 720px;
       margin: auto;
       color: var(--muted);
       font-size: 1.08rem;
     }
 
-    .hero-actions {
+    .actions {
       margin-top: 30px;
       display: flex;
       justify-content: center;
-      gap: 13px;
       flex-wrap: wrap;
+      gap: 13px;
     }
 
     .btn {
       display: inline-flex;
-      justify-content: center;
       align-items: center;
+      justify-content: center;
       padding: 12px 20px;
       border-radius: 9px;
       font-weight: 700;
-      font-size: .94rem;
-      transition: transform .2s, opacity .2s;
+      font-size: .92rem;
+      transition: .2s ease;
     }
 
     .btn:hover {
       transform: translateY(-2px);
-      opacity: .92;
+      opacity: .9;
     }
 
-    .btn-primary {
+    .primary {
       background: linear-gradient(100deg, var(--purple), var(--pink));
       color: white;
     }
 
-    .btn-secondary {
-      border: 1px solid var(--border);
+    .secondary {
       background: rgba(255,255,255,.04);
+      border: 1px solid var(--border);
       color: white;
     }
 
     .section {
-      padding: 58px 0;
+      padding: 55px 0;
     }
 
-    .section-heading {
+    .section-title {
       margin-bottom: 28px;
     }
 
-    .section-heading h2 {
-      font-size: clamp(1.7rem, 4vw, 2.4rem);
+    .section-title h2 {
+      font-size: clamp(1.8rem, 4vw, 2.5rem);
       margin-bottom: 8px;
     }
 
-    .section-heading p {
+    .section-title p {
       color: var(--muted);
       max-width: 700px;
     }
@@ -188,22 +199,22 @@
     .course-grid {
       display: grid;
       grid-template-columns: repeat(2, minmax(0, 1fr));
-      gap: 18px;
+      gap: 20px;
     }
 
-    .course-card {
-      background: linear-gradient(145deg, var(--surface), #0e1422);
-      border: 1px solid var(--border);
-      border-radius: 16px;
-      padding: 24px;
+    .course {
+      padding: 25px;
+      min-height: 245px;
       display: flex;
       flex-direction: column;
-      min-height: 245px;
-      transition: border-color .2s, transform .2s;
+      background: linear-gradient(145deg, var(--card), #0e1422);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      transition: .2s ease;
     }
 
-    .course-card:hover {
-      border-color: rgba(192,132,252,.55);
+    .course:hover {
+      border-color: rgba(192,132,252,.6);
       transform: translateY(-3px);
     }
 
@@ -215,56 +226,77 @@
       margin-bottom: 12px;
     }
 
-    .course-card h3 {
+    .course h3 {
       font-size: 1.25rem;
-      margin-bottom: 9px;
+      margin-bottom: 10px;
     }
 
-    .course-card p {
+    .course p {
       color: var(--muted);
       font-size: .94rem;
       margin-bottom: 22px;
     }
 
-    .course-card .btn {
-      margin-top: auto;
+    .course .btn {
       align-self: flex-start;
+      margin-top: auto;
+    }
+
+    /* Advertisement space */
+    .ad-section {
+      padding: 25px 0;
+    }
+
+    .ad-label {
+      text-align: center;
+      color: #717b91;
+      font-size: .7rem;
+      letter-spacing: 1px;
+      margin-bottom: 8px;
+    }
+
+    .ad-container {
+      width: 100%;
+      max-width: 970px;
+      min-height: 100px;
+      margin: auto;
+      overflow: hidden;
+      text-align: center;
     }
 
     .benefits {
       display: grid;
       grid-template-columns: repeat(3, minmax(0, 1fr));
-      gap: 16px;
+      gap: 17px;
     }
 
     .benefit {
-      background: var(--surface);
+      padding: 23px;
+      background: var(--card);
       border: 1px solid var(--border);
       border-radius: 14px;
-      padding: 22px;
     }
 
     .benefit h3 {
-      margin-bottom: 8px;
-      font-size: 1.05rem;
+      margin-bottom: 9px;
     }
 
     .benefit p {
       color: var(--muted);
-      font-size: .92rem;
+      font-size: .93rem;
     }
 
     .cta {
-      margin: 35px 0 65px;
-      padding: 38px 25px;
-      text-align: center;
-      border: 1px solid rgba(168,85,247,.25);
+      margin: 40px 0 65px;
+      padding: 42px 25px;
       border-radius: 18px;
-      background: linear-gradient(120deg, rgba(168,85,247,.13), rgba(236,72,153,.08));
+      border: 1px solid rgba(168,85,247,.25);
+      text-align: center;
+      background: linear-gradient(120deg, rgba(168,85,247,.14), rgba(236,72,153,.08));
     }
 
     .cta h2 {
-      font-size: clamp(1.6rem, 4vw, 2.3rem);
+      font-size: clamp(1.7rem, 4vw, 2.5rem);
       margin-bottom: 10px;
     }
 
@@ -276,7 +308,7 @@
 
     footer {
       border-top: 1px solid var(--border);
-      padding: 25px 0;
+      padding: 27px 0;
       color: var(--muted);
       font-size: .88rem;
     }
@@ -284,15 +316,15 @@
     .footer-inner {
       display: flex;
       justify-content: space-between;
-      gap: 15px;
       flex-wrap: wrap;
+      gap: 15px;
     }
 
     @media (max-width: 700px) {
       .nav {
         padding: 15px 0;
-        align-items: flex-start;
         flex-direction: column;
+        align-items: flex-start;
       }
 
       .nav-links {
@@ -307,233 +339,239 @@
       .benefits {
         grid-template-columns: 1fr;
       }
-
-      .course-card {
-        min-height: 220px;
-      }
     }
   </style>
 </head>
 
 <body>
 
-  <header>
-    <div class="container nav">
-      <a class="logo" href="https://www.megavallia.com/">
-        Mega<span>vallia</span>
+<header>
+  <div class="container nav">
+    <a href="https://www.megavallia.com/" class="logo">
+      Mega<span>vallia</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="https://www.megavallia.com/">Home</a>
+      <a href="https://www.megavallia.com/#discover">Discover</a>
+      <a href="opportunities.html">Opportunities</a>
+      <a href="academy.html">Academy</a>
+    </nav>
+  </div>
+</header>
+
+<main>
+
+  <section class="hero">
+    <div class="container">
+      <span class="eyebrow">MEGAVALLIA ACADEMY</span>
+
+      <h1>
+        Learn Skills.<br>
+        <span class="gradient">Build Your Creative Future.</span>
+      </h1>
+
+      <p>
+        Practical learning for musicians, artists and digital creators.
+        Develop your skills, promote your work, grow your audience and
+        discover opportunities in the creative industry.
+      </p>
+
+      <div class="actions">
+        <a href="#courses" class="btn primary">Explore Courses</a>
+        <a href="https://www.megavallia.com/" class="btn secondary">Visit Megavallia</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- AdSense advertisement area -->
+  <section class="ad-section">
+    <div class="container">
+      <div class="ad-label">ADVERTISEMENT</div>
+
+      <!--
+        Replace data-ad-slot="YOUR_AD_UNIT_SLOT_ID"
+        with the actual ad unit slot ID from your AdSense account.
+        The publisher script alone does not create a display ad.
+      -->
+      <div class="ad-container">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-1576067675286796"
+             data-ad-slot="YOUR_AD_UNIT_SLOT_ID"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+      </div>
+    </div>
+  </section>
+
+  <section class="section" id="courses">
+    <div class="container">
+
+      <div class="section-title">
+        <h2>Explore Our Courses</h2>
+        <p>
+          Choose a course and learn at your own pace.
+          Every course has its own dedicated page.
+        </p>
+      </div>
+
+      <div class="course-grid">
+
+        <article class="course">
+          <span class="course-number">COURSE 01</span>
+          <h3>Release Your First Song</h3>
+          <p>Learn how to prepare, distribute and release your music to the world.</p>
+          <a class="btn primary" href="release-your-first-song.html">Start Learning</a>
+        </article>
+
+        <article class="course">
+          <span class="course-number">COURSE 02</span>
+          <h3>Music Production on a Budget</h3>
+          <p>Discover affordable recording tools, production techniques and ways to create music with limited resources.</p>
+          <a class="btn primary" href="music-production-on-a-budget.html">Start Learning</a>
+        </article>
+
+        <article class="course">
+          <span class="course-number">COURSE 03</span>
+          <h3>Promote Your Content</h3>
+          <p>Learn how to promote your music, videos and creative work across digital platforms.</p>
+          <a class="btn primary" href="promote-your-content.html">Start Learning</a>
+        </article>
+
+        <article class="course">
+          <span class="course-number">COURSE 04</span>
+          <h3>Build Your Creator Brand</h3>
+          <p>Create a recognisable identity and communicate your value to audiences and potential partners.</p>
+          <a class="btn primary" href="build-your-creator-brand.html">Start Learning</a>
+        </article>
+
+        <article class="course">
+          <span class="course-number">COURSE 05</span>
+          <h3>Music Streaming and Royalties</h3>
+          <p>Understand distribution, streaming revenue, royalties and the music business.</p>
+          <a class="btn primary" href="music-streaming-royalties.html">Start Learning</a>
+        </article>
+
+        <article class="course">
+          <span class="course-number">COURSE 06</span>
+          <h3>Get Discovered</h3>
+          <p>Improve your visibility, connect with audiences and explore opportunities in the creative industry.</p>
+          <a class="btn primary" href="get-discovered.html">Start Learning</a>
+        </article>
+
+        <article class="course">
+          <span class="course-number">COURSE 07</span>
+          <h3>Video Creation and Editing</h3>
+          <p>Learn how to plan, record and edit engaging videos for digital audiences.</p>
+          <a class="btn primary" href="video-creation-editing.html">Start Learning</a>
+        </article>
+
+        <article class="course">
+          <span class="course-number">COURSE 08</span>
+          <h3>Photography and Storytelling</h3>
+          <p>Use photography, composition and visual storytelling to communicate ideas.</p>
+          <a class="btn primary" href="photography-storytelling.html">Start Learning</a>
+        </article>
+
+        <article class="course">
+          <span class="course-number">COURSE 09</span>
+          <h3>Grow Your Online Audience</h3>
+          <p>Understand audience development, content consistency and meaningful engagement.</p>
+          <a class="btn primary" href="grow-your-online-audience.html">Start Learning</a>
+        </article>
+
+        <article class="course">
+          <span class="course-number">COURSE 10</span>
+          <h3>Creator Monetization</h3>
+          <p>Explore income opportunities through services, partnerships, promotions and creative products.</p>
+          <a class="btn primary" href="creator-monetization.html">Start Learning</a>
+        </article>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- Second AdSense advertisement area -->
+  <section class="ad-section">
+    <div class="container">
+      <div class="ad-label">ADVERTISEMENT</div>
+
+      <!-- Use a different AdSense ad unit slot ID for this second placement. -->
+      <div class="ad-container">
+        <ins class="adsbygoogle"
+             style="display:block"
+             data-ad-client="ca-pub-1576067675286796"
+             data-ad-slot="YOUR_SECOND_AD_UNIT_SLOT_ID"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+        <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+
+      <div class="section-title">
+        <h2>Why Learn with Megavallia?</h2>
+        <p>
+          Our Academy is designed to help creators turn knowledge
+          into practical progress.
+        </p>
+      </div>
+
+      <div class="benefits">
+        <div class="benefit">
+          <h3>Practical Skills</h3>
+          <p>Focus on useful skills you can apply to your creative projects and career.</p>
+        </div>
+
+        <div class="benefit">
+          <h3>Creator-Focused</h3>
+          <p>Explore topics relevant to musicians, artists, filmmakers and independent creators.</p>
+        </div>
+
+        <div class="benefit">
+          <h3>Learn at Your Pace</h3>
+          <p>Open individual courses and develop your knowledge one lesson at a time.</p>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <section class="container">
+    <div class="cta">
+      <h2>Your Creative Journey Starts Here</h2>
+      <p>
+        Learn, improve your work and connect with the wider creative
+        community through Megavallia.
+      </p>
+      <a href="https://www.megavallia.com/" class="btn primary">
+        Explore Megavallia
       </a>
-
-      <nav class="nav-links" aria-label="Main navigation">
-        <a href="https://www.megavallia.com/">Home</a>
-        <a href="https://www.megavallia.com/#discover">Discover</a>
-        <a href="opportunities.html">Opportunities</a>
-        <a href="academy.html">Academy</a>
-      </nav>
     </div>
-  </header>
+  </section>
 
-  <main>
-    <section class="hero">
-      <div class="container">
-        <span class="eyebrow">MEGAVALLIA ACADEMY</span>
+</main>
 
-        <h1>
-          Learn Skills.<br>
-          <span class="gradient-text">Build Your Creative Future.</span>
-        </h1>
+<footer>
+  <div class="container footer-inner">
+    <span>© <span id="year"></span> Megavallia. All rights reserved.</span>
+    <span>Learn. Create. Get Discovered.</span>
+  </div>
+</footer>
 
-        <p>
-          Practical learning for musicians, artists and digital creators.
-          Develop your skills, promote your work, grow your audience and
-          discover opportunities in the creative industry.
-        </p>
-
-        <div class="hero-actions">
-          <a href="#courses" class="btn btn-primary">Explore Courses</a>
-          <a href="https://www.megavallia.com/" class="btn btn-secondary">Visit Megavallia</a>
-        </div>
-      </div>
-    </section>
-
-    <section class="section" id="courses">
-      <div class="container">
-        <div class="section-heading">
-          <h2>Explore Our Courses</h2>
-          <p>
-            Choose a course and learn at your own pace. Each course opens
-            on its own dedicated page.
-          </p>
-        </div>
-
-        <div class="course-grid">
-
-          <article class="course-card">
-            <span class="course-number">COURSE 01</span>
-            <h3>Release Your First Song</h3>
-            <p>
-              Learn the steps involved in preparing, distributing and
-              releasing your music to the world.
-            </p>
-            <a class="btn btn-primary" href="release-your-first-song.html">Start Learning</a>
-          </article>
-
-          <article class="course-card">
-            <span class="course-number">COURSE 02</span>
-            <h3>Music Production on a Budget</h3>
-            <p>
-              Understand basic recording, production tools and ways to
-              create music without expensive equipment.
-            </p>
-            <a class="btn btn-primary" href="music-production-on-a-budget.html">Start Learning</a>
-          </article>
-
-          <article class="course-card">
-            <span class="course-number">COURSE 03</span>
-            <h3>Promote Your Content</h3>
-            <p>
-              Learn how to share your music, videos and creative work
-              across digital platforms.
-            </p>
-            <a class="btn btn-primary" href="promote-your-content.html">Start Learning</a>
-          </article>
-
-          <article class="course-card">
-            <span class="course-number">COURSE 04</span>
-            <h3>Build Your Creator Brand</h3>
-            <p>
-              Develop a recognisable identity, communicate your value
-              and build a consistent creator presence.
-            </p>
-            <a class="btn btn-primary" href="build-your-creator-brand.html">Start Learning</a>
-          </article>
-
-          <article class="course-card">
-            <span class="course-number">COURSE 05</span>
-            <h3>Music Streaming and Royalties</h3>
-            <p>
-              Understand music distribution, streaming revenue,
-              royalties and the business behind recorded music.
-            </p>
-            <a class="btn btn-primary" href="music-streaming-royalties.html">Start Learning</a>
-          </article>
-
-          <article class="course-card">
-            <span class="course-number">COURSE 06</span>
-            <h3>Get Discovered</h3>
-            <p>
-              Explore practical ways to improve your visibility,
-              connect with audiences and reach industry opportunities.
-            </p>
-            <a class="btn btn-primary" href="get-discovered.html">Start Learning</a>
-          </article>
-
-          <article class="course-card">
-            <span class="course-number">COURSE 07</span>
-            <h3>Video Creation and Editing</h3>
-            <p>
-              Learn the foundations of planning, recording and editing
-              engaging videos for digital audiences.
-            </p>
-            <a class="btn btn-primary" href="video-creation-editing.html">Start Learning</a>
-          </article>
-
-          <article class="course-card">
-            <span class="course-number">COURSE 08</span>
-            <h3>Photography and Storytelling</h3>
-            <p>
-              Use photography, composition and visual storytelling
-              to communicate ideas and promote your work.
-            </p>
-            <a class="btn btn-primary" href="photography-storytelling.html">Start Learning</a>
-          </article>
-
-          <article class="course-card">
-            <span class="course-number">COURSE 09</span>
-            <h3>Grow Your Online Audience</h3>
-            <p>
-              Understand audience development, content consistency
-              and meaningful engagement across platforms.
-            </p>
-            <a class="btn btn-primary" href="grow-your-online-audience.html">Start Learning</a>
-          </article>
-
-          <article class="course-card">
-            <span class="course-number">COURSE 10</span>
-            <h3>Creator Monetization</h3>
-            <p>
-              Explore income opportunities through services,
-              partnerships, promotions and creative products.
-            </p>
-            <a class="btn btn-primary" href="creator-monetization.html">Start Learning</a>
-          </article>
-
-        </div>
-      </div>
-    </section>
-
-    <section class="section">
-      <div class="container">
-        <div class="section-heading">
-          <h2>Why Learn with Megavallia?</h2>
-          <p>
-            Our Academy is designed to help creators turn knowledge
-            into practical progress.
-          </p>
-        </div>
-
-        <div class="benefits">
-          <div class="benefit">
-            <h3>Practical Skills</h3>
-            <p>
-              Focus on useful skills that you can apply to your creative
-              projects and career.
-            </p>
-          </div>
-
-          <div class="benefit">
-            <h3>Creator-Focused</h3>
-            <p>
-              Learn topics relevant to musicians, artists, filmmakers
-              and independent creators.
-            </p>
-          </div>
-
-          <div class="benefit">
-            <h3>Grow at Your Pace</h3>
-            <p>
-              Explore individual courses and develop your knowledge
-              one lesson at a time.
-            </p>
-          </div>
-        </div>
-      </div>
-    </section>
-
-    <section class="container">
-      <div class="cta">
-        <h2>Your Creative Journey Starts Here</h2>
-        <p>
-          Learn, improve your work and connect with the wider creative
-          community through Megavallia.
-        </p>
-        <a href="https://www.megavallia.com/" class="btn btn-primary">
-          Explore Megavallia
-        </a>
-      </div>
-    </section>
-  </main>
-
-  <footer>
-    <div class="container footer-inner">
-      <span>© <span id="year"></span> Megavallia. All rights reserved.</span>
-      <span>Learn. Create. Get Discovered.</span>
-    </div>
-  </footer>
-
-  <script>
-    document.getElementById("year").textContent = new Date().getFullYear();
-  </script>
+<script>
+  document.getElementById("year").textContent = new Date().getFullYear();
+</script>
 
 </body>
     </html>
-    
+              
