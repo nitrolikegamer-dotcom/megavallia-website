@@ -1,589 +1,965 @@
 
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#090b14">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090b14">
 
-<title>Megavallia Academy | Free Courses for Musicians &amp; Digital Creators</title>
+  <title>Megavallia Academy | Learn, Create & Grow</title>
+  <meta name="description" content="Learn music, content creation, promotion, branding and monetization with Megavallia Academy.">
+  <link rel="canonical" href="https://www.megavallia.com/academy.html">
 
-<meta name="description" content="Explore free beginner courses on music releases, production, creator branding, video editing, photography, audience growth and creator business.">
+  <meta property="og:title" content="Megavallia Academy">
+  <meta property="og:description" content="Practical learning for musicians, artists and digital creators.">
+  <meta property="og:url" content="https://www.megavallia.com/academy.html">
+  <meta property="og:type" content="website">
 
-<link rel="canonical" href="https://www.megavallia.com/academy.html">
+  <style>
+    :root {
+      --bg: #090b14;
+      --surface: #111827;
+      --surface2: #151d2e;
+      --border: #293449;
+      --text: #f8fafc;
+      --muted: #a5b0c2;
+      --purple: #8b5cf6;
+      --pink: #ec4899;
+      --cyan: #22d3ee;
+      --radius: 18px;
+    }
 
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Megavallia Academy">
-<meta property="og:title" content="Megavallia Academy | Free Courses for Musicians &amp; Digital Creators">
-<meta property="og:description" content="Explore free beginner courses on music releases, production, creator branding, video editing, photography, audience growth and creator business.">
-<meta property="og:url" content="https://www.megavallia.com/academy.html">
-<meta name="twitter:card" content="summary">
+    * {
+      box-sizing: border-box;
+    }
 
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "CollectionPage",
-  "name": "Megavallia Academy — Free Courses for Musicians and Digital Creators",
-  "description": "Free beginner courses for independent musicians, video creators, photographers and digital creators.",
-  "url": "https://www.megavallia.com/academy.html",
-  "isPartOf": {
-    "@type": "WebSite",
-    "name": "Megavallia",
-    "url": "https://www.megavallia.com/"
-  }
-}
-</script>
+    html {
+      scroll-behavior: smooth;
+    }
 
-<style>
-:root {
-  --bg: #090b14;
-  --panel: #111827;
-  --border: #293449;
-  --text: #f8fafc;
-  --muted: #94a3b8;
-  --purple: #818cf8;
-}
+    body {
+      margin: 0;
+      background:
+        radial-gradient(circle at 15% 5%, rgba(124,58,237,.16), transparent 30%),
+        radial-gradient(circle at 90% 25%, rgba(236,72,153,.10), transparent 25%),
+        var(--bg);
+      color: var(--text);
+      font-family: Arial, Helvetica, sans-serif;
+      line-height: 1.65;
+    }
 
-* {
-  box-sizing: border-box;
-}
+    a {
+      color: inherit;
+      text-decoration: none;
+    }
 
-html {
-  scroll-behavior: smooth;
-}
+    button {
+      font: inherit;
+    }
 
-body {
-  margin: 0;
-  background: var(--bg);
-  color: var(--text);
-  font: 16px/1.65 system-ui, -apple-system, Segoe UI, sans-serif;
-}
+    .container {
+      width: min(1120px, 92%);
+      margin: auto;
+    }
 
-a {
-  color: #a5b4fc;
-  text-decoration: none;
-}
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(9,11,20,.94);
+      backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+    }
 
-a:hover {
-  color: #c4b5fd;
-  text-decoration: underline;
-}
+    .nav {
+      min-height: 72px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+      padding: 12px 0;
+    }
 
-.wrap {
-  max-width: 1050px;
-  margin: auto;
-  padding: 0 22px;
-}
+    .logo {
+      font-size: 23px;
+      font-weight: 900;
+      letter-spacing: -.8px;
+    }
 
-header,
-footer {
-  background: #080a12;
-  border-bottom: 1px solid #263044;
-}
+    .logo span {
+      color: var(--pink);
+    }
 
-header .wrap {
-  min-height: 72px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 20px;
-}
+    .nav-links {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      flex-wrap: wrap;
+      font-size: 14px;
+      color: var(--muted);
+    }
 
-.logo {
-  font-weight: 900;
-  font-size: 21px;
-  color: white;
-  white-space: nowrap;
-}
+    .nav-links a:hover {
+      color: white;
+    }
 
-.logo b {
-  background: linear-gradient(100deg,#4f46e5,#9333ea);
-  padding: 8px 10px;
-  border-radius: 10px;
-  margin-right: 9px;
-}
+    .hero {
+      padding: 85px 0 65px;
+      text-align: center;
+    }
 
-nav {
-  display: flex;
-  gap: 20px;
-  flex-wrap: wrap;
-  font-size: 14px;
-}
+    .eyebrow {
+      display: inline-block;
+      color: #ddd6fe;
+      background: rgba(139,92,246,.15);
+      border: 1px solid rgba(139,92,246,.35);
+      border-radius: 30px;
+      padding: 7px 15px;
+      font-size: 13px;
+      font-weight: 700;
+      margin-bottom: 18px;
+    }
 
-.hero {
-  padding: 62px 0 38px;
-  background: radial-gradient(ellipse at 50% 0%,#312e8150,transparent 65%);
-}
+    h1 {
+      font-size: clamp(38px, 7vw, 68px);
+      line-height: 1.08;
+      letter-spacing: -2px;
+      margin: 0 auto 20px;
+      max-width: 850px;
+    }
 
-.kicker {
-  color: #a5b4fc;
-  text-transform: uppercase;
-  letter-spacing: .13em;
-  font-size: 12px;
-  font-weight: 800;
-}
+    .gradient {
+      background: linear-gradient(90deg, #a78bfa, #f472b6, #22d3ee);
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+    }
 
-h1 {
-  font-size: clamp(32px,6vw,52px);
-  line-height: 1.12;
-  margin: 12px 0;
-}
+    .hero p {
+      color: var(--muted);
+      max-width: 680px;
+      margin: 0 auto 28px;
+      font-size: 17px;
+    }
 
-h2 {
-  font-size: 27px;
-  line-height: 1.25;
-  margin: 30px 0 12px;
-}
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 20px;
+      background: linear-gradient(110deg, var(--purple), var(--pink));
+      color: white;
+      font-weight: 800;
+      cursor: pointer;
+      transition: transform .2s, opacity .2s;
+    }
 
-h3 {
-  font-size: 19px;
-  margin: 0 0 8px;
-}
+    .btn:hover {
+      transform: translateY(-2px);
+      opacity: .92;
+    }
 
-p {
-  color: #cbd5e1;
-}
+    .btn.secondary {
+      background: var(--surface2);
+      border: 1px solid var(--border);
+    }
 
-.muted {
-  color: var(--muted);
-}
+    .section {
+      padding: 45px 0;
+    }
 
-.lead {
-  font-size: 19px;
-  max-width: 760px;
-}
+    .section-heading {
+      margin-bottom: 28px;
+    }
 
-.grid {
-  display: grid;
-  grid-template-columns: repeat(auto-fit,minmax(245px,1fr));
-  gap: 16px;
-  margin: 28px 0;
-}
+    .section-heading h2 {
+      font-size: clamp(27px, 4vw, 38px);
+      margin: 0 0 8px;
+    }
 
-.card,
-.panel {
-  background: var(--panel);
-  border: 1px solid var(--border);
-  border-radius: 18px;
-  padding: 22px;
-}
+    .muted {
+      color: var(--muted);
+    }
 
-.card {
-  display: flex;
-  flex-direction: column;
-  transition: transform .2s, border-color .2s;
-}
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 20px;
+    }
 
-.card:hover {
-  border-color: #818cf8;
-  transform: translateY(-3px);
-}
+    .card {
+      background: linear-gradient(145deg, var(--surface), #0e1422);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      min-height: 260px;
+      transition: transform .2s, border-color .2s;
+    }
 
-.card h2 {
-  font-size: 21px;
-  margin: 4px 0 8px;
-}
+    .card:hover {
+      transform: translateY(-4px);
+      border-color: #7655c9;
+    }
 
-.card p {
-  margin-top: 7px;
-}
+    .card-icon {
+      width: 48px;
+      height: 48px;
+      display: grid;
+      place-items: center;
+      background: rgba(139,92,246,.16);
+      border-radius: 14px;
+      font-size: 25px;
+      margin-bottom: 17px;
+    }
 
-.card .muted {
-  font-size: 13px;
-}
+    .card h3 {
+      margin: 0 0 8px;
+      font-size: 19px;
+    }
 
-.tag {
-  display: inline-block;
-  background: #24204b;
-  color: #c4b5fd;
-  border-radius: 30px;
-  padding: 4px 10px;
-  font-size: 12px;
-  margin: 0 6px 10px 0;
-}
+    .card p {
+      color: var(--muted);
+      font-size: 14px;
+      margin: 0 0 20px;
+      flex: 1;
+    }
 
-.btn {
-  display: inline-block;
-  background: linear-gradient(100deg,#4f46e5,#9333ea);
-  padding: 12px 18px;
-  border-radius: 11px;
-  color: white;
-  font-weight: 700;
-  margin: 8px 8px 8px 0;
-  text-align: center;
-  transition: opacity .2s, transform .2s;
-}
+    .card .btn {
+      width: 100%;
+    }
 
-.btn:hover {
-  color: white;
-  text-decoration: none;
-  opacity: .9;
-  transform: translateY(-2px);
-}
+    .tag {
+      display: inline-block;
+      font-size: 11px;
+      color: #c4b5fd;
+      margin-bottom: 9px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      font-weight: 800;
+    }
 
-.course-button {
-  display: block;
-  margin-top: auto;
-  padding: 12px 14px;
-}
+    .panel {
+      background: linear-gradient(145deg, var(--surface), #0e1422);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: clamp(20px, 4vw, 38px);
+    }
 
-.lesson {
-  border-top: 1px solid #293449;
-  padding: 19px 0;
-}
+    #courseReader[hidden] {
+      display: none !important;
+    }
 
-.lesson:first-of-type {
-  border-top: 0;
-}
+    #courseReader {
+      margin-top: 25px;
+    }
 
-.lesson p {
-  margin: 6px 0 0;
-}
+    .breadcrumb {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 22px;
+    }
 
-.crumb {
-  font-size: 13px;
-  color: #94a3b8;
-  margin-top: 18px;
-}
+    .breadcrumb a {
+      color: #c4b5fd;
+    }
 
-ul {
-  color: #cbd5e1;
-  padding-left: 22px;
-}
+    #courseTitle {
+      font-size: clamp(30px, 5vw, 46px);
+      line-height: 1.15;
+      margin: 0 0 12px;
+    }
 
-li {
-  margin: 8px 0;
-}
+    #courseDescription {
+      color: var(--muted);
+      margin-bottom: 28px;
+    }
 
-footer {
-  border-top: 1px solid #263044;
-  border-bottom: 0;
-  margin-top: 65px;
-  padding: 30px 0;
-  color: #94a3b8;
-  font-size: 13px;
-}
+    .lesson {
+      border-top: 1px solid var(--border);
+      padding: 24px 0;
+    }
 
-footer a {
-  color: #a5b4fc;
-}
+    .lesson h3 {
+      color: #c4b5fd;
+      font-size: 20px;
+      margin: 0 0 10px;
+    }
 
-@media(max-width:600px) {
-  header .wrap {
-    align-items: flex-start;
-    padding-top: 14px;
-    padding-bottom: 14px;
-    flex-direction: column;
-  }
+    .lesson p {
+      color: #d1d5db;
+      margin: 0;
+    }
 
-  nav {
-    gap: 13px;
-  }
+    .lesson-number {
+      color: var(--pink);
+      font-size: 12px;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
 
-  .hero {
-    padding-top: 42px;
-  }
+    .course-actions {
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+      margin-top: 25px;
+    }
 
-  .grid {
-    grid-template-columns: 1fr;
-  }
+    .feature-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 18px;
+    }
 
-  .card {
-    min-height: 250px;
-  }
-}
-</style>
+    .feature {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 22px;
+    }
+
+    .feature h3 {
+      margin-top: 0;
+    }
+
+    .feature p {
+      color: var(--muted);
+      font-size: 14px;
+      margin-bottom: 0;
+    }
+
+    .cta {
+      text-align: center;
+      padding: 45px 25px;
+      border: 1px solid rgba(139,92,246,.35);
+      border-radius: 22px;
+      background: linear-gradient(120deg, rgba(139,92,246,.14), rgba(236,72,153,.09));
+    }
+
+    .cta h2 {
+      font-size: clamp(27px, 4vw, 38px);
+      margin: 0 0 12px;
+    }
+
+    .cta p {
+      color: var(--muted);
+      max-width: 620px;
+      margin: 0 auto 22px;
+    }
+
+    footer {
+      margin-top: 60px;
+      padding: 35px 0;
+      border-top: 1px solid var(--border);
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .footer-content {
+      display: flex;
+      justify-content: space-between;
+      gap: 20px;
+      flex-wrap: wrap;
+    }
+
+    .footer-links {
+      display: flex;
+      gap: 17px;
+      flex-wrap: wrap;
+    }
+
+    @media (max-width: 850px) {
+      .grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+
+      .feature-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 560px) {
+      .nav {
+        justify-content: center;
+      }
+
+      .nav-links {
+        justify-content: center;
+        gap: 13px;
+      }
+
+      .hero {
+        padding: 60px 0 45px;
+      }
+
+      .grid {
+        grid-template-columns: 1fr;
+      }
+
+      .card {
+        min-height: 230px;
+      }
+
+      .footer-content {
+        flex-direction: column;
+      }
+    }
+  </style>
 </head>
 
 <body>
 
 <header>
-  <div class="wrap">
-    <a class="logo" href="https://www.megavallia.com/">
-      <b>MV</b>Megavallia
-    </a>
+  <div class="container nav">
+    <a class="logo" href="https://www.megavallia.com/">Mega<span>vallia</span></a>
 
-    <nav aria-label="Main navigation">
+    <nav class="nav-links" aria-label="Main navigation">
+      <a href="https://www.megavallia.com/">Home</a>
+      <a href="https://www.megavallia.com/#discover">Discover</a>
+      <a href="https://www.megavallia.com/#creators">Creators</a>
       <a href="academy.html">Academy</a>
-      <a href="/#discover">Discover</a>
-      <a href="/#creators">Creators</a>
-      <a href="/opportunities.html">Opportunities</a>
+      <a href="opportunities.html">Opportunities</a>
     </nav>
   </div>
 </header>
 
 <main>
 
-<section class="hero">
-  <div class="wrap">
-    <div class="kicker">Learn · Create · Get Discovered</div>
+  <section class="hero">
+    <div class="container">
+      <span class="eyebrow">MEGAVALLIA ACADEMY</span>
 
-    <h1>
-      Megavallia <span style="color:#a5b4fc">Academy</span>
-    </h1>
+      <h1>
+        Learn. Create.
+        <span class="gradient">Get Discovered.</span>
+      </h1>
 
-    <p class="lead">
-      Practical, free learning for independent musicians and digital
-      creators. Build your skills, share better work and grow your
-      creative journey one lesson at a time.
-    </p>
+      <p>
+        Practical learning for musicians, artists and digital creators.
+        Develop your skills, promote your work, build your audience and
+        discover ways to grow your creative career.
+      </p>
 
-    <a class="btn" href="#courses">Explore free courses</a>
-    <a class="btn" style="background:#1e293b"
-       href="https://www.megavallia.com/">
-      Discover Megavallia
-    </a>
-  </div>
-</section>
+      <a href="#courses" class="btn">Explore Courses</a>
+    </div>
+  </section>
 
-<section class="wrap" id="courses">
+  <section class="section container" id="courses">
 
-  <h2>Free courses for independent creators</h2>
-
-  <p class="muted">
-    Choose a topic and learn at your own pace. Each course includes
-    short lessons and practical steps you can apply to your next project.
-  </p>
-
-  <div class="grid">
-
-    <article class="card">
-      <div>
-        <span class="tag">Music</span>
-        <span class="tag">Beginner</span>
-        <h2>
-          <a href="release-your-first-song.html">
-            How to Release Your First Song Independently
-          </a>
-        </h2>
-        <p>
-          A practical beginner guide to preparing, distributing and
-          promoting your first independent music release.
+    <div id="courseList">
+      <div class="section-heading">
+        <span class="tag">YOUR CREATIVE JOURNEY</span>
+        <h2>Explore the Academy</h2>
+        <p class="muted">
+          Choose a course and learn at your own pace. All lessons open directly
+          on this page.
         </p>
-        <p class="muted">5 lessons · 30 minutes</p>
       </div>
-      <a class="btn course-button" href="release-your-first-song.html">
-        Start free course →
-      </a>
-    </article>
 
-    <article class="card">
-      <div>
-        <span class="tag">Music</span>
-        <span class="tag">Beginner</span>
-        <h2>
-          <a href="music-production-on-a-budget.html">
-            Music Production on a Budget: A Beginner's Guide
-          </a>
-        </h2>
-        <p>
-          Learn how to record, edit and improve music using a modest
-          home setup and careful production habits.
-        </p>
-        <p class="muted">5 lessons · 25 minutes</p>
+      <div class="grid" id="courseGrid">
+
+        <article class="card">
+          <div class="card-icon">🎵</div>
+          <span class="tag">Music Career</span>
+          <h3>Release Your First Song</h3>
+          <p>Learn how to prepare, distribute and promote your first music release.</p>
+          <button class="btn course-button" type="button" onclick="openCourse('release')">Start Learning</button>
+        </article>
+
+        <article class="card">
+          <div class="card-icon">🎧</div>
+          <span class="tag">Music Skills</span>
+          <h3>Music Production on a Budget</h3>
+          <p>Discover how to record and produce quality music using affordable tools.</p>
+          <button class="btn course-button" type="button" onclick="openCourse('production')">Start Learning</button>
+        </article>
+
+        <article class="card">
+          <div class="card-icon">📢</div>
+          <span class="tag">Promotion</span>
+          <h3>Promote Your Content</h3>
+          <p>Build a promotion strategy that helps more people discover your work.</p>
+          <button class="btn course-button" type="button" onclick="openCourse('promotion')">Start Learning</button>
+        </article>
+
+        <article class="card">
+          <div class="card-icon">✨</div>
+          <span class="tag">Personal Brand</span>
+          <h3>Build Your Creator Brand</h3>
+          <p>Create a recognizable identity across your social media platforms.</p>
+          <button class="btn course-button" type="button" onclick="openCourse('branding')">Start Learning</button>
+        </article>
+
+        <article class="card">
+          <div class="card-icon">💰</div>
+          <span class="tag">Music Business</span>
+          <h3>Music Streaming Royalties</h3>
+          <p>Understand music rights, royalties, distributors and royalty records.</p>
+          <button class="btn course-button" type="button" onclick="openCourse('royalties')">Start Learning</button>
+        </article>
+
+        <article class="card">
+          <div class="card-icon">🚀</div>
+          <span class="tag">Discovery</span>
+          <h3>Get Discovered</h3>
+          <p>Make your creative work easier for fans, collaborators and industry professionals to find.</p>
+          <button class="btn course-button" type="button" onclick="openCourse('discovery')">Start Learning</button>
+        </article>
+
+        <article class="card">
+          <div class="card-icon">🎬</div>
+          <span class="tag">Video Skills</span>
+          <h3>Video Creation and Editing</h3>
+          <p>Plan, record and edit videos that communicate your ideas effectively.</p>
+          <button class="btn course-button" type="button" onclick="openCourse('video')">Start Learning</button>
+        </article>
+
+        <article class="card">
+          <div class="card-icon">📸</div>
+          <span class="tag">Photography</span>
+          <h3>Photography and Storytelling</h3>
+          <p>Use composition, light and visual storytelling to improve your content.</p>
+          <button class="btn course-button" type="button" onclick="openCourse('photography')">Start Learning</button>
+        </article>
+
+        <article class="card">
+          <div class="card-icon">🌍</div>
+          <span class="tag">Growth</span>
+          <h3>Grow Your Online Audience</h3>
+          <p>Build genuine relationships and develop a consistent audience growth strategy.</p>
+          <button class="btn course-button" type="button" onclick="openCourse('audience')">Start Learning</button>
+        </article>
+
+        <article class="card">
+          <div class="card-icon">💼</div>
+          <span class="tag">Creator Business</span>
+          <h3>Creator Monetization</h3>
+          <p>Explore services, partnerships and products that can support your creative career.</p>
+          <button class="btn course-button" type="button" onclick="openCourse('monetization')">Start Learning</button>
+        </article>
+
       </div>
-      <a class="btn course-button" href="music-production-on-a-budget.html">
-        Start free course →
-      </a>
-    </article>
+    </div>
 
-    <article class="card">
-      <div>
-        <span class="tag">Marketing</span>
-        <span class="tag">Beginner</span>
-        <h2>
-          <a href="promote-your-content.html">
-            How to Promote Music and Creative Content on Social Media
-          </a>
-        </h2>
-        <p>
-          Build a repeatable content plan for sharing music, videos
-          and creative work across social platforms.
-        </p>
-        <p class="muted">5 lessons · 35 minutes</p>
+    <section id="courseReader" class="panel" hidden aria-live="polite">
+      <div class="breadcrumb">
+        <a href="#courses" onclick="showCourses(); return false;">Academy</a>
+        / <span id="breadcrumbTitle">Course</span>
       </div>
-      <a class="btn course-button" href="promote-your-content.html">
-        Start free course →
-      </a>
-    </article>
 
-    <article class="card">
-      <div>
-        <span class="tag">Branding</span>
-        <span class="tag">Beginner</span>
-        <h2>
-          <a href="build-your-creator-brand.html">
-            How to Build Your Artist or Creator Brand
-          </a>
-        </h2>
-        <p>
-          Create a recognizable identity with a clear biography,
-          visual style, profile and consistent message.
-        </p>
-        <p class="muted">5 lessons · 25 minutes</p>
+      <span class="tag">MEGAVALLIA LEARNING</span>
+      <h1 id="courseTitle"></h1>
+      <p id="courseDescription"></p>
+
+      <div id="courseLessons"></div>
+
+      <div class="course-actions">
+        <button class="btn secondary" type="button" onclick="showCourses()">← Back to All Courses</button>
       </div>
-      <a class="btn course-button" href="build-your-creator-brand.html">
-        Start free course →
-      </a>
-    </article>
+    </section>
 
-    <article class="card">
-      <div>
-        <span class="tag">Music Business</span>
-        <span class="tag">Beginner</span>
-        <h2>
-          <a href="music-streaming-royalties.html">
-            Understanding Music Streaming Royalties
-          </a>
-        </h2>
-        <p>
-          Understand the basics of streaming revenue, distributors,
-          rights and why payouts vary.
-        </p>
-        <p class="muted">5 lessons · 30 minutes</p>
-      </div>
-      <a class="btn course-button" href="music-streaming-royalties.html">
-        Start free course →
-      </a>
-    </article>
+  </section>
 
-    <article class="card">
-      <div>
-        <span class="tag">Growth</span>
-        <span class="tag">Beginner</span>
-        <h2>
-          <a href="get-discovered.html">
-            How Independent Creators Can Get Discovered
-          </a>
-        </h2>
-        <p>
-          Explore practical ways to make your music, videos,
-          photography and creative projects easier to find.
-        </p>
-        <p class="muted">5 lessons · 30 minutes</p>
-      </div>
-      <a class="btn course-button" href="get-discovered.html">
-        Start free course →
-      </a>
-    </article>
+  <section class="section container">
+    <div class="section-heading">
+      <span class="tag">WHY MEGAVALLIA ACADEMY</span>
+      <h2>Learn skills that move you forward</h2>
+      <p class="muted">
+        The creative industry is full of talent. Knowledge, consistency and
+        discoverability can help creators turn their skills into opportunities.
+      </p>
+    </div>
 
-    <article class="card">
-      <div>
-        <span class="tag">Video</span>
-        <span class="tag">Beginner</span>
-        <h2>
-          <a href="video-creation-editing.html">
-            Video Creation and Editing for Beginners
-          </a>
-        </h2>
-        <p>
-          Plan, record and edit clearer videos for social media,
-          portfolios and online audiences.
-        </p>
-        <p class="muted">5 lessons · 30 minutes</p>
-      </div>
-      <a class="btn course-button" href="video-creation-editing.html">
-        Start free course →
-      </a>
-    </article>
+    <div class="feature-grid">
+      <article class="feature">
+        <h3>🎯 Practical Learning</h3>
+        <p>Focus on useful skills and actions you can apply to your creative work.</p>
+      </article>
 
-    <article class="card">
-      <div>
-        <span class="tag">Photography</span>
-        <span class="tag">Beginner</span>
-        <h2>
-          <a href="photography-storytelling.html">
-            Photography and Visual Storytelling for Creators
-          </a>
-        </h2>
-        <p>
-          Learn composition, light and simple storytelling techniques
-          for stronger photos and visual portfolios.
-        </p>
-        <p class="muted">5 lessons · 25 minutes</p>
-      </div>
-      <a class="btn course-button" href="photography-storytelling.html">
-        Start free course →
-      </a>
-    </article>
+      <article class="feature">
+        <h3>🌐 Global Perspective</h3>
+        <p>Learn ideas that can help you reach audiences and opportunities around the world.</p>
+      </article>
 
-    <article class="card">
-      <div>
-        <span class="tag">Audience Growth</span>
-        <span class="tag">Beginner</span>
-        <h2>
-          <a href="grow-your-online-audience.html">
-            How to Grow an Online Audience as a Digital Creator
-          </a>
-        </h2>
-        <p>
-          Learn audience research, community building, content planning
-          and simple ways to measure sustainable growth.
-        </p>
-        <p class="muted">5 lessons · 35 minutes</p>
-      </div>
-      <a class="btn course-button" href="grow-your-online-audience.html">
-        Start free course →
-      </a>
-    </article>
+      <article class="feature">
+        <h3>🚀 Creator Discovery</h3>
+        <p>Connect your learning journey with the wider Megavallia creator ecosystem.</p>
+      </article>
+    </div>
+  </section>
 
-    <article class="card">
-      <div>
-        <span class="tag">Creator Business</span>
-        <span class="tag">Beginner</span>
-        <h2>
-          <a href="creator-monetization.html">
-            How Independent Creators Can Make Money
-          </a>
-        </h2>
-        <p>
-          Explore realistic creator business models including services,
-          commissions, sponsorships, products and memberships.
-        </p>
-        <p class="muted">5 lessons · 35 minutes</p>
-      </div>
-      <a class="btn course-button" href="creator-monetization.html">
-        Start free course →
-      </a>
-    </article>
-
-  </div>
-</section>
-
-<section class="wrap panel">
-  <h2>Learn something. Put it into practice.</h2>
-
-  <p>
-    Use the Megavallia music release planner to organize a launch,
-    prepare your creator profile and explore ways to make your work
-    easier to discover.
-  </p>
-
-  <a class="btn" href="/music-tools.html">
-    Explore music creator tools
-  </a>
-
-  <a class="btn" style="background:#1e293b"
-     href="https://www.megavallia.com/">
-    Visit Megavallia
-  </a>
-</section>
+  <section class="section container">
+    <div class="cta">
+      <h2>Your talent deserves to be discovered.</h2>
+      <p>
+        Keep learning, keep creating and give your work more opportunities
+        to reach the world.
+      </p>
+      <a href="https://www.megavallia.com/" class="btn">Explore Megavallia</a>
+    </div>
+  </section>
 
 </main>
 
 <footer>
-  <div class="wrap">
-    © <span id="year">2026</span> Megavallia.
-    Free learning resources for independent musicians and digital creators.
-    <a href="https://www.megavallia.com/">Visit Megavallia</a>.
+  <div class="container footer-content">
+    <div>
+      <strong>Megavallia Academy</strong>
+      <p>Learn. Create. Get Discovered.</p>
+      <p>© <span id="year"></span> Megavallia. All rights reserved.</p>
+    </div>
+
+    <nav class="footer-links" aria-label="Footer navigation">
+      <a href="https://www.megavallia.com/">Home</a>
+      <a href="opportunities.html">Opportunities</a>
+      <a href="https://www.megavallia.com/#creators">Creators</a>
+      <a href="academy.html">Academy</a>
+    </nav>
   </div>
 </footer>
 
 <script>
-  document.getElementById("year").textContent =
-    new Date().getFullYear();
+  const academyCourses = {
+    release: {
+      title: "Release Your First Song",
+      description: "A practical introduction to preparing, distributing and promoting your first music release.",
+      lessons: [
+        {
+          title: "Prepare Your Song",
+          content: "Start with a finished recording. Listen carefully for background noise, clipping, timing problems and unfinished sections. Get feedback from a few trusted listeners before release. Keep a high-quality final audio file and a separate backup."
+        },
+        {
+          title: "Choose a Music Distributor",
+          content: "A digital music distributor can deliver your song to streaming platforms. Compare available distributors by pricing, payment terms, supported platforms, royalty policies and account requirements. Read the terms before paying for a service."
+        },
+        {
+          title: "Prepare Your Release Information",
+          content: "Prepare your artist name, song title, release date, cover artwork, songwriter credits and other required metadata. Make sure names and spelling are consistent. Only upload artwork and recordings that you have permission to use."
+        },
+        {
+          title: "Plan Your Promotion",
+          content: "Start communicating about your release before launch. Create short clips, behind-the-scenes videos, artwork and a short description of the song. Share your official listening link when it becomes available. Give people a reason to listen."
+        },
+        {
+          title: "Review Your Results",
+          content: "After release, review your available streaming and audience statistics. Identify where listeners come from, which promotional posts performed well and what you can improve. Use the results to plan your next release."
+        }
+      ]
+    },
+
+    production: {
+      title: "Music Production on a Budget",
+      description: "Learn how to make music with affordable equipment and a focused production process.",
+      lessons: [
+        {
+          title: "Build a Basic Recording Setup",
+          content: "You do not need an expensive studio to begin. Start with a reliable computer or phone, suitable recording software, headphones and a microphone that fits your budget. Reduce background noise and choose a quiet recording space."
+        },
+        {
+          title: "Understand Recording",
+          content: "Record several test takes before committing to a final performance. Keep microphone distance consistent and avoid recording too loudly. Clean recordings make editing and mixing easier."
+        },
+        {
+          title: "Edit Your Audio",
+          content: "Remove unnecessary silence, organize your tracks and correct obvious timing problems. Keep an untouched copy of the original recording so you can return to it if needed."
+        },
+        {
+          title: "Learn Basic Mixing",
+          content: "Adjust volume levels first. Then use equalization, panning and compression carefully where they improve clarity. Avoid adding effects simply because they are available. Listen on different headphones and speakers."
+        },
+        {
+          title: "Export and Back Up",
+          content: "Export using the format and quality required by your distributor or project. Keep your project files, audio stems and final master in organized folders. Maintain a second backup whenever possible."
+        }
+      ]
+    },
+
+    promotion: {
+      title: "Promote Your Content",
+      description: "Develop a practical strategy to help your music, videos and creative work reach more people.",
+      lessons: [
+        {
+          title: "Know What You Are Promoting",
+          content: "Identify the work you want people to discover and the audience most likely to appreciate it. Be clear about what makes your song, video, artwork or service interesting."
+        },
+        {
+          title: "Create Content Around Your Work",
+          content: "Do not rely on a single promotional poster. Make short clips, demonstrations, stories, previews and behind-the-scenes posts. Different formats give people different ways to connect with your work."
+        },
+        {
+          title: "Use Strong Opening Moments",
+          content: "The first few seconds of a video matter. Begin with an interesting visual, question, performance or useful statement. Make sure the opening accurately represents the content that follows."
+        },
+        {
+          title: "Build a Publishing Schedule",
+          content: "Choose a schedule you can maintain. Plan posts in advance and adapt your content to the audiences and formats of the platforms you use. Consistency is more useful than an unrealistic schedule."
+        },
+        {
+          title: "Measure Your Results",
+          content: "Review views, watch time, saves, shares, comments and link clicks where those statistics are available. Look for patterns rather than judging your entire strategy by one post."
+        }
+      ]
+    },
+
+    branding: {
+      title: "Build Your Creator Brand",
+      description: "Develop an identity that helps people recognize and remember your creative work.",
+      lessons: [
+        {
+          title: "Define Your Identity",
+          content: "Think about what you create, what inspires your work and what you want people to remember. A clear identity helps you communicate consistently without pretending to be someone else."
+        },
+        {
+          title: "Write a Strong Biography",
+          content: "Create a short biography that explains who you are, what you do and where people can find your work. Avoid unnecessary details. Make it easy for fans, customers and collaborators to understand your work."
+        },
+        {
+          title: "Develop Your Visual Identity",
+          content: "Choose recognizable colors, typography and image styles. Use a consistent profile picture or logo where appropriate. Your visuals should support your work rather than distract from it."
+        },
+        {
+          title: "Improve Your Profiles",
+          content: "Use accurate names, current photographs, useful descriptions and working links. Make sure your most important work is easy to find. Remove outdated information that could confuse visitors."
+        },
+        {
+          title: "Stay Consistent",
+          content: "Your brand develops through repeated experiences. Keep your communication, presentation and quality standards reasonably consistent across your platforms."
+        }
+      ]
+    },
+
+    royalties: {
+      title: "Music Streaming Royalties",
+      description: "Understand the basics of music ownership, distribution and streaming revenue.",
+      lessons: [
+        {
+          title: "Understand Music Rights",
+          content: "A song can involve different rights, including rights in the composition and rights in the sound recording. Songwriters, performers, producers and recording owners may have different interests. Agreements should clearly explain ownership and responsibilities."
+        },
+        {
+          title: "Understand Distribution",
+          content: "A distributor delivers recordings to digital services and may collect certain revenue on behalf of the account holder. Services differ in fees, commission, payment schedules and reporting. Read their terms carefully."
+        },
+        {
+          title: "Learn How Streaming Revenue Works",
+          content: "Streaming income is not a fixed amount for every play. Revenue depends on platform agreements, territories, subscription and advertising income, rights ownership and other factors. Do not rely on a universal per-stream figure."
+        },
+        {
+          title: "Keep Accurate Records",
+          content: "Keep copies of distribution agreements, songwriting splits, producer agreements, release information and payment records. Record who contributed to each project and how ownership was agreed."
+        },
+        {
+          title: "Review Your Statements",
+          content: "Check statements for reporting periods, territories, recordings and deductions. Ask your distributor or relevant rights organization about unfamiliar entries. Keep a record of questions and responses."
+        }
+      ]
+    },
+
+    discovery: {
+      title: "Get Discovered",
+      description: "Make it easier for fans, collaborators and industry professionals to find your creative work.",
+      lessons: [
+        {
+          title: "Make Your Work Easy to Understand",
+          content: "Clearly explain what you create. Use accurate titles, descriptions and categories. A visitor should quickly understand whether you are a musician, filmmaker, photographer, designer or another type of creator."
+        },
+        {
+          title: "Build a Useful Portfolio",
+          content: "Select examples that demonstrate your strongest work. Include short descriptions, relevant credits and working links. A smaller, carefully selected portfolio can be more useful than a disorganized collection."
+        },
+        {
+          title: "Use Multiple Discovery Channels",
+          content: "Share your work through appropriate communities, social platforms, websites and professional networks. Adapt your message to each channel instead of posting identical material everywhere."
+        },
+        {
+          title: "Build Genuine Collaborations",
+          content: "Connect with creators whose work complements yours. Be clear about expectations, responsibilities, deadlines and ownership before starting a project. Good collaborations create value for everyone involved."
+        },
+        {
+          title: "Keep Your Information Current",
+          content: "Update your biography, portfolio, contact information and project links. Test links regularly. Make it straightforward for someone interested in your work to contact you."
+        }
+      ]
+    },
+
+    video: {
+      title: "Video Creation and Editing",
+      description: "Learn the fundamentals of planning, recording, editing and publishing videos.",
+      lessons: [
+        {
+          title: "Plan Before Recording",
+          content: "Decide what the video should communicate. Write a simple outline or storyboard. Consider the audience, location, length and format before recording."
+        },
+        {
+          title: "Capture Useful Footage",
+          content: "Keep your camera stable and pay attention to lighting. Record a few extra shots that help explain the story. Check framing and focus before recording important moments."
+        },
+        {
+          title: "Record Clear Audio",
+          content: "Good audio is essential. Avoid noisy locations when possible. Monitor your recording levels and keep speech understandable. Use music and sound effects only when you have the necessary rights."
+        },
+        {
+          title: "Edit With Purpose",
+          content: "Remove unnecessary sections, arrange the strongest moments and maintain a clear sequence. Add text only when it helps viewers understand the video. Keep transitions simple and consistent."
+        },
+        {
+          title: "Publish and Improve",
+          content: "Use a clear title and accurate description. Choose a suitable thumbnail and format for your platform. Review viewer retention and feedback to identify improvements for your next video."
+        }
+      ]
+    },
+
+    photography: {
+      title: "Photography and Storytelling",
+      description: "Improve your photographs by learning composition, lighting and visual storytelling.",
+      lessons: [
+        {
+          title: "Understand Composition",
+          content: "Pay attention to how subjects are positioned in a frame. Experiment with symmetry, leading lines, negative space and different angles. Remove distracting elements where possible."
+        },
+        {
+          title: "Work With Light",
+          content: "Observe the direction, softness and intensity of available light. Window light and open shade can be useful starting points. Avoid strong backlighting unless you intend to use it creatively."
+        },
+        {
+          title: "Tell a Story",
+          content: "Think about what you want the viewer to notice or feel. A sequence of photographs can show a process, person, place or event more effectively than an isolated image."
+        },
+        {
+          title: "Edit Carefully",
+          content: "Adjust exposure, contrast, color and cropping while preserving important details. Avoid excessive filters that make images difficult to interpret or misrepresent the subject."
+        },
+        {
+          title: "Create a Portfolio",
+          content: "Select your strongest photographs and organize them by subject or project. Include captions where they add useful context. Make sure you have permission to publish photographs of people or private locations when required."
+        }
+      ]
+    },
+
+    audience: {
+      title: "Grow Your Online Audience",
+      description: "Build an engaged audience through useful content, consistency and genuine interaction.",
+      lessons: [
+        {
+          title: "Understand Your Audience",
+          content: "Identify the people most likely to value your work. Consider their interests, problems, age range where relevant and the communities they participate in. Avoid trying to appeal to everyone at once."
+        },
+        {
+          title: "Give People a Reason to Follow",
+          content: "Offer something recognizable, entertaining, useful or inspiring. Explain what people can expect from your content and make sure your posts deliver on that expectation."
+        },
+        {
+          title: "Build a Community",
+          content: "Respond respectfully to comments and questions. Support other creators and participate in relevant conversations. Focus on meaningful relationships rather than artificial engagement."
+        },
+        {
+          title: "Create a Sustainable Schedule",
+          content: "Choose a publishing routine that fits your available time and resources. Prepare ideas in advance and reuse useful material in different formats without making every post identical."
+        },
+        {
+          title: "Learn From Your Analytics",
+          content: "Review audience growth, engagement, reach and content performance. Look for the formats and topics that consistently attract the right people. Use those insights to improve your next publishing cycle."
+        }
+      ]
+    },
+
+    monetization: {
+      title: "Creator Monetization",
+      description: "Explore ways to turn creative skills, services and audiences into sustainable income.",
+      lessons: [
+        {
+          title: "Identify What You Can Offer",
+          content: "List your skills, experience and creative assets. You might offer music production, photography, editing, design, performances, consulting or other services. Start with something you can deliver reliably."
+        },
+        {
+          title: "Package Your Services",
+          content: "Explain what a customer receives, how long delivery takes and what is included. Set clear prices and conditions. A simple service description helps customers understand the value you provide."
+        },
+        {
+          title: "Explore Partnerships",
+          content: "Businesses and organizations may work with creators whose audiences match their goals. Prepare examples of your work and audience information where available. Be transparent about sponsored content and agreements."
+        },
+        {
+          title: "Develop Products",
+          content: "Consider products that fit your skills and audience, such as digital guides, templates, artwork, courses or merchandise. Validate demand before spending money on production."
+        },
+        {
+          title: "Build a Sustainable Business",
+          content: "Track income, expenses, customer feedback and time spent. Keep agreements in writing and understand your legal and tax responsibilities. Build reliable income streams gradually rather than depending on one viral post."
+        }
+      ]
+    }
+  };
+
+  const courseList = document.getElementById("courseList");
+  const courseReader = document.getElementById("courseReader");
+  const courseTitle = document.getElementById("courseTitle");
+  const courseDescription = document.getElementById("courseDescription");
+  const courseLessons = document.getElementById("courseLessons");
+  const breadcrumbTitle = document.getElementById("breadcrumbTitle");
+
+  function openCourse(courseId) {
+    const course = academyCourses[courseId];
+
+    if (!course) {
+      return;
+    }
+
+    courseTitle.textContent = course.title;
+    courseDescription.textContent = course.description;
+    breadcrumbTitle.textContent = course.title;
+    courseLessons.replaceChildren();
+
+    course.lessons.forEach((lesson, index) => {
+      const article = document.createElement("article");
+      article.className = "lesson";
+
+      const number = document.createElement("span");
+      number.className = "lesson-number";
+      number.textContent = "Lesson " + (index + 1);
+
+      const heading = document.createElement("h3");
+      heading.textContent = lesson.title;
+
+      const paragraph = document.createElement("p");
+      paragraph.textContent = lesson.content;
+
+      article.append(number, heading, paragraph);
+      courseLessons.appendChild(article);
+    });
+
+    courseList.hidden = true;
+    courseReader.hidden = false;
+
+    history.replaceState(null, "", "#course-" + courseId);
+    window.scrollTo({ top: document.getElementById("courses").offsetTop - 85, behavior: "smooth" });
+  }
+
+  function showCourses() {
+    courseReader.hidden = true;
+    courseList.hidden = false;
+
+    history.replaceState(null, "", "#courses");
+    window.scrollTo({ top: document.getElementById("courses").offsetTop - 85, behavior: "smooth" });
+  }
+
+  document.getElementById("year").textContent = new Date().getFullYear();
+
+  // Allow a course to be opened directly using a course hash.
+  window.addEventListener("DOMContentLoaded", function () {
+    const hash = window.location.hash;
+
+    if (hash && hash.startsWith("#course-")) {
+      const courseId = hash.replace("#course-", "");
+      openCourse(courseId);
+    }
+  });
 </script>
 
 </body>
-  </html>
-            
+</html>
