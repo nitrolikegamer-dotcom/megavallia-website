@@ -1,0 +1,129 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090b14">
+<title>Megavallia Academy | Free Courses for Musicians &amp; Digital Creators</title>
+<meta name="description" content="Explore free beginner courses on music releases, production, creator branding, video editing, photography, audience growth and creator business.">
+<link rel="canonical" href="https://www.megavallia.com/academy/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Megavallia Academy">
+<meta property="og:title" content="Megavallia Academy | Free Courses for Musicians &amp; Digital Creators">
+<meta property="og:description" content="Explore free beginner courses on music releases, production, creator branding, video editing, photography, audience growth and creator business.">
+<meta property="og:url" content="https://www.megavallia.com/academy/">
+<meta name="twitter:card" content="summary">
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "CollectionPage", "name": "Megavallia Academy — Free Courses for Musicians and Digital Creators", "description": "Free beginner courses for independent musicians, video creators, photographers and digital creators.", "url": "https://www.megavallia.com/academy/", "isPartOf": {"@type": "WebSite", "name": "Megavallia", "url": "https://www.megavallia.com/"}}</script>
+
+<style>
+body{margin:0;background:#090b14;color:#f8fafc;font:16px/1.65 system-ui,-apple-system,Segoe UI,sans-serif}
+a{color:#a5b4fc;text-decoration:none}a:hover{color:#c4b5fd;text-decoration:underline}
+.wrap{max-width:1050px;margin:auto;padding:0 22px}
+header,footer{background:#080a12;border-bottom:1px solid #263044}
+header .wrap{min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:20px}
+.logo{font-weight:900;font-size:21px;color:white}.logo b{background:linear-gradient(100deg,#4f46e5,#9333ea);padding:8px 10px;border-radius:10px;margin-right:9px}
+nav{display:flex;gap:20px;flex-wrap:wrap;font-size:14px}
+.hero{padding:62px 0 38px;background:radial-gradient(ellipse at 50% 0%,#312e8150,transparent 65%)}
+.kicker{color:#a5b4fc;text-transform:uppercase;letter-spacing:.13em;font-size:12px;font-weight:800}
+h1{font-size:clamp(32px,6vw,52px);line-height:1.12;margin:12px 0}
+h2{font-size:27px;line-height:1.25;margin:30px 0 12px}
+h3{font-size:19px;margin:0 0 8px}
+p{color:#cbd5e1}.muted{color:#94a3b8}.lead{font-size:19px;max-width:760px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(245px,1fr));gap:16px;margin:28px 0}
+.card,.panel{background:#111827;border:1px solid #293449;border-radius:18px;padding:22px}
+.card:hover{border-color:#818cf8}
+.tag{display:inline-block;background:#24204b;color:#c4b5fd;border-radius:30px;padding:4px 10px;font-size:12px;margin:0 6px 10px 0}
+.btn{display:inline-block;background:linear-gradient(100deg,#4f46e5,#9333ea);padding:12px 18px;border-radius:11px;color:white;font-weight:700;margin:8px 8px 8px 0}
+.lesson{border-top:1px solid #293449;padding:19px 0}.lesson:first-of-type{border-top:0}
+.lesson p{margin:6px 0 0}.crumb{font-size:13px;color:#94a3b8;margin-top:18px}
+ul{color:#cbd5e1;padding-left:22px}li{margin:8px 0}
+footer{border-top:1px solid #263044;border-bottom:0;margin-top:65px;padding:30px 0;color:#94a3b8;font-size:13px}
+@media(max-width:600px){header .wrap{align-items:flex-start;padding-top:14px;padding-bottom:14px;flex-direction:column}nav{gap:13px}.hero{padding-top:42px}}
+</style>
+
+</head><body><header><div class="wrap">
+<a class="logo" href="https://www.megavallia.com/"><b>MV</b>Megavallia</a>
+<nav><a href="/academy/">Academy</a><a href="/#discover">Discover</a><a href="/#creators">Creators</a><a href="/opportunities.html">Opportunities</a></nav>
+</div></header>
+<main>
+<section class="hero"><div class="wrap">
+<div class="kicker">Learn · Create · Get Discovered</div>
+<h1>Megavallia <span style="color:#a5b4fc">Academy</span></h1>
+<p class="lead">Practical, free learning for independent musicians and digital creators. Build your skills, share better work and grow your creative journey one lesson at a time.</p>
+<a class="btn" href="#courses">Explore free courses</a>
+<a class="btn" style="background:#1e293b" href="https://www.megavallia.com/">Discover Megavallia</a>
+</div></section>
+<section class="wrap" id="courses">
+<h2>Free courses for independent creators</h2>
+<p class="muted">Choose a topic and learn at your own pace. Each course includes short lessons and practical steps you can apply to your next project.</p>
+<div class="grid"><article class="card">
+<span class="tag">Music</span><span class="tag">Beginner</span>
+<h2 style="font-size:21px;margin:4px 0 8px"><a href="/academy/release-your-first-song.html">How to Release Your First Song Independently</a></h2>
+<p>A practical beginner guide to preparing, distributing and promoting your first independent music release.</p>
+<p class="muted" style="font-size:13px">5 lessons · 30 minutes</p>
+<a class="btn" href="/academy/release-your-first-song.html">Start free course →</a>
+</article><article class="card">
+<span class="tag">Music</span><span class="tag">Beginner</span>
+<h2 style="font-size:21px;margin:4px 0 8px"><a href="/academy/music-production-on-a-budget.html">Music Production on a Budget: A Beginner&#x27;s Guide</a></h2>
+<p>Learn how to record, edit and improve music using a modest home setup and careful production habits.</p>
+<p class="muted" style="font-size:13px">5 lessons · 25 minutes</p>
+<a class="btn" href="/academy/music-production-on-a-budget.html">Start free course →</a>
+</article><article class="card">
+<span class="tag">Marketing</span><span class="tag">Beginner</span>
+<h2 style="font-size:21px;margin:4px 0 8px"><a href="/academy/promote-your-content.html">How to Promote Music and Creative Content on Social Media</a></h2>
+<p>Build a repeatable content plan for sharing music, videos and creative work across social platforms.</p>
+<p class="muted" style="font-size:13px">5 lessons · 35 minutes</p>
+<a class="btn" href="/academy/promote-your-content.html">Start free course →</a>
+</article><article class="card">
+<span class="tag">Branding</span><span class="tag">Beginner</span>
+<h2 style="font-size:21px;margin:4px 0 8px"><a href="/academy/build-your-creator-brand.html">How to Build Your Artist or Creator Brand</a></h2>
+<p>Create a recognizable identity with a clear biography, visual style, profile and consistent message.</p>
+<p class="muted" style="font-size:13px">5 lessons · 25 minutes</p>
+<a class="btn" href="/academy/build-your-creator-brand.html">Start free course →</a>
+</article><article class="card">
+<span class="tag">Music Business</span><span class="tag">Beginner</span>
+<h2 style="font-size:21px;margin:4px 0 8px"><a href="/academy/music-streaming-royalties.html">Understanding Music Streaming Royalties</a></h2>
+<p>Understand the basics of streaming revenue, distributors, rights and why payouts vary.</p>
+<p class="muted" style="font-size:13px">5 lessons · 30 minutes</p>
+<a class="btn" href="/academy/music-streaming-royalties.html">Start free course →</a>
+</article><article class="card">
+<span class="tag">Growth</span><span class="tag">Beginner</span>
+<h2 style="font-size:21px;margin:4px 0 8px"><a href="/academy/get-discovered.html">How Independent Creators Can Get Discovered</a></h2>
+<p>Explore practical ways to make your music, videos, photography and creative projects easier to find.</p>
+<p class="muted" style="font-size:13px">5 lessons · 30 minutes</p>
+<a class="btn" href="/academy/get-discovered.html">Start free course →</a>
+</article><article class="card">
+<span class="tag">Video</span><span class="tag">Beginner</span>
+<h2 style="font-size:21px;margin:4px 0 8px"><a href="/academy/video-creation-editing.html">Video Creation and Editing for Beginners</a></h2>
+<p>Plan, record and edit clearer videos for social media, portfolios and online audiences.</p>
+<p class="muted" style="font-size:13px">5 lessons · 30 minutes</p>
+<a class="btn" href="/academy/video-creation-editing.html">Start free course →</a>
+</article><article class="card">
+<span class="tag">Photography</span><span class="tag">Beginner</span>
+<h2 style="font-size:21px;margin:4px 0 8px"><a href="/academy/photography-storytelling.html">Photography and Visual Storytelling for Creators</a></h2>
+<p>Learn composition, light and simple storytelling techniques for stronger photos and visual portfolios.</p>
+<p class="muted" style="font-size:13px">5 lessons · 25 minutes</p>
+<a class="btn" href="/academy/photography-storytelling.html">Start free course →</a>
+</article><article class="card">
+<span class="tag">Audience Growth</span><span class="tag">Beginner</span>
+<h2 style="font-size:21px;margin:4px 0 8px"><a href="/academy/grow-your-online-audience.html">How to Grow an Online Audience as a Digital Creator</a></h2>
+<p>Learn audience research, community building, content planning and simple ways to measure sustainable growth.</p>
+<p class="muted" style="font-size:13px">5 lessons · 35 minutes</p>
+<a class="btn" href="/academy/grow-your-online-audience.html">Start free course →</a>
+</article><article class="card">
+<span class="tag">Creator Business</span><span class="tag">Beginner</span>
+<h2 style="font-size:21px;margin:4px 0 8px"><a href="/academy/creator-monetization.html">How Independent Creators Can Make Money</a></h2>
+<p>Explore realistic creator business models including services, commissions, sponsorships, products and memberships.</p>
+<p class="muted" style="font-size:13px">5 lessons · 35 minutes</p>
+<a class="btn" href="/academy/creator-monetization.html">Start free course →</a>
+</article></div>
+</section>
+<section class="wrap panel">
+<h2>Learn something. Put it into practice.</h2>
+<p>Use the Megavallia music release planner to organize a launch, prepare your creator profile and explore ways to make your work easier to discover.</p>
+<a class="btn" href="/music-tools.html">Explore music creator tools</a>
+<a class="btn" style="background:#1e293b" href="https://www.megavallia.com/">Visit Megavallia</a>
+</section>
+</main>
+<footer>
+<div class="wrap">© 2026 Megavallia. Free learning resources for independent musicians and digital creators. <a href="https://www.megavallia.com/">Visit Megavallia</a>.</div></footer></body></html>
