@@ -602,6 +602,108 @@ async function loadFeed() {
       "Please try again later. If this continues, check that the Megavallia API is online and allows website requests.";
 
     feed.replaceChildren(message);
+     // MEGAVALLIA SIGN IN AND REGISTRATION
+
+let megavalliaAuthMode = "login";
+
+window.openAuth = function(mode = "login") {
+  megavalliaAuthMode = mode;
+  updateAuthInterface();
+
+  document.getElementById("authModal").style.display = "flex";
+};
+
+window.closeAuth = function() {
+  document.getElementById("authModal").style.display = "none";
+};
+
+window.toggleAuthMode = function(event) {
+  event.preventDefault();
+
+  megavalliaAuthMode =
+    megavalliaAuthMode === "login" ? "signup" : "login";
+
+  updateAuthInterface();
+};
+
+function updateAuthInterface() {
+  const isLogin = megavalliaAuthMode === "login";
+
+  document.getElementById("authTitle").textContent =
+    isLogin ? "Welcome Back" : "Join Megavallia";
+
+  document.getElementById("authDescription").textContent =
+    isLogin
+      ? "Sign in to continue to your account."
+      : "Create your free Megavallia account.";
+
+  document.getElementById("authSubmit").textContent =
+    isLogin ? "Sign In" : "Create Account";
+
+  document.getElementById("authSwitchText").textContent =
+    isLogin ? "Don't have an account?" : "Already registered?";
+
+  document.getElementById("authSwitchLink").textContent =
+    isLogin ? "Create Account" : "Sign In";
+
+  document.getElementById("authMessage").textContent = "";
+}
+
+document.getElementById("authForm").addEventListener("submit", async function(event) {
+  event.preventDefault();
+
+  const client = window.megavalliaSupabase;
+  const message = document.getElementById("authMessage");
+  const button = document.getElementById("authSubmit");
+
+  if (!client) {
+    message.textContent = "Authentication is not configured. Please check the Supabase website settings.";
+    return;
+  }
+
+  const email = document.getElementById("authEmail").value.trim();
+  const password = document.getElementById("authPassword").value;
+
+  button.disabled = true;
+  button.textContent = "Please wait...";
+  message.textContent = "";
+
+  try {
+    let result;
+
+    if (megavalliaAuthMode === "login") {
+      result = await client.auth.signInWithPassword({
+        email,
+        password
+      });
+    } else {
+      result = await client.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: window.location.origin
+        }
+      });
+    }
+
+    if (result.error) throw result.error;
+
+    if (megavalliaAuthMode === "signup" && !result.data.session) {
+      message.textContent =
+        "Account created! Check your email to confirm your account.";
+    } else {
+      message.textContent = "Successfully signed in!";
+      setTimeout(() => window.location.reload(), 800);
+    }
+
+  } catch (error) {
+    message.textContent = error.message || "Authentication failed.";
+  } finally {
+    button.disabled = false;
+    button.textContent =
+      megavalliaAuthMode === "login" ? "Sign In" : "Create Account";
+  }
+});
   }
 }
 
