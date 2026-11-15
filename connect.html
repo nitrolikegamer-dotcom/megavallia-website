@@ -614,57 +614,104 @@
     </p>
   </div>
 </div>
-
 <script src="app.js"></script>
-
+  
 <script>
 (() => {
   "use strict";
 
   const API_BASE = "https://megavallia.onrender.com/api/connect";
 
-  const $ = id => document.getElementById(id);
+  const $ = (id) => document.getElementById(id);
 
   let currentProfile = null;
   let currentRequestTab = "incoming";
   let selectedFiles = [];
+  let authSubscription = null;
+
+  // -----------------------------------------
+  // NOTIFICATIONS
+  // -----------------------------------------
 
   function notice(id, message, type = "success") {
-    const element = $(id);
-    if (!element) return;
+    const target = $(id);
+    if (!target) return;
 
-    element.textContent = message;
-    element.className = "connect-notice " + type;
-    element.style.display = "block";
+    target.textContent = message;
+    target.className = "connect-notice " + type;
+    target.style.display = "block";
   }
 
   function clearNotice(id) {
-    const element = $(id);
-    if (element) element.style.display = "none";
+    const target = $(id);
+    if (target) target.style.display = "none";
   }
+
+  // -----------------------------------------
+  // SAFE HTML ELEMENT CREATION
+  // -----------------------------------------
 
   function element(tag, className, text) {
     const node = document.createElement(tag);
+
     if (className) node.className = className;
     if (text !== undefined) node.textContent = text;
+
     return node;
   }
 
   function safeUrl(value) {
     try {
       const url = new URL(value);
-      return ["https:", "http:"].includes(url.protocol)
-        ? url.href
-        : null;
+
+      if (url.protocol === "https:" || url.protocol === "http:") {
+        return url.href;
+      }
+
+      return null;
     } catch {
       return null;
     }
   }
 
-  async function api(path, options = {}) {
+  // -----------------------------------------
+  // AUTHENTICATION AND API
+  // -----------------------------------------
+
+  function showSignedIn(isSignedIn) {
+    const signedOut = $("connectSignedOut");
+    const connectApp = $("connectApp");
+
+    if (signedOut) {
+      signedOut.style.display = isSignedIn ? "none" : "block";
+    }
+
+    if (connectApp) {
+      connectApp.style.display = isSignedIn ? "block" : "none";
+    }
+  }
+
+  async function getAccessToken() {
+    if (typeof window.getMegavalliaAccessToken !== "function") {
+      throw new Error(
+        "Megavallia authentication is not ready. Please refresh the page."
+      );
+    }
+
     const token = await window.getMegavalliaAccessToken();
 
+    if (!token) {
+      throw new Error("Your session has expired. Please sign in again.");
+    }
+
+    return token;
+  }
+
+  async function api(path, options = {}) {
+    const token = await getAccessToken();
+
     const headers = new Headers(options.headers || {});
+
     headers.set("Authorization", "Bearer " + token);
     headers.set("Accept", "application/json");
 
@@ -691,59 +738,23 @@
 
     if (!response.ok) {
       throw new Error(
-        result.error || "Request failed (" + response.status + ")."
+        result.error ||
+        result.message ||
+        "Request failed (" + response.status + ")."
       );
     }
 
     return result;
   }
 
-  function showSignedIn(isSignedIn) {
-    $("connectSignedOut").style.display = isSignedIn ? "none" : "block";
-    $("connectApp").style.display = isSignedIn ? "block" : "none";
-  }
+  // -----------------------------------------
+  // PROFILE PHOTO PREVIEW
+  // -----------------------------------------
 
-  async function loadMyProfile() {
-    const result = await api("/me");
-    const profile = result.profile;
-
-    currentProfile = profile;
-
-    $("connectProfileStatus").textContent =
-      profile ? "Profile available" : "Not created yet";
-
-    if (!profile) {
-      $("connectAge").value = "";
-      $("connectCountry").value = "";
-      $("connectBio").value = "";
-      $("connectShowSocial").checked = false;
-      $("connectActive").checked = true;
-      $("connectWhatsApp").value = "";
-      $("connectInstagram").value = "";
-      $("connectTelegram").value = "";
-      $("connectOther").value = "";
-      renderPhotoPreview([]);
-      return;
-    }
-
-    $("connectAge").value = profile.age ?? "";
-    $("connectCountry").value = profile.country ?? "";
-    $("connectBio").value = profile.bio ?? "";
-    $("connectShowSocial").checked = Boolean(profile.show_social_links);
-    $("connectActive").checked = profile.is_active !== false;
-
-    const links = profile.social_links || {};
-
-    $("connectWhatsApp").value = links.whatsapp || "";
-    $("connectInstagram").value = links.instagram || "";
-    $("connectTelegram").value = links.telegram || "";
-    $("connectOther").value = links.other || "";
-
-    renderPhotoPreview(profile.photos || []);
-  }
-
-  function renderPhotoPreview(urls) {
+  function renderPhotoPreview(urls = []) {
     const container = $("connectPhotoPreview");
+    if (!container) return;
+
     container.replaceChildren();
 
     for (let i = 0; i < 3; i++) {
@@ -753,6 +764,7 @@
         const img = element("img");
         img.src = urls[i];
         img.alt = "Connect profile photo " + (i + 1);
+        img.loading = "lazy";
         frame.appendChild(img);
       } else {
         frame.textContent = "Photo " + (i + 1);
@@ -763,10 +775,17 @@
   }
 
   function previewSelectedFiles() {
-    const files = Array.from($("connectPhotoFiles").files || []);
+    const files = Array.from(
+      $("connectPhotoFiles").files || []
+    );
 
     if (files.length > 3) {
-      notice("connectProfileNotice", "Please select no more than three photos.", "error");
+      notice(
+        "connectProfileNotice",
+        "Please select no more than three photos.",
+        "error"
+      );
+
       $("connectPhotoFiles").value = "";
       selectedFiles = [];
       return;
@@ -774,14 +793,26 @@
 
     for (const file of files) {
       if (file.size > 5 * 1024 * 1024) {
-        notice("connectProfileNotice", "Each photo must be 5 MB or smaller.", "error");
+        notice(
+          "connectProfileNotice",
+          "Each photo must be 5 MB or smaller.",
+          "error"
+        );
+
         $("connectPhotoFiles").value = "";
         selectedFiles = [];
         return;
       }
 
-      if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-        notice("connectProfileNotice", "Only JPG, PNG and WebP photos are supported.", "error");
+      if (
+        !["image/jpeg", "image/png", "image/webp"].includes(file.type)
+      ) {
+        notice(
+          "connectProfileNotice",
+          "Only JPG, PNG and WebP photos are supported.",
+          "error"
+        );
+
         $("connectPhotoFiles").value = "";
         selectedFiles = [];
         return;
@@ -789,6 +820,7 @@
     }
 
     selectedFiles = files;
+
     clearNotice("connectProfileNotice");
 
     const container = $("connectPhotoPreview");
@@ -800,8 +832,10 @@
 
       if (file) {
         const img = element("img");
+
         img.alt = "Selected photo " + (i + 1);
         img.src = URL.createObjectURL(file);
+
         frame.appendChild(img);
       } else {
         frame.textContent = "Photo " + (i + 1);
@@ -811,10 +845,76 @@
     }
   }
 
+  // -----------------------------------------
+  // LOAD MY CONNECT PROFILE
+  // -----------------------------------------
+
+  async function loadMyProfile() {
+    const result = await api("/me");
+    const profile = result.profile || null;
+
+    currentProfile = profile;
+
+    $("connectProfileStatus").textContent =
+      profile ? "Profile available" : "Not created yet";
+
+    if (!profile) {
+      $("connectAge").value = "";
+      $("connectCountry").value = "";
+      $("connectBio").value = "";
+
+      $("connectShowSocial").checked = false;
+      $("connectActive").checked = true;
+
+      $("connectWhatsApp").value = "";
+      $("connectInstagram").value = "";
+      $("connectTelegram").value = "";
+      $("connectOther").value = "";
+
+      $("connectBioCount").textContent = "0";
+
+      $("connectPhotoFiles").value = "";
+      selectedFiles = [];
+
+      renderPhotoPreview([]);
+      return;
+    }
+
+    $("connectAge").value = profile.age ?? "";
+    $("connectCountry").value = profile.country ?? "";
+    $("connectBio").value = profile.bio ?? "";
+
+    $("connectShowSocial").checked =
+      Boolean(profile.show_social_links);
+
+    $("connectActive").checked =
+      profile.is_active !== false;
+
+    $("connectBioCount").textContent =
+      String((profile.bio || "").length);
+
+    const links = profile.social_links || {};
+
+    $("connectWhatsApp").value = links.whatsapp || "";
+    $("connectInstagram").value = links.instagram || "";
+    $("connectTelegram").value = links.telegram || "";
+    $("connectOther").value = links.other || "";
+
+    $("connectPhotoFiles").value = "";
+    selectedFiles = [];
+
+    renderPhotoPreview(profile.photos || []);
+  }
+
+  // -----------------------------------------
+  // SAVE PROFILE
+  // -----------------------------------------
+
   async function saveProfile(event) {
     event.preventDefault();
 
     const button = $("connectSaveButton");
+
     button.disabled = true;
     button.textContent = "Saving…";
 
@@ -822,9 +922,23 @@
 
     try {
       const age = Number($("connectAge").value);
+      const country = $("connectCountry").value.trim();
+      const bio = $("connectBio").value.trim();
 
       if (!Number.isInteger(age) || age < 18 || age > 120) {
         throw new Error("You must be at least 18 years old.");
+      }
+
+      if (!country) {
+        throw new Error("Please enter your country.");
+      }
+
+      if (country.length > 80) {
+        throw new Error("Country must be 80 characters or fewer.");
+      }
+
+      if (bio.length > 300) {
+        throw new Error("Your introduction cannot exceed 300 characters.");
       }
 
       const socialLinks = {
@@ -836,28 +950,28 @@
 
       for (const [name, value] of Object.entries(socialLinks)) {
         if (value && !safeUrl(value)) {
-          throw new Error("Please enter a valid URL for " + name + ".");
+          throw new Error(
+            "Please enter a valid HTTP or HTTPS URL for " + name + "."
+          );
         }
       }
 
       const payload = {
         age,
-        country: $("connectCountry").value.trim(),
-        bio: $("connectBio").value.trim(),
+        country,
+        bio,
         social_links: socialLinks,
         show_social_links: $("connectShowSocial").checked
       };
 
+      // Save profile details first.
       await api("/profile", {
         method: "PUT",
         body: JSON.stringify(payload)
       });
 
-      // The supplied backend currently has no endpoint for changing
-      // is_active. This page therefore leaves visibility at its
-      // database default and does not send an unsupported field.
-
-      if (selectedFiles.length) {
+      // Upload photos if the user selected any.
+      if (selectedFiles.length > 0) {
         const formData = new FormData();
 
         selectedFiles.forEach(file => {
@@ -884,12 +998,23 @@
       await loadDiscover();
 
     } catch (error) {
-      notice("connectProfileNotice", error.message, "error");
+      console.error("[Connect] Save profile:", error);
+
+      notice(
+        "connectProfileNotice",
+        error.message || "Unable to save your profile.",
+        "error"
+      );
+
     } finally {
       button.disabled = false;
       button.textContent = "Save Profile";
     }
   }
+
+  // -----------------------------------------
+  // SOCIAL LINKS
+  // -----------------------------------------
 
   function createSocialLinks(links) {
     const container = element("div", "connect-socials");
@@ -903,37 +1028,52 @@
 
     Object.entries(labels).forEach(([key, label]) => {
       const url = safeUrl(links?.[key] || "");
+
       if (!url) return;
 
       const link = element("a", "", label);
+
       link.href = url;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
+
       container.appendChild(link);
     });
 
     return container;
   }
 
+  // -----------------------------------------
+  // DISCOVER PROFILE CARDS
+  // -----------------------------------------
+
   function createProfileCard(profile) {
     const card = element("article", "connect-card");
     const photos = element("div", "connect-card-photos");
 
-    const urls = Array.isArray(profile.photos) ? profile.photos : [];
+    const urls = Array.isArray(profile.photos)
+      ? profile.photos
+      : [];
 
-    if (urls.length) {
+    if (urls.length > 0) {
       urls.slice(0, 3).forEach(url => {
         const safe = safeUrl(url);
+
         if (!safe) return;
 
         const img = element("img");
+
         img.src = safe;
         img.alt = "Community member photo";
         img.loading = "lazy";
+
         photos.appendChild(img);
       });
+
     } else {
-      photos.appendChild(element("div", "connect-empty", "No photos yet"));
+      photos.appendChild(
+        element("div", "connect-empty", "No photos yet")
+      );
     }
 
     const body = element("div", "connect-card-body");
@@ -946,44 +1086,72 @@
 
     body.appendChild(element("h3", "", name));
 
-    body.appendChild(element(
-      "p",
-      "",
+    const details =
       (profile.age ? profile.age + " years" : "") +
-      (profile.country ? " · " + profile.country : "")
-    ));
+      (profile.country ? " · " + profile.country : "");
+
+    body.appendChild(element("p", "", details));
 
     if (profile.bio) {
       body.appendChild(element("p", "", profile.bio));
     }
 
     if (profile.show_social_links && profile.social_links) {
-      body.appendChild(createSocialLinks(profile.social_links));
+      body.appendChild(
+        createSocialLinks(profile.social_links)
+      );
     }
 
     const actions = element("div", "connect-actions");
 
-    const requestButton = element("button", "connect-button small", "Connect");
+    // Connect button
+    const requestButton = element(
+      "button",
+      "connect-button small",
+      "Connect"
+    );
+
     requestButton.type = "button";
+
     requestButton.addEventListener("click", async () => {
       requestButton.disabled = true;
 
       try {
-        await api("/requests/" + encodeURIComponent(profile.user_id), {
-          method: "POST"
-        });
+        await api(
+          "/requests/" + encodeURIComponent(profile.user_id),
+          { method: "POST" }
+        );
 
         requestButton.textContent = "Request Sent";
-        notice("connectDiscoverNotice", "Connection request sent.", "success");
+
+        notice(
+          "connectDiscoverNotice",
+          "Connection request sent.",
+          "success"
+        );
+
         await loadRequests();
+
       } catch (error) {
-        notice("connectDiscoverNotice", error.message, "error");
+        notice(
+          "connectDiscoverNotice",
+          error.message,
+          "error"
+        );
+
         requestButton.disabled = false;
       }
     });
 
-    const moreButton = element("button", "connect-button secondary small", "More");
+    // More button
+    const moreButton = element(
+      "button",
+      "connect-button secondary small",
+      "More"
+    );
+
     moreButton.type = "button";
+
     moreButton.addEventListener("click", async () => {
       const action = prompt(
         "Type BLOCK to block this profile or REPORT to report it."
@@ -995,29 +1163,57 @@
         if (!confirm("Block this profile?")) return;
 
         try {
-          await api("/block/" + encodeURIComponent(profile.user_id), {
-            method: "POST"
-          });
+          await api(
+            "/block/" + encodeURIComponent(profile.user_id),
+            { method: "POST" }
+          );
 
-          notice("connectDiscoverNotice", "Profile blocked.", "success");
+          notice(
+            "connectDiscoverNotice",
+            "Profile blocked.",
+            "success"
+          );
+
           await loadDiscover();
+
         } catch (error) {
-          notice("connectDiscoverNotice", error.message, "error");
+          notice(
+            "connectDiscoverNotice",
+            error.message,
+            "error"
+          );
         }
 
       } else if (action.trim().toUpperCase() === "REPORT") {
-        const reason = prompt("Why are you reporting this profile?");
+        const reason = prompt(
+          "Why are you reporting this profile?"
+        );
+
         if (!reason || reason.trim().length < 3) return;
 
         try {
-          await api("/report/" + encodeURIComponent(profile.user_id), {
-            method: "POST",
-            body: JSON.stringify({ reason: reason.trim() })
-          });
+          await api(
+            "/report/" + encodeURIComponent(profile.user_id),
+            {
+              method: "POST",
+              body: JSON.stringify({
+                reason: reason.trim()
+              })
+            }
+          );
 
-          notice("connectDiscoverNotice", "Your report has been submitted.", "success");
+          notice(
+            "connectDiscoverNotice",
+            "Your report has been submitted.",
+            "success"
+          );
+
         } catch (error) {
-          notice("connectDiscoverNotice", error.message, "error");
+          notice(
+            "connectDiscoverNotice",
+            error.message,
+            "error"
+          );
         }
       }
     });
@@ -1026,12 +1222,23 @@
     body.appendChild(actions);
 
     card.append(photos, body);
+
     return card;
   }
 
+  // -----------------------------------------
+  // LOAD DISCOVER PROFILES
+  // -----------------------------------------
+
   async function loadDiscover() {
     const container = $("connectDiscover");
-    container.replaceChildren(element("div", "connect-empty", "Loading profiles…"));
+
+    if (!container) return;
+
+    container.replaceChildren(
+      element("div", "connect-empty", "Loading profiles…")
+    );
+
     clearNotice("connectDiscoverNotice");
 
     try {
@@ -1040,40 +1247,55 @@
 
       container.replaceChildren();
 
-      if (!profiles.length) {
-        container.appendChild(element(
-          "div",
-          "connect-empty",
-          "No profiles to discover yet. Check back soon."
-        ));
+      if (profiles.length === 0) {
+        container.appendChild(
+          element(
+            "div",
+            "connect-empty",
+            "No profiles to discover yet. Check back soon."
+          )
+        );
+
         return;
       }
 
       profiles.forEach(profile => {
-        container.appendChild(createProfileCard(profile));
+        container.appendChild(
+          createProfileCard(profile)
+        );
       });
 
     } catch (error) {
+      console.error("[Connect] Discover:", error);
+
       container.replaceChildren(
         element("div", "connect-empty", error.message)
       );
     }
   }
 
+  // -----------------------------------------
+  // CONNECTION REQUESTS
+  // -----------------------------------------
+
   function renderRequests(result) {
     const container = $("connectRequests");
+
     container.replaceChildren();
 
     const list = result[currentRequestTab] || [];
 
-    if (!list.length) {
-      container.appendChild(element(
-        "div",
-        "connect-empty",
-        currentRequestTab === "incoming"
-          ? "You have no received requests."
-          : "You have not sent any requests."
-      ));
+    if (list.length === 0) {
+      container.appendChild(
+        element(
+          "div",
+          "connect-empty",
+          currentRequestTab === "incoming"
+            ? "You have no received requests."
+            : "You have not sent any requests."
+        )
+      );
+
       return;
     }
 
@@ -1085,20 +1307,26 @@
           ? request.sender_id
           : request.receiver_id;
 
-      row.appendChild(element(
-        "strong",
-        "",
-        currentRequestTab === "incoming"
-          ? "Request received"
-          : "Request sent"
-      ));
+      row.appendChild(
+        element(
+          "strong",
+          "",
+          currentRequestTab === "incoming"
+            ? "Request received"
+            : "Request sent"
+        )
+      );
 
-      row.appendChild(element(
-        "p",
-        "connect-muted",
-        "Member ID: " + String(otherUser || "").slice(0, 12) +
-        " · Status: " + request.status
-      ));
+      row.appendChild(
+        element(
+          "p",
+          "connect-muted",
+          "Member ID: " +
+            String(otherUser || "").slice(0, 12) +
+            " · Status: " +
+            request.status
+        )
+      );
 
       if (
         currentRequestTab === "incoming" &&
@@ -1106,8 +1334,17 @@
       ) {
         const actions = element("div", "connect-actions");
 
-        const accept = element("button", "connect-button small", "Accept");
-        const reject = element("button", "connect-button secondary small", "Reject");
+        const accept = element(
+          "button",
+          "connect-button small",
+          "Accept"
+        );
+
+        const reject = element(
+          "button",
+          "connect-button secondary small",
+          "Reject"
+        );
 
         accept.type = "button";
         reject.type = "button";
@@ -1117,22 +1354,43 @@
           reject.disabled = true;
 
           try {
-            await api("/requests/" + encodeURIComponent(request.id), {
-              method: "PATCH",
-              body: JSON.stringify({ status })
-            });
+            await api(
+              "/requests/" + encodeURIComponent(request.id),
+              {
+                method: "PATCH",
+                body: JSON.stringify({ status })
+              }
+            );
 
-            notice("connectRequestsNotice", "Request updated.", "success");
+            notice(
+              "connectRequestsNotice",
+              "Request updated.",
+              "success"
+            );
+
             await loadRequests();
+
           } catch (error) {
-            notice("connectRequestsNotice", error.message, "error");
+            notice(
+              "connectRequestsNotice",
+              error.message,
+              "error"
+            );
+
             accept.disabled = false;
             reject.disabled = false;
           }
         }
 
-        accept.addEventListener("click", () => updateRequest("accepted"));
-        reject.addEventListener("click", () => updateRequest("rejected"));
+        accept.addEventListener(
+          "click",
+          () => updateRequest("accepted")
+        );
+
+        reject.addEventListener(
+          "click",
+          () => updateRequest("rejected")
+        );
 
         actions.append(accept, reject);
         row.appendChild(actions);
@@ -1144,27 +1402,61 @@
 
   async function loadRequests() {
     const container = $("connectRequests");
-    container.replaceChildren(element("div", "connect-empty", "Loading requests…"));
+
+    if (!container) return;
+
+    container.replaceChildren(
+      element("div", "connect-empty", "Loading requests…")
+    );
 
     try {
       const result = await api("/requests");
       renderRequests(result);
+
     } catch (error) {
-      container.replaceChildren(element("div", "connect-empty", error.message));
+      console.error("[Connect] Requests:", error);
+
+      container.replaceChildren(
+        element("div", "connect-empty", error.message)
+      );
     }
   }
 
+  // -----------------------------------------
+  // REFRESH CONNECT PAGE
+  // -----------------------------------------
+
   async function refreshConnect() {
+    // IMPORTANT:
+    // Authentication has succeeded.
+    // Do not hide the form because an API request fails.
+
+    showSignedIn(true);
+
     try {
-      showSignedIn(true);
       await loadMyProfile();
-      await loadDiscover();
-      await loadRequests();
+
     } catch (error) {
-      showSignedIn(false);
-      console.error("[Megavallia Connect]", error);
+      console.error("[Connect] Profile loading:", error);
+
+      $("connectProfileStatus").textContent =
+        "Profile not loaded";
+
+      notice(
+        "connectProfileNotice",
+        "You are signed in, but your profile could not load. Please try again.",
+        "error"
+      );
     }
+
+    // These functions handle their own errors.
+    loadDiscover();
+    loadRequests();
   }
+
+  // -----------------------------------------
+  // CHECK CURRENT SESSION
+  // -----------------------------------------
 
   async function checkConnectSession() {
     const client = window.megavalliaSupabase;
@@ -1174,63 +1466,23 @@
       return;
     }
 
-    const { data, error } = await client.auth.getSession();
-
-    if (error || !data?.session) {
-      showSignedIn(false);
-      return;
-    }
-
-    await refreshConnect();
-  }
-
-  $("connectProfileForm").addEventListener("submit", saveProfile);
-
-  $("connectPhotoFiles").addEventListener("change", previewSelectedFiles);
-
-  $("connectBio").addEventListener("input", () => {
-    $("connectBioCount").textContent = $("connectBio").value.length;
-  });
-
-  $("connectReloadButton").addEventListener("click", async () => {
     try {
-      await loadMyProfile();
-      notice("connectProfileNotice", "Profile reloaded.", "success");
-    } catch (error) {
-      notice("connectProfileNotice", error.message, "error");
-    }
-  });
+      const { data, error } = await client.auth.getSession();
 
-  $("connectRefreshDiscover").addEventListener("click", loadDiscover);
+      if (error) throw error;
 
-  document.querySelectorAll("[data-request-tab]").forEach(button => {
-    button.addEventListener("click", () => {
-      currentRequestTab = button.dataset.requestTab;
-
-      document.querySelectorAll("[data-request-tab]").forEach(tab => {
-        tab.classList.toggle("active", tab === button);
-        tab.classList.toggle("secondary", tab !== button);
-      });
-
-      loadRequests();
-    });
-  });
-
-  if (window.megavalliaSupabase) {
-    window.megavalliaSupabase.auth.onAuthStateChange(
-      (_event, session) => {
-        if (session) {
-          refreshConnect();
-        } else {
-          showSignedIn(false);
-        }
+      if (data && data.session) {
+        await refreshConnect();
+      } else {
+        showSignedIn(false);
       }
-    );
+
+    } catch (error) {
+      console.error("[Connect] Session check:", error);
+      showSignedIn(false);
+    }
   }
 
-  checkConnectSession();
-})();
-</script>
-
+  // ---------------------
 </body>
 </html>
