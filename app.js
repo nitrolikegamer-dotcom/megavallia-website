@@ -12,8 +12,8 @@ const ANDROID_APK_URL =
 /* ---------------------------------------------------------
    SUPABASE PUBLIC CONFIGURATION
 
-   Use your existing Megavallia Supabase project.
-   Only the public publishable/anon key belongs here.
+   Replace the placeholder with your Supabase PUBLIC
+   publishable/anon key.
 
    NEVER put service-role keys or server secrets here.
    --------------------------------------------------------- */
@@ -25,6 +25,12 @@ const SUPABASE_PUBLISHABLE_KEY =
   "PASTE_YOUR_SUPABASE_PUBLIC_PUBLISHABLE_KEY_HERE";
 
 let supabaseClient = null;
+let currentSession = null;
+let megavalliaAuthMode = "login";
+
+/* =========================================================
+   SUPABASE INITIALIZATION
+   ========================================================= */
 
 if (
   SUPABASE_URL &&
@@ -37,16 +43,15 @@ if (
     SUPABASE_URL,
     SUPABASE_PUBLISHABLE_KEY
   );
-
-  // Allow other website scripts to reuse the same client.
-  window.megavalliaSupabase = supabaseClient;
 }
+
+window.megavalliaSupabase = supabaseClient;
 
 /* =========================================================
    INITIALIZATION
    ========================================================= */
 
-document.addEventListener("DOMContentLoaded", () => {
+function initializeMegavallia() {
   const year = document.getElementById("year");
 
   if (year) {
@@ -57,7 +62,16 @@ document.addEventListener("DOMContentLoaded", () => {
   setupConnectLinks();
   initAuth();
   loadFeed();
-});
+}
+
+if (document.readyState === "loading") {
+  document.addEventListener(
+    "DOMContentLoaded",
+    initializeMegavallia
+  );
+} else {
+  initializeMegavallia();
+}
 
 /* =========================================================
    DOWNLOAD LINK
@@ -90,7 +104,7 @@ function setupDownloadLink() {
 
 function setupConnectLinks() {
   const links = document.querySelectorAll(
-    '[data-megavallia-connect]'
+    "[data-megavallia-connect]"
   );
 
   links.forEach(link => {
@@ -99,224 +113,433 @@ function setupConnectLinks() {
 }
 
 /* =========================================================
-   SUPABASE AUTHENTICATION
+   AUTHENTICATION INITIALIZATION
    ========================================================= */
 
 function initAuth() {
   const authBtn = document.getElementById("auth-btn");
   const closeBtn = document.getElementById("modal-close-btn");
-  const modal = document.getElementById("login-modal");
-  const loginForm = document.getElementById("login-form");
+
+  const authModal = document.getElementById("authModal");
+  const oldLoginModal = document.getElementById("login-modal");
+
+  const activeModal = authModal || oldLoginModal;
 
   if (closeBtn) {
-    closeBtn.onclick = closeLoginModal;
+    closeBtn.addEventListener("click", closeAuth);
   }
 
-  if (modal) {
-    modal.addEventListener("click", event => {
-      if (event.target === modal) {
-        closeLoginModal();
+  if (activeModal) {
+    activeModal.addEventListener("click", event => {
+      if (event.target === activeModal) {
+        closeAuth();
       }
     });
+  }
+
+  // Support buttons such as:
+  // <button data-auth-mode="login">Sign In</button>
+  // <button data-auth-mode="signup">Create Account</button>
+
+  document.querySelectorAll("[data-auth-mode]").forEach(button => {
+    button.addEventListener("click", () => {
+      openAuth(button.dataset.authMode || "login");
+    });
+  });
+
+  // Support older website sign-in button.
+  if (authBtn) {
+    authBtn.addEventListener("click", event => {
+      event.preventDefault();
+
+      if (currentSession?.user) {
+        logout();
+      } else {
+        openAuth("login");
+      }
+    });
+  }
+
+  // New unified authentication form.
+  const authForm = document.getElementById("authForm");
+
+  // Older login form fallback.
+  const oldLoginForm = document.getElementById("login-form");
+
+  if (authForm) {
+    authForm.addEventListener(
+      "submit",
+      handleAuthenticationSubmit
+    );
+  } else if (oldLoginForm) {
+    oldLoginForm.addEventListener(
+      "submit",
+      handleAuthenticationSubmit
+    );
+  }
+
+  const switchLink = document.getElementById("authSwitchLink");
+
+  if (switchLink) {
+    switchLink.addEventListener("click", toggleAuthMode);
   }
 
   if (!supabaseClient) {
-    if (authBtn) {
-      authBtn.textContent = "Sign In";
-
-      authBtn.onclick = () => {
-        if (modal) {
-          openLoginModal();
-        } else {
-          alert(
-            "Website sign-in is not configured. Please check the Supabase public configuration."
-          );
-        }
-      };
-    }
-
     console.warn(
-      "[Megavallia] Supabase authentication is not configured."
+      "[Megavallia] Supabase authentication is not configured. Check the public Supabase key and CDN script."
     );
 
+    updateAuthState(null);
     return;
   }
 
-  if (loginForm) {
-    loginForm.addEventListener("submit", async event => {
-      event.preventDefault();
-
-      const email = document
-        .getElementById("login-email")
-        ?.value.trim();
-
-      const password = document
-        .getElementById("login-password")
-        ?.value;
-
-      const submitButton = loginForm.querySelector(
-        'button[type="submit"]'
-      );
-
-      if (!email || !password) {
-        showLoginError("Enter your email and password.");
-        return;
-      }
-
-      if (submitButton) {
-        submitButton.disabled = true;
-      }
-
-      hideLoginError();
-
-      try {
-        const { error } =
-          await supabaseClient.auth.signInWithPassword({
-            email,
-            password
-          });
-
-        if (error) {
-          showLoginError(error.message);
-          return;
-        }
-
-        closeLoginModal();
-        await checkAuthStatus();
-
-      } catch (error) {
-        showLoginError(
-          error.message || "Sign in failed. Please try again."
-        );
-      } finally {
-        if (submitButton) {
-          submitButton.disabled = false;
-        }
-      }
-    });
-  }
-
+  // Load existing session.
   checkAuthStatus();
 
+  // Listen for sign-in, sign-out and session changes.
   supabaseClient.auth.onAuthStateChange(
-    async (event, session) => {
+    (event, session) => {
       console.info(
         "[Megavallia] Authentication event:",
         event
       );
 
-      updateAuthInterface(session);
+      currentSession = session;
+      updateAuthState(session);
     }
   );
 }
 
 /* =========================================================
-   AUTHENTICATION INTERFACE
+   AUTHENTICATION MODAL
    ========================================================= */
 
-function updateAuthInterface(session) {
-  const authBtn = document.getElementById("auth-btn");
-  const userDisplay = document.getElementById("user-display");
+function openAuth(mode = "login") {
+  megavalliaAuthMode =
+    mode === "signup" ? "signup" : "login";
 
-  if (!authBtn) return;
+  updateAuthModeUI();
 
-  if (session?.user) {
-    const user = session.user;
+  const authModal = document.getElementById("authModal");
+  const oldLoginModal = document.getElementById("login-modal");
 
-    const displayName =
-      user.user_metadata?.username ||
-      user.user_metadata?.display_name ||
-      user.email?.split("@")[0] ||
-      "user";
+  const modal = authModal || oldLoginModal;
 
-    authBtn.textContent = "Sign Out";
-    authBtn.onclick = logout;
+  if (modal) {
+    modal.style.display = "flex";
+  } else {
+    alert(
+      "The sign-in window is missing from this page. Please check the authentication modal HTML."
+    );
+  }
+}
 
-    if (userDisplay) {
-      userDisplay.textContent = `Hi, @${displayName}`;
-      userDisplay.style.display = "inline";
+function closeAuth() {
+  const authModal = document.getElementById("authModal");
+  const oldLoginModal = document.getElementById("login-modal");
+
+  if (authModal) {
+    authModal.style.display = "none";
+  }
+
+  if (oldLoginModal) {
+    oldLoginModal.style.display = "none";
+  }
+
+  clearAuthMessage();
+}
+
+// Keep compatibility with existing HTML buttons.
+window.openAuth = openAuth;
+window.closeAuth = closeAuth;
+
+function toggleAuthMode(event) {
+  if (event) {
+    event.preventDefault();
+  }
+
+  megavalliaAuthMode =
+    megavalliaAuthMode === "login" ? "signup" : "login";
+
+  updateAuthModeUI();
+}
+
+window.toggleAuthMode = toggleAuthMode;
+
+/* =========================================================
+   UPDATE SIGN-IN / REGISTRATION TEXT
+   ========================================================= */
+
+function updateAuthModeUI() {
+  const isLogin = megavalliaAuthMode === "login";
+
+  const title = document.getElementById("authTitle");
+  const description = document.getElementById("authDescription");
+  const submit = document.getElementById("authSubmit");
+  const switchText = document.getElementById("authSwitchText");
+  const switchLink = document.getElementById("authSwitchLink");
+
+  if (title) {
+    title.textContent = isLogin
+      ? "Welcome Back"
+      : "Join Megavallia";
+  }
+
+  if (description) {
+    description.textContent = isLogin
+      ? "Sign in to continue to your account."
+      : "Create your free Megavallia account.";
+  }
+
+  if (submit) {
+    submit.textContent = isLogin
+      ? "Sign In"
+      : "Create Account";
+  }
+
+  if (switchText) {
+    switchText.textContent = isLogin
+      ? "Don't have an account?"
+      : "Already registered?";
+  }
+
+  if (switchLink) {
+    switchLink.textContent = isLogin
+      ? "Create Account"
+      : "Sign In";
+  }
+
+  clearAuthMessage();
+}
+
+/* =========================================================
+   AUTHENTICATION FORM SUBMISSION
+   ========================================================= */
+
+async function handleAuthenticationSubmit(event) {
+  event.preventDefault();
+
+  const emailInput =
+    document.getElementById("authEmail") ||
+    document.getElementById("login-email");
+
+  const passwordInput =
+    document.getElementById("authPassword") ||
+    document.getElementById("login-password");
+
+  const button =
+    document.getElementById("authSubmit") ||
+    event.currentTarget.querySelector('button[type="submit"]');
+
+  const email = emailInput?.value.trim();
+  const password = passwordInput?.value;
+
+  if (!supabaseClient) {
+    showAuthMessage(
+      "Authentication is not configured. Please check the Supabase public key.",
+      true
+    );
+    return;
+  }
+
+  if (!email || !password) {
+    showAuthMessage(
+      "Enter your email address and password.",
+      true
+    );
+    return;
+  }
+
+  if (password.length < 6) {
+    showAuthMessage(
+      "Your password must contain at least 6 characters.",
+      true
+    );
+    return;
+  }
+
+  if (button) {
+    button.disabled = true;
+    button.textContent = "Please wait...";
+  }
+
+  clearAuthMessage();
+
+  try {
+    let result;
+
+    if (megavalliaAuthMode === "login") {
+      result = await supabaseClient.auth.signInWithPassword({
+        email,
+        password
+      });
+    } else {
+      result = await supabaseClient.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: window.location.origin
+        }
+      });
     }
 
-  } else {
-    authBtn.textContent = "Sign In";
-    authBtn.onclick = openLoginModal;
+    if (result.error) {
+      throw result.error;
+    }
 
-    if (userDisplay) {
-      userDisplay.textContent = "";
-      userDisplay.style.display = "none";
+    if (
+      megavalliaAuthMode === "signup" &&
+      !result.data.session
+    ) {
+      showAuthMessage(
+        "Your account has been created. Please check your email to confirm your account.",
+        false
+      );
+    } else {
+      currentSession = result.data.session;
+
+      updateAuthState(currentSession);
+
+      showAuthMessage(
+        "You are successfully signed in.",
+        false
+      );
+
+      setTimeout(() => {
+        closeAuth();
+      }, 700);
+    }
+
+  } catch (error) {
+    console.error(
+      "[Megavallia] Authentication failed:",
+      error
+    );
+
+    showAuthMessage(
+      error.message || "Authentication failed. Please try again.",
+      true
+    );
+
+  } finally {
+    if (button) {
+      button.disabled = false;
+      button.textContent =
+        megavalliaAuthMode === "login"
+          ? "Sign In"
+          : "Create Account";
     }
   }
 }
 
+/* =========================================================
+   AUTHENTICATION MESSAGES
+   ========================================================= */
+
+function showAuthMessage(message, isError = false) {
+  const messageElement =
+    document.getElementById("authMessage") ||
+    document.getElementById("login-error");
+
+  if (!messageElement) {
+    alert(message);
+    return;
+  }
+
+  messageElement.textContent = message;
+  messageElement.style.display = "block";
+
+  messageElement.style.color = isError
+    ? "#ff7777"
+    : "#72e6a1";
+}
+
+function clearAuthMessage() {
+  const messageElement =
+    document.getElementById("authMessage") ||
+    document.getElementById("login-error");
+
+  if (messageElement) {
+    messageElement.textContent = "";
+    messageElement.style.display = "none";
+  }
+}
+
+/* =========================================================
+   UPDATE WEBSITE AUTHENTICATION DISPLAY
+   ========================================================= */
+
+function updateAuthState(session) {
+  currentSession = session || null;
+
+  const authBtn = document.getElementById("auth-btn");
+  const userDisplay = document.getElementById("user-display");
+
+  const signedIn = Boolean(session?.user);
+
+  if (authBtn) {
+    authBtn.textContent = signedIn
+      ? "Sign Out"
+      : "Sign In";
+
+    authBtn.onclick = signedIn
+      ? logout
+      : () => openAuth("login");
+  }
+
+  if (userDisplay) {
+    if (signedIn) {
+      const user = session.user;
+
+      const displayName =
+        user.user_metadata?.username ||
+        user.user_metadata?.display_name ||
+        user.email?.split("@")[0] ||
+        "user";
+
+      userDisplay.textContent = `Hi, @${displayName}`;
+      userDisplay.style.display = "inline";
+    } else {
+      userDisplay.textContent = "";
+      userDisplay.style.display = "none";
+    }
+  }
+
+  // Update optional visible sign-in buttons.
+  document.querySelectorAll("[data-auth-guest]").forEach(element => {
+    element.style.display = signedIn ? "none" : "";
+  });
+
+  document.querySelectorAll("[data-auth-user]").forEach(element => {
+    element.style.display = signedIn ? "" : "none";
+  });
+}
+
+/* =========================================================
+   CHECK EXISTING SESSION
+   ========================================================= */
+
 async function checkAuthStatus() {
-  if (!supabaseClient) return;
+  if (!supabaseClient) {
+    updateAuthState(null);
+    return;
+  }
 
   try {
     const { data, error } =
       await supabaseClient.auth.getSession();
 
     if (error) {
-      console.error(
-        "[Megavallia] Session check failed:",
-        error
-      );
-      return;
+      throw error;
     }
 
-    updateAuthInterface(data?.session);
+    updateAuthState(data?.session || null);
 
   } catch (error) {
     console.error(
-      "[Megavallia] Authentication error:",
+      "[Megavallia] Session check failed:",
       error
     );
-  }
-}
-
-/* =========================================================
-   LOGIN MODAL
-   ========================================================= */
-
-function openLoginModal() {
-  const modal = document.getElementById("login-modal");
-
-  if (modal) {
-    modal.style.display = "flex";
-  }
-}
-
-function closeLoginModal() {
-  const modal = document.getElementById("login-modal");
-  const errorEl = document.getElementById("login-error");
-
-  if (modal) {
-    modal.style.display = "none";
-  }
-
-  if (errorEl) {
-    errorEl.style.display = "none";
-    errorEl.textContent = "";
-  }
-}
-
-function showLoginError(message) {
-  const errorEl = document.getElementById("login-error");
-
-  if (!errorEl) {
-    alert(message);
-    return;
-  }
-
-  errorEl.textContent = message;
-  errorEl.style.display = "block";
-}
-
-function hideLoginError() {
-  const errorEl = document.getElementById("login-error");
-
-  if (errorEl) {
-    errorEl.textContent = "";
-    errorEl.style.display = "none";
   }
 }
 
@@ -325,33 +548,38 @@ function hideLoginError() {
    ========================================================= */
 
 async function logout() {
-  if (!supabaseClient) return;
+  if (!supabaseClient) {
+    return;
+  }
 
   try {
-    const { error } = await supabaseClient.auth.signOut();
+    const { error } =
+      await supabaseClient.auth.signOut();
 
     if (error) {
-      console.error(
-        "[Megavallia] Sign out failed:",
-        error
-      );
-      alert("Could not sign out. Please try again.");
-      return;
+      throw error;
     }
 
-    closeLoginModal();
-    await checkAuthStatus();
+    currentSession = null;
+    updateAuthState(null);
+    closeAuth();
 
   } catch (error) {
     console.error(
-      "[Megavallia] Sign out error:",
+      "[Megavallia] Sign out failed:",
       error
+    );
+
+    alert(
+      "Could not sign out. Please try again."
     );
   }
 }
 
+window.megavalliaLogout = logout;
+
 /* =========================================================
-   AUTH HELPER FOR OTHER WEBSITE PAGES
+   AUTH HELPER FOR CONNECT AND OTHER WEBSITE PAGES
    ========================================================= */
 
 async function getMegavalliaAccessToken() {
@@ -368,16 +596,17 @@ async function getMegavalliaAccessToken() {
     throw error;
   }
 
-  if (!data?.session?.access_token) {
+  const token = data?.session?.access_token;
+
+  if (!token) {
     throw new Error(
       "Please sign in to your Megavallia account."
     );
   }
 
-  return data.session.access_token;
+  return token;
 }
 
-// Make helper available to other scripts.
 window.getMegavalliaAccessToken =
   getMegavalliaAccessToken;
 
@@ -495,7 +724,9 @@ async function loadFeed() {
   const feed = document.getElementById("feed");
   const status = document.getElementById("feed-status");
 
-  if (!feed || !status) return;
+  if (!feed || !status) {
+    return;
+  }
 
   status.textContent = "Loading public content…";
   feed.replaceChildren();
@@ -602,112 +833,10 @@ async function loadFeed() {
       "Please try again later. If this continues, check that the Megavallia API is online and allows website requests.";
 
     feed.replaceChildren(message);
-     // MEGAVALLIA SIGN IN AND REGISTRATION
-
-let megavalliaAuthMode = "login";
-
-window.openAuth = function(mode = "login") {
-  megavalliaAuthMode = mode;
-  updateAuthInterface();
-
-  document.getElementById("authModal").style.display = "flex";
-};
-
-window.closeAuth = function() {
-  document.getElementById("authModal").style.display = "none";
-};
-
-window.toggleAuthMode = function(event) {
-  event.preventDefault();
-
-  megavalliaAuthMode =
-    megavalliaAuthMode === "login" ? "signup" : "login";
-
-  updateAuthInterface();
-};
-
-function updateAuthInterface() {
-  const isLogin = megavalliaAuthMode === "login";
-
-  document.getElementById("authTitle").textContent =
-    isLogin ? "Welcome Back" : "Join Megavallia";
-
-  document.getElementById("authDescription").textContent =
-    isLogin
-      ? "Sign in to continue to your account."
-      : "Create your free Megavallia account.";
-
-  document.getElementById("authSubmit").textContent =
-    isLogin ? "Sign In" : "Create Account";
-
-  document.getElementById("authSwitchText").textContent =
-    isLogin ? "Don't have an account?" : "Already registered?";
-
-  document.getElementById("authSwitchLink").textContent =
-    isLogin ? "Create Account" : "Sign In";
-
-  document.getElementById("authMessage").textContent = "";
-}
-
-document.getElementById("authForm").addEventListener("submit", async function(event) {
-  event.preventDefault();
-
-  const client = window.megavalliaSupabase;
-  const message = document.getElementById("authMessage");
-  const button = document.getElementById("authSubmit");
-
-  if (!client) {
-    message.textContent = "Authentication is not configured. Please check the Supabase website settings.";
-    return;
-  }
-
-  const email = document.getElementById("authEmail").value.trim();
-  const password = document.getElementById("authPassword").value;
-
-  button.disabled = true;
-  button.textContent = "Please wait...";
-  message.textContent = "";
-
-  try {
-    let result;
-
-    if (megavalliaAuthMode === "login") {
-      result = await client.auth.signInWithPassword({
-        email,
-        password
-      });
-    } else {
-      result = await client.auth.signUp({
-        email,
-        password,
-        options: {
-          emailRedirectTo: window.location.origin
-        }
-      });
-    }
-
-    if (result.error) throw result.error;
-
-    if (megavalliaAuthMode === "signup" && !result.data.session) {
-      message.textContent =
-        "Account created! Check your email to confirm your account.";
-    } else {
-      message.textContent = "Successfully signed in!";
-      setTimeout(() => window.location.reload(), 800);
-    }
-
-  } catch (error) {
-    message.textContent = error.message || "Authentication failed.";
-  } finally {
-    button.disabled = false;
-    button.textContent =
-      megavalliaAuthMode === "login" ? "Sign In" : "Create Account";
-  }
-});
   }
 }
 
 /* =========================================================
    END OF MEGAVALLIA WEBSITE APP.JS
    ========================================================= */
-        
+     
