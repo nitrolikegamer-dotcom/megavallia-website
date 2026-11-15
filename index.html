@@ -940,7 +940,122 @@
     }
   </style>
 </head>
+<!-- MEGAVALLIA AUTHENTICATION -->
+<div id="authModal" class="auth-modal" style="display:none;">
+  <div class="auth-box">
+    <button class="auth-close" onclick="closeAuth()">×</button>
 
+    <h2 id="authTitle">Welcome to Megavallia</h2>
+    <p id="authDescription">Sign in to your account</p>
+
+    <form id="authForm">
+      <input
+        type="email"
+        id="authEmail"
+        placeholder="Email address"
+        required
+      >
+
+      <input
+        type="password"
+        id="authPassword"
+        placeholder="Password"
+        minlength="6"
+        required
+      >
+
+      <button type="submit" id="authSubmit">Sign In</button>
+    </form>
+
+    <p id="authMessage"></p>
+
+    <p class="auth-switch">
+      <span id="authSwitchText">Don't have an account?</span>
+      <a href="#" id="authSwitchLink" onclick="toggleAuthMode(event)">
+        Create Account
+      </a>
+    </p>
+  </div>
+</div>
+
+<style>
+.auth-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  background: rgba(0,0,0,.85);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+
+.auth-box {
+  width: 100%;
+  max-width: 400px;
+  background: #11101b;
+  border: 1px solid #7136a8;
+  border-radius: 18px;
+  padding: 28px;
+  color: white;
+  position: relative;
+  box-shadow: 0 10px 40px rgba(0,0,0,.5);
+}
+
+.auth-box h2 {
+  color: #d9a5ff;
+  margin-bottom: 8px;
+}
+
+.auth-box input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 14px;
+  margin: 10px 0;
+  border-radius: 9px;
+  border: 1px solid #494052;
+  background: #201d2b;
+  color: white;
+  font-size: 15px;
+}
+
+.auth-box button[type="submit"] {
+  width: 100%;
+  padding: 14px;
+  margin-top: 12px;
+  border: 0;
+  border-radius: 9px;
+  background: linear-gradient(90deg,#7929c7,#e13c9a);
+  color: white;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+.auth-close {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  background: none;
+  border: 0;
+  color: white;
+  font-size: 27px;
+}
+
+.auth-switch {
+  margin-top: 20px;
+  font-size: 14px;
+}
+
+.auth-switch a {
+  color: #d9a5ff;
+  margin-left: 5px;
+}
+
+#authMessage {
+  font-size: 13px;
+  overflow-wrap: anywhere;
+}
+  </style>
 <body>
   <!-- MAIN NAVIGATION -->
   <header class="topbar" id="top">
