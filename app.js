@@ -22,7 +22,7 @@ const SUPABASE_URL =
   "https://jyakhjzzqzfaeowjukav.supabase.co";
 
 const SUPABASE_PUBLISHABLE_KEY =
-  "PASTE_YOUR_SUPABASE_PUBLIC_PUBLISHABLE_KEY_HERE";
+  "sb_publishable_ZNZC-JAidbHmQOWgTm_k_g_y1W-IwhJ";
 
 let supabaseClient = null;
 let currentSession = null;
