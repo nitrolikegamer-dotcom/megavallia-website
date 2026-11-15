@@ -1,0 +1,671 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#090711">
+  <title>Megavallia Connect</title>
+  <meta name="description" content="Discover people and make connections around the world on Megavallia.">
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    :root {
+      --bg: #090711;
+      --panel: #151020;
+      --purple: #a855f7;
+      --pink: #ec4899;
+      --muted: #aaa2b8;
+      --white: #fff;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      background: var(--bg);
+      color: var(--white);
+      font-family: Arial, sans-serif;
+    }
+
+    header {
+      padding: 17px 5%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      border-bottom: 1px solid #292035;
+      position: sticky;
+      top: 0;
+      background: #090711f5;
+      z-index: 10;
+    }
+
+    .logo {
+      font-size: 21px;
+      font-weight: 800;
+      letter-spacing: 1px;
+    }
+
+    .logo span { color: var(--pink); }
+
+    a { color: inherit; text-decoration: none; }
+
+    .home-link {
+      color: #d8b4fe;
+      font-size: 14px;
+    }
+
+    main {
+      width: min(1100px, 92%);
+      margin: 30px auto;
+    }
+
+    .hero {
+      padding: 35px 25px;
+      border: 1px solid #38234d;
+      border-radius: 20px;
+      background: linear-gradient(120deg, #211032, #120d20 70%);
+      margin-bottom: 25px;
+    }
+
+    .hero h1 {
+      font-size: clamp(28px, 5vw, 43px);
+      margin: 0 0 12px;
+    }
+
+    .hero h1 span { color: #d8a5ff; }
+
+    .hero p {
+      color: #c5b9d2;
+      line-height: 1.6;
+      max-width: 600px;
+    }
+
+    .tabs {
+      display: flex;
+      gap: 10px;
+      overflow-x: auto;
+      margin: 22px 0;
+    }
+
+    button {
+      cursor: pointer;
+      border: 0;
+      border-radius: 9px;
+      padding: 12px 17px;
+      color: white;
+      background: #281936;
+      font-weight: 600;
+    }
+
+    button.active, .primary {
+      background: linear-gradient(100deg, var(--purple), var(--pink));
+    }
+
+    button:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid #30243d;
+      padding: 22px;
+      border-radius: 15px;
+      margin-bottom: 20px;
+    }
+
+    .panel h2 { margin-top: 0; }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 18px;
+    }
+
+    .person {
+      overflow: hidden;
+      background: var(--panel);
+      border: 1px solid #33253f;
+      border-radius: 15px;
+    }
+
+    .person img {
+      width: 100%;
+      height: 230px;
+      object-fit: cover;
+      background: #21182b;
+    }
+
+    .person-info { padding: 15px; }
+
+    .person-info h3 { margin: 0 0 7px; }
+
+    .muted {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    input, textarea, select {
+      width: 100%;
+      padding: 13px;
+      margin: 7px 0 15px;
+      border: 1px solid #40314d;
+      background: #0e0a16;
+      color: white;
+      border-radius: 8px;
+      font: inherit;
+    }
+
+    textarea { min-height: 90px; resize: vertical; }
+
+    label {
+      font-size: 13px;
+      color: #d8cce4;
+    }
+
+    .hidden { display: none !important; }
+
+    .notice {
+      padding: 13px;
+      border-radius: 9px;
+      background: #241832;
+      color: #e4caff;
+      margin: 15px 0;
+      line-height: 1.5;
+    }
+
+    .request {
+      padding: 14px 0;
+      border-bottom: 1px solid #34283f;
+    }
+
+    footer {
+      text-align: center;
+      padding: 30px;
+      color: #8e849b;
+      font-size: 12px;
+    }
+
+    @media(max-width:600px) {
+      main { width: 94%; margin-top: 18px; }
+      .hero { padding: 25px 18px; }
+      .panel { padding: 17px; }
+    }
+  </style>
+</head>
+
+<body>
+
+<header>
+  <a href="index.html" class="logo">MEGAVALLIA<span>.</span></a>
+  <a href="index.html" class="home-link">← Main website</a>
+</header>
+
+<main>
+  <section class="hero">
+    <h1>Discover people.<br><span>Make connections.</span></h1>
+    <p>
+      Meet people from different countries, discover interesting profiles
+      and build meaningful connections through Megavallia.
+    </p>
+    <button class="primary" onclick="showTab('discover')">
+      Explore people
+    </button>
+  </section>
+
+  <div id="message" class="notice">
+    Connect is loading. Sign in with your Megavallia account to continue.
+  </div>
+
+  <div class="tabs">
+    <button id="tab-discover" class="active"
+      onclick="showTab('discover')">Discover</button>
+    <button id="tab-requests"
+      onclick="showTab('requests')">Requests</button>
+    <button id="tab-profile"
+      onclick="showTab('profile')">My profile</button>
+  </div>
+
+  <section id="discover">
+    <div class="panel">
+      <h2>Discover people</h2>
+      <p class="muted">Explore profiles from around the world.</p>
+      <button class="primary" onclick="loadPeople()">Refresh profiles</button>
+    </div>
+    <div id="people" class="grid"></div>
+  </section>
+
+  <section id="requests" class="hidden">
+    <div class="panel">
+      <h2>Connection requests</h2>
+      <div id="requests-list">
+        <p class="muted">Your requests will appear here.</p>
+      </div>
+    </div>
+  </section>
+
+  <section id="profile" class="hidden">
+    <div class="panel">
+      <h2>Create your Connect profile</h2>
+      <p class="muted">
+        Your profile is separate from your main Megavallia profile.
+        You must be at least 18 years old.
+      </p>
+
+      <form id="profile-form">
+        <label>Age</label>
+        <input type="number" id="age" min="18" max="120"
+          placeholder="Your age" required>
+
+        <label>Country</label>
+        <input type="text" id="country"
+          placeholder="Your country" required>
+
+        <label>About you</label>
+        <textarea id="bio" maxlength="300"
+          placeholder="Tell people a little about yourself"></textarea>
+
+        <label>Upload up to 3 photos</label>
+        <input type="file" id="photos" accept="image/jpeg,image/png,image/webp"
+          multiple>
+
+        <p class="muted">Maximum 3 photos, 5 MB each. JPG, PNG or WebP.</p>
+
+        <label>WhatsApp link (optional)</label>
+        <input type="url" id="whatsapp"
+          placeholder="https://wa.me/">
+
+        <label>Instagram link (optional)</label>
+        <input type="url" id="instagram"
+          placeholder="https://instagram.com/">
+
+        <label>Telegram link (optional)</label>
+        <input type="url" id="telegram"
+          placeholder="https://t.me/">
+
+        <label>
+          <input type="checkbox" id="show-links" checked
+            style="width:auto;margin-right:7px">
+          Show my social links on my profile
+        </label>
+
+        <br><br>
+        <button type="submit" class="primary" id="save-profile">
+          Save profile
+        </button>
+      </form>
+    </div>
+  </section>
+</main>
+
+<footer>
+  © Megavallia Connect · Connect with the world
+</footer>
+
+<script>
+  /*
+    CONFIGURATION
+
+    Use the same Supabase project URL and PUBLIC anon/publishable
+    key as your existing Megavallia website.
+
+    Never put a service-role key in this file.
+  */
+
+  const SUPABASE_URL = "YOUR_SUPABASE_PROJECT_URL";
+  const SUPABASE_ANON_KEY = "YOUR_SUPABASE_PUBLIC_ANON_KEY";
+
+  const API_BASE = "https://megavallia.onrender.com";
+
+  let supabaseClient = null;
+  let accessToken = null;
+
+  const message = document.getElementById("message");
+
+  function notify(text) {
+    message.textContent = text;
+    message.classList.remove("hidden");
+  }
+
+  function showTab(tab) {
+    ["discover", "requests", "profile"].forEach(name => {
+      document.getElementById(name).classList.toggle(
+        "hidden", name !== tab
+      );
+
+      document.getElementById("tab-" + name).classList.toggle(
+        "active", name === tab
+      );
+    });
+
+    if (tab === "discover") loadPeople();
+    if (tab === "requests") loadRequests();
+    if (tab === "profile") loadMyProfile();
+  }
+
+  async function api(path, options = {}) {
+    if (!accessToken) {
+      throw new Error("Please sign in to your Megavallia account first.");
+    }
+
+    const headers = {
+      Authorization: "Bearer " + accessToken,
+      ...(options.headers || {})
+    };
+
+    const response = await fetch(API_BASE + "/api/connect" + path, {
+      ...options,
+      headers
+    });
+
+    const result = await response.json().catch(() => ({}));
+
+    if (!response.ok) {
+      throw new Error(result.error || result.message || "Request failed.");
+    }
+
+    return result;
+  }
+
+  function getProfilePhotos(person) {
+    return person.photo_urls || person.photos || [];
+  }
+
+  function renderPeople(people) {
+    const container = document.getElementById("people");
+    container.innerHTML = "";
+
+    if (!people || !people.length) {
+      container.innerHTML =
+        '<div class="panel">No profiles available yet. Check again later.</div>';
+      return;
+    }
+
+    people.forEach(person => {
+      const photos = getProfilePhotos(person);
+      const photo = photos[0] ||
+        "https://placehold.co/600x600/21182b/ffffff?text=Megavallia";
+
+      const card = document.createElement("article");
+      card.className = "person";
+
+      const img = document.createElement("img");
+      img.src = photo;
+      img.alt = "Profile photo";
+      img.loading = "lazy";
+
+      const info = document.createElement("div");
+      info.className = "person-info";
+
+      const heading = document.createElement("h3");
+      heading.textContent = person.username || person.display_name || "Megavallia member";
+
+      const details = document.createElement("p");
+      details.className = "muted";
+      details.textContent =
+        (person.age ? person.age + " years · " : "") +
+        (person.country || "");
+
+      const bio = document.createElement("p");
+      bio.textContent = person.bio || "";
+
+      const button = document.createElement("button");
+      button.className = "primary";
+      button.textContent = "Connect";
+      button.onclick = () => sendRequest(person.user_id || person.id, button);
+
+      info.append(heading, details, bio, button);
+      card.append(img, info);
+      container.append(card);
+    });
+  }
+
+  async function loadPeople() {
+    if (!accessToken) return;
+
+    const container = document.getElementById("people");
+    container.innerHTML = '<p class="muted">Loading profiles...</p>';
+
+    try {
+      const result = await api("/discover");
+      renderPeople(result.profiles || result.data || result);
+    } catch (error) {
+      container.textContent = error.message;
+    }
+  }
+
+  async function sendRequest(userId, button) {
+    if (!userId) return;
+
+    button.disabled = true;
+    button.textContent = "Sending...";
+
+    try {
+      await api("/requests/" + encodeURIComponent(userId), {
+        method: "POST"
+      });
+
+      button.textContent = "Request sent";
+    } catch (error) {
+      button.disabled = false;
+      button.textContent = "Connect";
+      notify(error.message);
+    }
+  }
+
+  async function loadRequests() {
+    const container = document.getElementById("requests-list");
+    container.textContent = "Loading requests...";
+
+    try {
+      const result = await api("/requests");
+      const requests = result.requests || result.data || [];
+
+      container.innerHTML = "";
+
+      if (!requests.length) {
+        container.textContent = "No connection requests yet.";
+        return;
+      }
+
+      requests.forEach(request => {
+        const item = document.createElement("div");
+        item.className = "request";
+
+        const name = document.createElement("p");
+        name.textContent =
+          request.sender?.username || request.sender_id || "Megavallia member";
+
+        item.append(name);
+
+        if (request.status === "pending") {
+          const accept = document.createElement("button");
+          accept.className = "primary";
+          accept.textContent = "Accept";
+
+          accept.onclick = async () => {
+            try {
+              await api("/requests/" + request.id, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status: "accepted" })
+              });
+              loadRequests();
+            } catch (error) {
+              notify(error.message);
+            }
+          };
+
+          const reject = document.createElement("button");
+          reject.textContent = "Decline";
+          reject.onclick = async () => {
+            try {
+              await api("/requests/" + request.id, {
+                method: "PATCH",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ status: "rejected" })
+              });
+              loadRequests();
+            } catch (error) {
+              notify(error.message);
+            }
+          };
+
+          item.append(accept, reject);
+        } else {
+          const status = document.createElement("p");
+          status.className = "muted";
+          status.textContent = request.status;
+          item.append(status);
+        }
+
+        container.append(item);
+      });
+    } catch (error) {
+      container.textContent = error.message;
+    }
+  }
+
+  async function loadMyProfile() {
+    if (!accessToken) return;
+
+    try {
+      const result = await api("/me");
+      const profile = result.profile || result;
+
+      if (!profile) return;
+
+      document.getElementById("age").value = profile.age || "";
+      document.getElementById("country").value = profile.country || "";
+      document.getElementById("bio").value = profile.bio || "";
+
+      const links = profile.social_links || {};
+      document.getElementById("whatsapp").value = links.whatsapp || "";
+      document.getElementById("instagram").value = links.instagram || "";
+      document.getElementById("telegram").value = links.telegram || "";
+
+      document.getElementById("show-links").checked =
+        profile.show_social_links !== false;
+    } catch (error) {
+      notify(error.message);
+    }
+  }
+
+  document.getElementById("profile-form").addEventListener(
+    "submit", async event => {
+      event.preventDefault();
+
+      const age = Number(document.getElementById("age").value);
+      const files = document.getElementById("photos").files;
+
+      if (age < 18 || age > 120) {
+        notify("You must be at least 18 years old.");
+        return;
+      }
+
+      if (files.length > 3) {
+        notify("You can upload a maximum of 3 photos.");
+        return;
+      }
+
+      for (const file of files) {
+        if (file.size > 5 * 1024 * 1024) {
+          notify("Each photo must be smaller than 5 MB.");
+          return;
+        }
+
+        if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+          notify("Only JPG, PNG and WebP photos are allowed.");
+          return;
+        }
+      }
+
+      const button = document.getElementById("save-profile");
+      button.disabled = true;
+      button.textContent = "Saving...";
+
+      try {
+        const profile = {
+          age,
+          country: document.getElementById("country").value.trim(),
+          bio: document.getElementById("bio").value.trim(),
+          social_links: {
+            whatsapp: document.getElementById("whatsapp").value.trim(),
+            instagram: document.getElementById("instagram").value.trim(),
+            telegram: document.getElementById("telegram").value.trim()
+          },
+          show_social_links: document.getElementById("show-links").checked
+        };
+
+        await api("/profile", {
+          method: "PUT",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(profile)
+        });
+
+        if (files.length) {
+          const formData = new FormData();
+
+          for (const file of files) {
+            formData.append("photos", file);
+          }
+
+          await api("/photos", {
+            method: "POST",
+            body: formData
+          });
+        }
+
+        notify("Your Connect profile has been saved.");
+        document.getElementById("photos").value = "";
+      } catch (error) {
+        notify(error.message);
+      } finally {
+        button.disabled = false;
+        button.textContent = "Save profile";
+      }
+    }
+  );
+
+  async function startConnect() {
+    if (
+      SUPABASE_URL === "YOUR_SUPABASE_PROJECT_URL" ||
+      SUPABASE_ANON_KEY === "YOUR_SUPABASE_PUBLIC_ANON_KEY"
+    ) {
+      notify("Website configuration is needed. Add your existing Megavallia Supabase URL and public key.");
+      return;
+    }
+
+    try {
+      supabaseClient = window.supabase.createClient(
+        SUPABASE_URL,
+        SUPABASE_ANON_KEY
+      );
+
+      const { data, error } = await supabaseClient.auth.getSession();
+
+      if (error) throw error;
+
+      accessToken = data.session?.access_token;
+
+      if (!accessToken) {
+        notify("Please sign in to Megavallia before using Connect.");
+        return;
+      }
+
+      notify("You're signed in. Welcome to Megavallia Connect.");
+
+      await loadPeople();
+    } catch (error) {
+      notify("Could not connect: " + error.message);
+    }
+  }
+
+  startConnect();
+</script>
+
+</body>
+</html>
