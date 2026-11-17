@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="theme-color" content="#090914">
-  <meta name="description" content="Discover people, build connections and meet new communities on Megavallia Connect.">
+  <meta name="description" content="Discover people, build connections and meet new communities on Megavallia.">
   <title>Connect | Megavallia</title>
 
   <style>
@@ -32,13 +32,8 @@
       min-height: 100vh;
     }
 
-    button, input, textarea, select {
-      font: inherit;
-    }
-
-    button {
-      cursor: pointer;
-    }
+    button, input, textarea, select { font: inherit; }
+    button { cursor: pointer; }
 
     .topbar {
       position: sticky;
@@ -60,9 +55,7 @@
       letter-spacing: -.8px;
     }
 
-    .brand span {
-      color: var(--pink);
-    }
+    .brand span { color: var(--pink); }
 
     .top-actions {
       display: flex;
@@ -159,13 +152,8 @@
       border: 1px solid var(--border);
     }
 
-    .btn.danger {
-      background: #642637;
-    }
-
-    .btn.green {
-      background: #14664f;
-    }
+    .btn.danger { background: #642637; }
+    .btn.green { background: #14664f; }
 
     .btn-row {
       display: flex;
@@ -174,9 +162,7 @@
       margin-top: 15px;
     }
 
-    .field {
-      margin-bottom: 14px;
-    }
+    .field { margin-bottom: 14px; }
 
     .field label {
       display: block;
@@ -239,9 +225,7 @@
       margin-top: 10px;
     }
 
-    .preview-grid .photo-preview {
-      aspect-ratio: 1;
-    }
+    .preview-grid .photo-preview { aspect-ratio: 1; }
 
     .discover-wrap {
       max-width: 500px;
@@ -314,13 +298,9 @@
       background: rgba(255,255,255,.4);
     }
 
-    .photo-dot.active {
-      background: white;
-    }
+    .photo-dot.active { background: white; }
 
-    .card-info {
-      padding: 18px;
-    }
+    .card-info { padding: 18px; }
 
     .person-name {
       font-size: 25px;
@@ -364,9 +344,7 @@
       border: 0;
     }
 
-    .swipe-btn.pass {
-      color: var(--red);
-    }
+    .swipe-btn.pass { color: var(--red); }
 
     .social-links {
       display: flex;
@@ -407,9 +385,7 @@
       background: #333;
     }
 
-    .match-item .match-name {
-      font-weight: bold;
-    }
+    .match-item .match-name { font-weight: bold; }
 
     .match-item .match-meta {
       font-size: 12px;
@@ -432,35 +408,35 @@
     }
 
     @media(max-width:560px) {
-      .topbar {
-        padding: 12px 10px;
-      }
-
-      .brand {
-        font-size: 19px;
-      }
-
-      .tab {
-        padding: 8px 10px;
-        font-size: 11px;
-      }
-
-      .profile-grid {
-        grid-template-columns: 1fr;
-      }
-
+      .topbar { padding: 12px 10px; }
+      .brand { font-size: 19px; }
+      .tab { padding: 8px 10px; font-size: 11px; }
+      .profile-grid { grid-template-columns: 1fr; }
       .container {
         padding-left: 11px;
         padding-right: 11px;
       }
     }
   </style>
+
+  <!--
+    IMPORTANT:
+    Load the same Supabase CDN and authentication script
+    used by your main Megavallia index.html.
+
+    If your main website uses a different script path,
+    replace /app.js with that exact path.
+
+    Do not initialize a second Supabase client here.
+  -->
+  <script src="/app.js" defer></script>
 </head>
 
 <body>
 
 <header class="topbar">
   <div class="brand">Mega<span>vallia</span></div>
+
   <nav class="top-actions">
     <button class="tab active" data-tab="discover">Discover</button>
     <button class="tab" data-tab="matches">Matches</button>
@@ -475,12 +451,12 @@
     <p>Discover people, explore profiles and build meaningful connections.</p>
   </section>
 
-  <div id="message" class="message"></div>
+  <div id="message" class="message" role="status"></div>
 
   <section id="discoverSection">
     <div class="discover-wrap">
       <div id="discoverContent">
-        <div class="empty">Loading people...</div>
+        <div class="empty">Checking your Megavallia account...</div>
       </div>
     </div>
   </section>
@@ -504,6 +480,7 @@
       </p>
 
       <form id="profileForm">
+
         <div class="field">
           <label for="age">Age</label>
           <input id="age" type="number" min="18" max="120" required>
@@ -534,7 +511,7 @@
             <div class="photo-preview">Photo 3</div>
           </div>
           <input id="galleryPhotos" type="file" accept="image/jpeg,image/png,image/webp" multiple>
-          <p class="small-note">Select up to three photos. A new upload replaces the existing gallery.</p>
+          <p class="small-note">Select up to three gallery photos. A new upload replaces the existing gallery.</p>
         </div>
 
         <h3>Social links</h3>
@@ -579,14 +556,16 @@
   "use strict";
 
   const API_BASE = "https://megavallia.onrender.com/api/connect";
+  const MAIN_WEBSITE = "/";
 
-  const $ = (id) => document.getElementById(id);
+  const $ = id => document.getElementById(id);
 
   let profiles = [];
   let currentIndex = 0;
   let currentPhotoIndex = 0;
   let currentProfile = null;
   let busy = false;
+  let initialized = false;
 
   function showMessage(message, type = "") {
     const el = $("message");
@@ -595,35 +574,42 @@
     el.style.display = "block";
 
     window.clearTimeout(showMessage.timer);
+
     showMessage.timer = window.setTimeout(() => {
       el.style.display = "none";
     }, 5000);
   }
 
-  
-async function getAccessToken() {
-  // Reuse the main Megavallia website authentication.
-  if (typeof window.getMegavalliaAccessToken === "function") {
-    return await window.getMegavalliaAccessToken();
+  // Reuse the main Megavallia authentication.
+  async function getAccessToken() {
+    if (typeof window.getMegavalliaAccessToken === "function") {
+      const token = await window.getMegavalliaAccessToken();
+
+      if (token) return token;
+    }
+
+    if (window.megavalliaSupabase) {
+      const { data, error } =
+        await window.megavalliaSupabase.auth.getSession();
+
+      if (error) throw error;
+
+      const token = data?.session?.access_token;
+
+      if (token) return token;
+    }
+
+    throw new Error("Please sign in to your main Megavallia account first.");
   }
 
-  // Fallback: use the main website's existing Supabase client.
-  if (window.megavalliaSupabase) {
-    const { data, error } =
-      await window.megavalliaSupabase.auth.getSession();
+  function redirectToMainLogin() {
+    const returnUrl = encodeURIComponent(
+      window.location.pathname + window.location.search
+    );
 
-    if (error) throw error;
-
-    const token = data?.session?.access_token;
-
-    if (token) return token;
+    window.location.href =
+      MAIN_WEBSITE + "?returnTo=" + returnUrl;
   }
-
-  throw new Error(
-    "Your Megavallia session could not be found. Please sign in on the main website first."
-  );
-  }
-  
 
   async function api(path, options = {}) {
     const token = await getAccessToken();
@@ -649,6 +635,12 @@ async function getAccessToken() {
     try {
       data = await response.json();
     } catch (_) {}
+
+    if (response.status === 401) {
+      showMessage("Your session has expired. Please sign in again.", "error");
+      redirectToMainLogin();
+      throw new Error("Authentication required.");
+    }
 
     if (!response.ok) {
       throw new Error(data.error || "Something went wrong. Please try again.");
@@ -697,6 +689,7 @@ async function getAccessToken() {
     const image = document.createElement("img");
     image.alt = "Selected photo";
     image.src = URL.createObjectURL(file);
+
     container.replaceChildren(image);
   }
 
@@ -713,6 +706,15 @@ async function getAccessToken() {
       return;
     }
 
+    if (files.some(file =>
+      !["image/jpeg", "image/png", "image/webp"].includes(file.type) ||
+      file.size > 5 * 1024 * 1024
+    )) {
+      event.target.value = "";
+      showMessage("Each photo must be JPG, PNG or WebP and 5MB or smaller.", "error");
+      return;
+    }
+
     const grid = $("galleryPreview");
     grid.replaceChildren();
 
@@ -721,9 +723,7 @@ async function getAccessToken() {
       box.className = "photo-preview";
       box.textContent = "Photo " + (i + 1);
 
-      if (files[i]) {
-        previewFile(files[i], box);
-      }
+      if (files[i]) previewFile(files[i], box);
 
       grid.appendChild(box);
     }
@@ -741,6 +741,7 @@ async function getAccessToken() {
       $("bio").value = profile.bio || "";
 
       const links = profile.social_links || {};
+
       $("whatsapp").value = links.whatsapp || "";
       $("instagram").value = links.instagram || "";
       $("telegram").value = links.telegram || "";
@@ -748,12 +749,10 @@ async function getAccessToken() {
       $("showLinks").checked = !!profile.show_social_links;
 
       if (profile.primary_photo) {
-        $("primaryPreview").replaceChildren(
-          Object.assign(document.createElement("img"), {
-            src: profile.primary_photo,
-            alt: "Primary profile photo"
-          })
-        );
+        const image = document.createElement("img");
+        image.src = profile.primary_photo;
+        image.alt = "Primary profile photo";
+        $("primaryPreview").replaceChildren(image);
       }
 
       const gallery = $("galleryPreview");
@@ -776,6 +775,7 @@ async function getAccessToken() {
 
         gallery.appendChild(box);
       }
+
     } catch (error) {
       showMessage(error.message, "error");
     }
@@ -789,8 +789,14 @@ async function getAccessToken() {
     button.textContent = "Saving...";
 
     try {
+      const age = Number($("age").value);
+
+      if (!Number.isInteger(age) || age < 18 || age > 120) {
+        throw new Error("You must be at least 18 years old.");
+      }
+
       const profileData = {
-        age: Number($("age").value),
+        age,
         country: $("country").value.trim(),
         bio: $("bio").value.trim(),
         social_links: {
@@ -824,9 +830,7 @@ async function getAccessToken() {
       if (galleryFiles.length) {
         const form = new FormData();
 
-        galleryFiles.forEach(file => {
-          form.append("photos", file);
-        });
+        galleryFiles.forEach(file => form.append("photos", file));
 
         await api("/photos", {
           method: "POST",
@@ -839,6 +843,7 @@ async function getAccessToken() {
 
       showMessage("Your Connect profile has been saved.", "success");
       await loadMyProfile();
+
     } catch (error) {
       showMessage(error.message, "error");
     } finally {
@@ -853,16 +858,22 @@ async function getAccessToken() {
 
     try {
       const data = await api("/discover");
+
       profiles = data.profiles || [];
       currentIndex = 0;
       currentPhotoIndex = 0;
 
       renderCurrentProfile();
+
     } catch (error) {
       content.innerHTML = "";
-      showMessage(error.message, "error");
-      content.innerHTML =
-        '<div class="empty">Sign in to your Megavallia account to discover people.</div>';
+
+      if (error.message !== "Authentication required.") {
+        showMessage(error.message, "error");
+
+        content.innerHTML =
+          '<div class="empty">Unable to load profiles. Please try again.</div>';
+      }
     }
   }
 
@@ -876,6 +887,20 @@ async function getAccessToken() {
     });
 
     return all;
+  }
+
+  function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[char]);
+  }
+
+  function escapeAttr(value) {
+    return escapeHTML(value);
   }
 
   function renderCurrentProfile() {
@@ -906,17 +931,35 @@ async function getAccessToken() {
     content.innerHTML = `
       <article class="discover-card" id="activeCard">
         <div class="main-photo" id="cardPhoto">
-          ${photo ? `<img src="${escapeAttr(photo)}" alt="Profile photo">` : '<div class="empty">No photo available</div>'}
-          <div class="photo-count" id="photoCount">1 / ${Math.max(photos.length,1)}</div>
+          ${
+            photo
+              ? `<img src="${escapeAttr(photo)}" alt="Profile photo">`
+              : '<div class="empty">No photo available</div>'
+          }
+
+          <div class="photo-count" id="photoCount">
+            1 / ${Math.max(photos.length,1)}
+          </div>
+
           <button class="photo-arrow left" id="photoPrev" aria-label="Previous photo">‹</button>
           <button class="photo-arrow right" id="photoNext" aria-label="Next photo">›</button>
+
           <div class="photo-dots" id="photoDots"></div>
         </div>
+
         <div class="card-info">
-          <h2 class="person-name">${escapeHTML(name)}${profile.age ? ", " + Number(profile.age) : ""}</h2>
+          <h2 class="person-name">
+            ${escapeHTML(name)}${profile.age ? ", " + Number(profile.age) : ""}
+          </h2>
+
           <div class="person-meta">${escapeHTML(profile.country || "")}</div>
-          <div class="person-bio">${escapeHTML(profile.bio || "No introduction added yet.")}</div>
+
+          <div class="person-bio">
+            ${escapeHTML(profile.bio || "No introduction added yet.")}
+          </div>
+
           <div class="social-links" id="cardSocial"></div>
+
           <div class="btn-row">
             <button class="btn secondary" id="reportBtn">Report</button>
             <button class="btn danger" id="blockBtn">Block</button>
@@ -928,7 +971,10 @@ async function getAccessToken() {
         <button class="swipe-btn pass" id="passBtn" aria-label="Pass">✕</button>
         <button class="swipe-btn like" id="likeBtn" aria-label="Like">♥</button>
       </div>
-      <p class="small-note" style="text-align:center">Swipe left to pass or right to like. You can also use the buttons.</p>
+
+      <p class="small-note" style="text-align:center">
+        Swipe left to pass or right to like. You can also use the buttons.
+      </p>
     `;
 
     renderPhotoDots(photos);
@@ -944,20 +990,6 @@ async function getAccessToken() {
     enableTouchSwipe();
   }
 
-  function escapeHTML(value) {
-    return String(value).replace(/[&<>"']/g, char => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;"
-    })[char]);
-  }
-
-  function escapeAttr(value) {
-    return escapeHTML(value);
-  }
-
   function renderPhotoDots(photos) {
     const dots = $("photoDots");
     dots.replaceChildren();
@@ -966,19 +998,26 @@ async function getAccessToken() {
 
     for (let i = 0; i < count; i++) {
       const dot = document.createElement("span");
-      dot.className = "photo-dot" + (i === currentPhotoIndex ? " active" : "");
+
+      dot.className =
+        "photo-dot" + (i === currentPhotoIndex ? " active" : "");
+
       dots.appendChild(dot);
     }
   }
 
   function changePhoto(direction) {
     const photos = getProfilePhotos(currentProfile);
+
     if (!photos.length) return;
 
     currentPhotoIndex =
       (currentPhotoIndex + direction + photos.length) % photos.length;
 
-    $("cardPhoto").querySelector("img").src = photos[currentPhotoIndex];
+    const image = $("cardPhoto").querySelector("img");
+
+    if (image) image.src = photos[currentPhotoIndex];
+
     $("photoCount").textContent =
       (currentPhotoIndex + 1) + " / " + photos.length;
 
@@ -992,6 +1031,7 @@ async function getAccessToken() {
     if (!profile.show_social_links) return;
 
     const links = profile.social_links || {};
+
     const labels = {
       whatsapp: "WhatsApp",
       instagram: "Instagram",
@@ -1014,7 +1054,9 @@ async function getAccessToken() {
         link.target = "_blank";
         link.rel = "noopener noreferrer";
         link.textContent = label;
+
         container.appendChild(link);
+
       } catch (_) {}
     });
   }
@@ -1030,19 +1072,27 @@ async function getAccessToken() {
     $("passBtn").disabled = true;
 
     try {
-      const result = await api("/swipe/" + encodeURIComponent(targetId), {
-        method: "POST",
-        body: JSON.stringify({ action })
-      });
+      const result = await api(
+        "/swipe/" + encodeURIComponent(targetId),
+        {
+          method: "POST",
+          body: JSON.stringify({ action })
+        }
+      );
 
       if (result.matched) {
-        showMessage("It's a mutual connection! You both liked each other.", "success");
+        showMessage(
+          "It's a mutual connection! You both liked each other.",
+          "success"
+        );
       }
 
       currentIndex++;
       renderCurrentProfile();
+
     } catch (error) {
       showMessage(error.message, "error");
+
     } finally {
       busy = false;
     }
@@ -1050,6 +1100,7 @@ async function getAccessToken() {
 
   function enableTouchSwipe() {
     const card = $("activeCard");
+
     if (!card) return;
 
     let startX = 0;
@@ -1060,22 +1111,30 @@ async function getAccessToken() {
       if (event.target.closest("button,a")) return;
 
       const touch = event.touches[0];
+
       startX = touch.clientX;
       startY = touch.clientY;
       tracking = true;
+
     }, { passive: true });
 
     card.addEventListener("touchend", event => {
       if (!tracking) return;
+
       tracking = false;
 
       const touch = event.changedTouches[0];
+
       const dx = touch.clientX - startX;
       const dy = touch.clientY - startY;
 
-      if (Math.abs(dx) > 100 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+      if (
+        Math.abs(dx) > 100 &&
+        Math.abs(dx) > Math.abs(dy) * 1.3
+      ) {
         swipe(dx > 0 ? "like" : "pass");
       }
+
     }, { passive: true });
 
     let mouseStart = null;
@@ -1100,18 +1159,21 @@ async function getAccessToken() {
   async function blockCurrent() {
     if (!currentProfile) return;
 
-    if (!confirm("Block this profile? You will no longer see each other in Connect.")) {
-      return;
-    }
+    if (!confirm(
+      "Block this profile? You will no longer see each other in Connect."
+    )) return;
 
     try {
-      await api("/block/" + encodeURIComponent(currentProfile.user_id), {
-        method: "POST"
-      });
+      await api(
+        "/block/" + encodeURIComponent(currentProfile.user_id),
+        { method: "POST" }
+      );
 
       showMessage("Profile blocked.", "success");
+
       currentIndex++;
       renderCurrentProfile();
+
     } catch (error) {
       showMessage(error.message, "error");
     }
@@ -1125,12 +1187,16 @@ async function getAccessToken() {
     if (!reason || reason.trim().length < 3) return;
 
     try {
-      await api("/report/" + encodeURIComponent(currentProfile.user_id), {
-        method: "POST",
-        body: JSON.stringify({ reason: reason.trim() })
-      });
+      await api(
+        "/report/" + encodeURIComponent(currentProfile.user_id),
+        {
+          method: "POST",
+          body: JSON.stringify({ reason: reason.trim() })
+        }
+      );
 
       showMessage("Your report has been submitted.", "success");
+
     } catch (error) {
       showMessage(error.message, "error");
     }
@@ -1138,7 +1204,9 @@ async function getAccessToken() {
 
   async function loadMatches() {
     const container = $("matchesList");
-    container.innerHTML = '<div class="empty">Loading connections...</div>';
+
+    container.innerHTML =
+      '<div class="empty">Loading connections...</div>';
 
     try {
       const data = await api("/matches");
@@ -1147,6 +1215,7 @@ async function getAccessToken() {
       if (!matches.length) {
         container.innerHTML =
           '<div class="empty">No mutual connections yet.<br>Keep discovering people.</div>';
+
         return;
       }
 
@@ -1154,8 +1223,14 @@ async function getAccessToken() {
 
       matches.forEach(profile => {
         const account = profile.account || {};
-        const name = account.display_name || account.username || "Megavallia member";
-        const photo = profile.primary_photo ||
+
+        const name =
+          account.display_name ||
+          account.username ||
+          "Megavallia member";
+
+        const photo =
+          profile.primary_photo ||
           profile.photos?.[0] ||
           account.avatar_url ||
           "";
@@ -1190,16 +1265,20 @@ async function getAccessToken() {
 
             try {
               const parsed = new URL(url);
+
               if (!["http:", "https:"].includes(parsed.protocol)) return;
 
               const link = document.createElement("a");
+
               link.href = parsed.href;
               link.target = "_blank";
               link.rel = "noopener noreferrer";
               link.textContent = key === "other" ? "Website" : key;
               link.style.cssText =
                 "color:#e8dfff;font-size:11px;margin-left:8px;";
+
               details.appendChild(link);
+
             } catch (_) {}
           });
         }
@@ -1207,40 +1286,99 @@ async function getAccessToken() {
         item.appendChild(details);
         container.appendChild(item);
       });
+
     } catch (error) {
       container.innerHTML = "";
-      showMessage(error.message, "error");
+
+      if (error.message !== "Authentication required.") {
+        showMessage(error.message, "error");
+      }
     }
   }
 
-  async function checkSession() {
+  // Initialize only after the main website authentication is ready.
+  async function initializeConnect() {
+    if (initialized) return;
+
+    initialized = true;
+
     try {
       await getAccessToken();
-      loadDiscover();
-    } catch (error) {
+
       $("discoverContent").innerHTML =
-        '<div class="panel empty">Please sign in to your Megavallia account to use Connect.<br><br><a href="/login.html" style="color:#f04eaa">Sign in</a></div>';
+        '<div class="empty">Welcome to Megavallia Connect. Finding people...</div>';
+
+      await loadDiscover();
+
+    } catch (error) {
+      initialized = false;
+
+      $("discoverContent").innerHTML = `
+        <div class="panel empty">
+          <h2>Welcome to Megavallia Connect</h2>
+          <p>Sign in using your existing Megavallia account to discover people and build connections.</p>
+          <br>
+          <a href="/" class="btn" style="text-decoration:none;display:inline-block">
+            Go to Megavallia
+          </a>
+        </div>
+      `;
     }
   }
 
-  // Wait for the main website's Supabase client to become available.
+  // Wait for the main authentication script to initialize.
   let attempts = 0;
 
-  const sessionTimer = setInterval(async () => {
+  const sessionTimer = window.setInterval(async () => {
     attempts++;
 
     if (
-      window.megavalliaSupabase ||
-      typeof window.getMegavalliaAccessToken === "function"
+      typeof window.getMegavalliaAccessToken === "function" ||
+      window.megavalliaSupabase
     ) {
-      clearInterval(sessionTimer);
-      checkSession();
+      window.clearInterval(sessionTimer);
+      await initializeConnect();
       return;
     }
 
-    if (attempts >= 20) {
-      clearInterval(sessionTimer);
-      checkSession();
+    if (attempts >= 30) {
+      window.clearInterval(sessionTimer);
+      await initializeConnect();
+    }
+
+  }, 500);
+
+  // If the main Supabase client supports auth-state events,
+  // respond to changes in the shared login session.
+  function attachAuthListener() {
+    if (!window.megavalliaSupabase) return;
+
+    window.megavalliaSupabase.auth.onAuthStateChange(
+      (event, session) => {
+        if (event === "SIGNED_OUT" || !session) {
+          initialized = false;
+
+          $("discoverContent").innerHTML = `
+            <div class="panel empty">
+              Your Megavallia session has ended.
+              <br><br>
+              <a href="/" style="color:#f04eaa">Return to Megavallia to sign in</a>
+            </div>
+          `;
+        }
+
+        if (event === "SIGNED_IN" && session) {
+          initialized = false;
+          initializeConnect();
+        }
+      }
+    );
+  }
+
+  const authListenerTimer = window.setInterval(() => {
+    if (window.megavalliaSupabase) {
+      window.clearInterval(authListenerTimer);
+      attachAuthListener();
     }
   }, 500);
 
