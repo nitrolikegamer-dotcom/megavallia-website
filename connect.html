@@ -3,968 +3,455 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <meta name="theme-color" content="#090711">
-  <meta name="description" content="Discover people, explore profiles and build meaningful connections with the Megavallia community.">
-
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="theme-color" content="#090914">
+  <meta name="description" content="Discover people, build connections and meet new communities on Megavallia Connect.">
   <title>Connect | Megavallia</title>
-
-  <link rel="stylesheet" href="styles.css">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
   <style>
     :root {
-      --cx-bg: #090711;
-      --cx-panel: #12101d;
-      --cx-panel-light: #191426;
-      --cx-panel-hover: #211a31;
-      --cx-pink: #ec4899;
-      --cx-purple: #9333ea;
-      --cx-text: #f8f6ff;
-      --cx-muted: #a9a2b8;
-      --cx-border: rgba(255,255,255,.09);
-      --cx-success: #63d99a;
-      --cx-danger: #ff777e;
-      --cx-radius: 18px;
-      --cx-shadow: 0 18px 55px rgba(0,0,0,.22);
+      --bg: #090914;
+      --panel: #141426;
+      --panel2: #1c1b32;
+      --text: #f7f5ff;
+      --muted: #a6a2bb;
+      --pink: #f04eaa;
+      --purple: #8756ff;
+      --border: rgba(255,255,255,.1);
+      --green: #40d9a2;
+      --red: #ff687c;
     }
 
-    * {
-      box-sizing: border-box;
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
+    * { box-sizing: border-box; }
 
     body {
       margin: 0;
+      background: var(--bg);
+      color: var(--text);
+      font-family: Arial, sans-serif;
       min-height: 100vh;
-      color: var(--cx-text);
-      background:
-        radial-gradient(ellipse at 12% 0%, rgba(147,51,234,.13), transparent 35%),
-        radial-gradient(ellipse at 90% 12%, rgba(236,72,153,.09), transparent 30%),
-        var(--cx-bg);
-      font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", Arial, sans-serif;
     }
 
-    button, input, textarea {
+    button, input, textarea, select {
       font: inherit;
     }
 
     button {
-      color: inherit;
+      cursor: pointer;
     }
 
-    a {
-      color: inherit;
-    }
-
-    .cx-header {
+    .topbar {
       position: sticky;
       top: 0;
-      z-index: 50;
-      min-height: 72px;
-      padding: 0 5%;
+      z-index: 20;
+      background: rgba(9,9,20,.95);
+      border-bottom: 1px solid var(--border);
+      padding: 14px 18px;
       display: flex;
-      align-items: center;
       justify-content: space-between;
-      gap: 20px;
-      background: rgba(9,7,17,.91);
-      backdrop-filter: blur(18px);
-      border-bottom: 1px solid var(--cx-border);
-    }
-
-    .cx-brand {
-      display: inline-flex;
       align-items: center;
-      gap: 10px;
-      color: #fff;
-      text-decoration: none;
-      font-size: 20px;
-      font-weight: 850;
-      letter-spacing: .8px;
-      white-space: nowrap;
-    }
-
-    .cx-brand-mark {
-      width: 34px;
-      height: 34px;
-      display: grid;
-      place-items: center;
-      border-radius: 11px;
-      background: linear-gradient(135deg, var(--cx-pink), var(--cx-purple));
-      font-size: 17px;
-      box-shadow: 0 5px 20px rgba(147,51,234,.25);
-    }
-
-    .cx-nav {
-      display: flex;
-      align-items: center;
-      gap: 24px;
-    }
-
-    .cx-nav a {
-      color: var(--cx-muted);
-      text-decoration: none;
-      font-size: 13px;
-      font-weight: 650;
-      transition: color .2s;
-    }
-
-    .cx-nav a:hover,
-    .cx-nav a.current {
-      color: #fff;
-    }
-
-    .cx-header-right {
-      display: flex;
-      align-items: center;
-      justify-content: flex-end;
       gap: 12px;
+      backdrop-filter: blur(14px);
     }
 
-    #user-display {
-      max-width: 150px;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      white-space: nowrap;
-      color: #f0a3d0;
-      font-size: 13px;
+    .brand {
+      font-size: 22px;
+      font-weight: 900;
+      letter-spacing: -.8px;
     }
 
-    .cx-main {
-      width: min(1160px, 92%);
-      margin: 0 auto;
-      padding: 36px 0 75px;
+    .brand span {
+      color: var(--pink);
     }
 
-    .cx-hero {
-      position: relative;
-      overflow: hidden;
-      padding: 55px 45px;
-      margin-bottom: 28px;
-      border: 1px solid rgba(193,135,255,.17);
-      border-radius: 26px;
-      background:
-        radial-gradient(circle at 85% 20%, rgba(236,72,153,.2), transparent 30%),
-        linear-gradient(125deg, #24143a, #151020 65%, #11101b);
-      box-shadow: var(--cx-shadow);
-    }
-
-    .cx-hero::after {
-      content: "";
-      position: absolute;
-      width: 260px;
-      height: 260px;
-      right: -100px;
-      bottom: -150px;
-      border-radius: 50%;
-      border: 1px solid rgba(255,255,255,.08);
-      box-shadow: 0 0 0 30px rgba(255,255,255,.018),
-                  0 0 0 60px rgba(255,255,255,.012);
-      pointer-events: none;
-    }
-
-    .cx-eyebrow {
-      display: inline-flex;
-      align-items: center;
-      gap: 8px;
-      color: #f5b4db;
-      font-size: 11px;
-      font-weight: 800;
-      letter-spacing: 1.8px;
-      text-transform: uppercase;
-    }
-
-    .cx-eyebrow::before {
-      content: "";
-      width: 7px;
-      height: 7px;
-      border-radius: 50%;
-      background: var(--cx-pink);
-      box-shadow: 0 0 12px var(--cx-pink);
-    }
-
-    .cx-hero h1 {
-      max-width: 650px;
-      margin: 18px 0 14px;
-      font-size: clamp(36px, 6vw, 58px);
-      line-height: 1.05;
-      letter-spacing: -2px;
-    }
-
-    .cx-gradient {
-      color: transparent;
-      background: linear-gradient(90deg, #ff79bd, #b78aff);
-      background-clip: text;
-      -webkit-background-clip: text;
-    }
-
-    .cx-hero p {
-      max-width: 590px;
-      margin: 0;
-      color: #c0b7ce;
-      font-size: 15px;
-      line-height: 1.8;
-    }
-
-    .cx-hero-actions {
+    .top-actions {
       display: flex;
-      flex-wrap: wrap;
-      gap: 11px;
-      margin-top: 26px;
-    }
-
-    .cx-button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
       gap: 8px;
-      min-height: 42px;
-      padding: 11px 17px;
-      border: 0;
-      border-radius: 11px;
-      color: white;
-      background: linear-gradient(105deg, var(--cx-pink), var(--cx-purple));
-      font-size: 13px;
-      font-weight: 750;
-      text-decoration: none;
-      cursor: pointer;
-      transition: transform .2s, opacity .2s, filter .2s;
     }
 
-    .cx-button:hover {
-      filter: brightness(1.12);
-      transform: translateY(-1px);
-    }
-
-    .cx-button:disabled {
-      opacity: .55;
-      cursor: wait;
-      transform: none;
-    }
-
-    .cx-button.secondary {
-      color: #e8dff4;
-      background: #292039;
-      border: 1px solid var(--cx-border);
-    }
-
-    .cx-button.danger {
-      background: #6c2937;
-    }
-
-    .cx-button.small {
-      min-height: 34px;
-      padding: 8px 12px;
-      font-size: 12px;
-    }
-
-    .cx-button.full {
-      width: 100%;
-    }
-
-    .cx-signin {
-      display: none;
-      padding: 15px 17px;
-      margin-bottom: 22px;
-      border: 1px solid rgba(236,72,153,.24);
-      border-radius: 13px;
-      background: rgba(236,72,153,.08);
-      color: #f4d9eb;
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    .cx-signin a {
-      color: #ff9bce;
-      font-weight: 750;
-    }
-
-    .cx-section {
-      padding: 25px;
-      margin-bottom: 24px;
-      border: 1px solid var(--cx-border);
-      border-radius: var(--cx-radius);
-      background: linear-gradient(145deg, rgba(25,20,38,.97), rgba(17,15,27,.97));
-      box-shadow: var(--cx-shadow);
-    }
-
-    .cx-section-heading {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 18px;
-      margin-bottom: 22px;
-    }
-
-    .cx-section-heading h2 {
-      margin: 0 0 7px;
-      font-size: 21px;
-      letter-spacing: -.4px;
-    }
-
-    .cx-section-heading p {
-      margin: 0;
-      color: var(--cx-muted);
-      font-size: 13px;
-      line-height: 1.6;
-    }
-
-    .cx-muted {
-      color: var(--cx-muted);
-      font-size: 13px;
-      line-height: 1.65;
-    }
-
-    .cx-status {
-      flex-shrink: 0;
-      padding: 7px 10px;
-      border: 1px solid var(--cx-border);
+    .tab {
+      background: transparent;
+      color: var(--muted);
+      border: 1px solid var(--border);
       border-radius: 20px;
-      color: #d9c8ee;
-      background: #211a30;
-      font-size: 11px;
-      font-weight: 750;
-    }
-
-    .cx-notice {
-      display: none;
-      padding: 12px 14px;
-      margin: 0 0 16px;
-      border: 1px solid var(--cx-border);
-      border-radius: 11px;
-      background: #21172e;
-      color: #e8d9f8;
-      font-size: 13px;
-      line-height: 1.55;
-      overflow-wrap: anywhere;
-    }
-
-    .cx-notice.success {
-      color: #a2efc0;
-      border-color: rgba(99,217,154,.2);
-      background: rgba(20,80,48,.2);
-    }
-
-    .cx-notice.error {
-      color: #ffb0b3;
-      border-color: rgba(255,119,126,.22);
-      background: rgba(105,28,42,.2);
-    }
-
-    .cx-form-grid {
-      display: grid;
-      grid-template-columns: repeat(2, minmax(0,1fr));
-      gap: 0 17px;
-    }
-
-    .cx-field {
-      min-width: 0;
-      margin-bottom: 17px;
-    }
-
-    .cx-field.full {
-      grid-column: 1 / -1;
-    }
-
-    .cx-field label {
-      display: block;
-      margin-bottom: 8px;
-      color: #eee8f7;
-      font-size: 12px;
-      font-weight: 750;
-    }
-
-    .cx-field input,
-    .cx-field textarea {
-      display: block;
-      width: 100%;
-      min-height: 45px;
-      padding: 12px 13px;
-      border: 1px solid rgba(255,255,255,.11);
-      border-radius: 10px;
-      outline: none;
-      color: white;
-      background: #0d0b15;
-      font-size: 13px;
-      transition: border-color .2s, box-shadow .2s;
-    }
-
-    .cx-field input:focus,
-    .cx-field textarea:focus {
-      border-color: #b65ce7;
-      box-shadow: 0 0 0 3px rgba(147,51,234,.12);
-    }
-
-    .cx-field input::placeholder,
-    .cx-field textarea::placeholder {
-      color: #777083;
-    }
-
-    .cx-field textarea {
-      min-height: 105px;
-      resize: vertical;
-      line-height: 1.6;
-    }
-
-    .cx-field input[type="file"] {
-      min-height: auto;
-      padding: 10px;
-      cursor: pointer;
-    }
-
-    .cx-field input[type="file"]::file-selector-button {
-      padding: 8px 11px;
-      margin-right: 10px;
-      border: 0;
-      border-radius: 7px;
-      color: white;
-      background: #39264c;
-      cursor: pointer;
-    }
-
-    .cx-field-help {
-      margin: 7px 0 0;
-      color: var(--cx-muted);
-      font-size: 11px;
-      line-height: 1.6;
-    }
-
-    .cx-counter {
-      text-align: right;
-      color: var(--cx-muted);
-      font-size: 11px;
-      margin-top: 6px;
-    }
-
-    .cx-subheading {
-      margin: 23px 0 7px;
-      font-size: 15px;
-    }
-
-    .cx-checkbox {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 12px 0 17px;
-      color: #d5ccdf;
-      font-size: 12px;
-      cursor: pointer;
-    }
-
-    .cx-checkbox input {
-      width: 17px;
-      height: 17px;
-      accent-color: var(--cx-pink);
-    }
-
-    .cx-photos {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap: 12px;
-      margin: 12px 0 18px;
-    }
-
-    .cx-photo {
-      position: relative;
-      overflow: hidden;
-      display: grid;
-      place-items: center;
-      aspect-ratio: 1 / 1;
-      border: 1px dashed #654879;
-      border-radius: 13px;
-      background: #0c0a14;
-      color: #81778f;
+      padding: 9px 13px;
       font-size: 12px;
     }
 
-    .cx-photo img {
-      position: absolute;
-      inset: 0;
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .cx-photo-number {
-      position: absolute;
-      z-index: 1;
-      left: 8px;
-      bottom: 8px;
-      padding: 4px 7px;
-      border-radius: 6px;
+    .tab.active {
+      background: linear-gradient(110deg,var(--purple),var(--pink));
       color: white;
-      background: rgba(0,0,0,.62);
-      font-size: 10px;
+      border-color: transparent;
     }
 
-    .cx-form-actions {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 8px;
+    .container {
+      width: min(100%, 1050px);
+      margin: auto;
+      padding: 22px 15px 60px;
     }
 
-    .cx-discover-tools {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin: 0 0 20px;
+    .intro {
+      text-align: center;
+      margin: 12px auto 24px;
     }
 
-    .cx-search {
-      flex: 1;
-      min-width: 0;
-      min-height: 42px;
-      padding: 10px 13px;
-      border: 1px solid var(--cx-border);
-      border-radius: 10px;
-      outline: none;
-      color: white;
-      background: #0d0b15;
-      font-size: 13px;
+    .intro h1 {
+      font-size: clamp(27px,5vw,40px);
+      margin: 0 0 8px;
     }
 
-    .cx-search:focus {
-      border-color: #b65ce7;
-    }
-
-    .cx-cards {
-      display: grid;
-      grid-template-columns: repeat(3, minmax(0,1fr));
-      gap: 17px;
-    }
-
-    .cx-card {
-      min-width: 0;
-      overflow: hidden;
-      border: 1px solid var(--cx-border);
-      border-radius: 15px;
-      background: #171323;
-      transition: transform .2s, border-color .2s;
-    }
-
-    .cx-card:hover {
-      transform: translateY(-3px);
-      border-color: rgba(194,123,240,.35);
-    }
-
-    .cx-card-photos {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 3px;
-      overflow: hidden;
-      background: #0c0a14;
-    }
-
-    .cx-card-photos img {
-      display: block;
-      width: 100%;
-      height: 155px;
-      object-fit: cover;
-      background: #211a2d;
-    }
-
-    .cx-card-photos img:first-child:nth-last-child(1) {
-      grid-column: 1 / -1;
-      height: 235px;
-    }
-
-    .cx-card-photos img:first-child:nth-last-child(3) {
-      grid-row: span 2;
-      height: 100%;
-      min-height: 210px;
-    }
-
-    .cx-card-placeholder {
-      grid-column: 1 / -1;
-      min-height: 190px;
-      display: grid;
-      place-items: center;
-      color: #8e829e;
-      background:
-        radial-gradient(circle at 50% 30%, rgba(147,51,234,.22), transparent 55%),
-        #171323;
-      font-size: 13px;
-    }
-
-    .cx-card-body {
-      padding: 16px;
-    }
-
-    .cx-card-title-row {
-      display: flex;
-      align-items: flex-start;
-      justify-content: space-between;
-      gap: 8px;
-    }
-
-    .cx-card-body h3 {
-      margin: 0 0 6px;
-      font-size: 16px;
-      overflow-wrap: anywhere;
-    }
-
-    .cx-card-location {
-      margin: 0 0 12px;
-      color: #c0a9d5;
-      font-size: 11px;
-    }
-
-    .cx-card-bio {
-      min-height: 42px;
+    .intro p {
+      color: var(--muted);
+      line-height: 1.5;
       margin: 0;
-      color: var(--cx-muted);
-      font-size: 12px;
-      line-height: 1.65;
-      overflow-wrap: anywhere;
-      white-space: pre-wrap;
     }
 
-    .cx-socials {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 7px;
-      margin-top: 13px;
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 18px;
+      margin-bottom: 18px;
     }
 
-    .cx-socials a {
-      display: inline-flex;
-      padding: 7px 9px;
-      border: 1px solid rgba(236,72,153,.16);
-      border-radius: 7px;
-      color: #f2a5d1;
-      background: rgba(236,72,153,.07);
-      text-decoration: none;
-      font-size: 10px;
+    .section-title {
+      font-size: 20px;
+      margin: 0 0 8px;
+    }
+
+    .subtext {
+      color: var(--muted);
+      font-size: 13px;
+      line-height: 1.5;
+    }
+
+    .hidden { display: none !important; }
+
+    .message {
+      padding: 12px;
+      border-radius: 12px;
+      margin-bottom: 15px;
+      font-size: 13px;
+      background: var(--panel2);
+      color: var(--text);
+      display: none;
+    }
+
+    .message.error { color: #ff9aaa; }
+    .message.success { color: var(--green); }
+
+    .btn {
+      border: 0;
+      border-radius: 12px;
+      padding: 12px 17px;
+      color: white;
+      background: linear-gradient(110deg,var(--purple),var(--pink));
       font-weight: 700;
     }
 
-    .cx-card-actions {
+    .btn:disabled {
+      opacity: .5;
+      cursor: not-allowed;
+    }
+
+    .btn.secondary {
+      background: var(--panel2);
+      border: 1px solid var(--border);
+    }
+
+    .btn.danger {
+      background: #642637;
+    }
+
+    .btn.green {
+      background: #14664f;
+    }
+
+    .btn-row {
       display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin-top: 15px;
+    }
+
+    .field {
+      margin-bottom: 14px;
+    }
+
+    .field label {
+      display: block;
+      font-size: 13px;
+      margin-bottom: 7px;
+      color: #ddd8f3;
+    }
+
+    .field input,
+    .field textarea,
+    .field select {
+      width: 100%;
+      background: #0d0d1b;
+      border: 1px solid var(--border);
+      border-radius: 11px;
+      color: white;
+      padding: 12px;
+      outline: none;
+    }
+
+    .field input:focus,
+    .field textarea:focus {
+      border-color: var(--purple);
+    }
+
+    .field textarea {
+      min-height: 85px;
+      resize: vertical;
+    }
+
+    .profile-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+    }
+
+    .photo-preview {
+      width: 100%;
+      aspect-ratio: 4/5;
+      background: var(--panel2);
+      border-radius: 14px;
+      overflow: hidden;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: var(--muted);
+      font-size: 12px;
+    }
+
+    .photo-preview img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .preview-grid {
+      display: grid;
+      grid-template-columns: repeat(3,1fr);
+      gap: 9px;
+      margin-top: 10px;
+    }
+
+    .preview-grid .photo-preview {
+      aspect-ratio: 1;
+    }
+
+    .discover-wrap {
+      max-width: 500px;
+      margin: auto;
+    }
+
+    .discover-card {
+      background: var(--panel);
+      border: 1px solid var(--border);
+      border-radius: 22px;
+      overflow: hidden;
+      position: relative;
+      touch-action: pan-y;
+      user-select: none;
+    }
+
+    .main-photo {
+      width: 100%;
+      aspect-ratio: 4/4.5;
+      background: var(--panel2);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .main-photo img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .photo-count {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      background: rgba(0,0,0,.65);
+      padding: 7px 10px;
+      border-radius: 20px;
+      font-size: 12px;
+    }
+
+    .photo-arrow {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 36px;
+      height: 45px;
+      border: 0;
+      color: white;
+      background: rgba(0,0,0,.5);
+      border-radius: 10px;
+    }
+
+    .photo-arrow.left { left: 9px; }
+    .photo-arrow.right { right: 9px; }
+
+    .photo-dots {
+      display: flex;
+      gap: 5px;
+      position: absolute;
+      bottom: 10px;
+      left: 50%;
+      transform: translateX(-50%);
+    }
+
+    .photo-dot {
+      height: 4px;
+      width: 25px;
+      border-radius: 5px;
+      background: rgba(255,255,255,.4);
+    }
+
+    .photo-dot.active {
+      background: white;
+    }
+
+    .card-info {
+      padding: 18px;
+    }
+
+    .person-name {
+      font-size: 25px;
+      font-weight: 800;
+      margin: 0 0 5px;
+    }
+
+    .person-meta {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .person-bio {
+      color: #ded9ef;
+      line-height: 1.55;
+      font-size: 14px;
+      margin-top: 13px;
+      white-space: pre-wrap;
+    }
+
+    .swipe-actions {
+      display: flex;
+      justify-content: center;
+      gap: 25px;
+      padding: 18px 5px;
+    }
+
+    .swipe-btn {
+      width: 65px;
+      height: 65px;
+      border-radius: 50%;
+      border: 1px solid var(--border);
+      background: var(--panel);
+      color: white;
+      font-size: 25px;
+      box-shadow: 0 5px 20px rgba(0,0,0,.2);
+    }
+
+    .swipe-btn.like {
+      background: linear-gradient(140deg,#a13fff,#f04eaa);
+      border: 0;
+    }
+
+    .swipe-btn.pass {
+      color: var(--red);
+    }
+
+    .social-links {
+      display: flex;
+      flex-wrap: wrap;
       gap: 8px;
       margin-top: 15px;
     }
 
-    .cx-card-actions > button {
-      flex: 1;
-    }
-
-    .cx-more {
-      position: relative;
-    }
-
-    .cx-more summary {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      width: 36px;
-      height: 34px;
-      border: 1px solid var(--cx-border);
-      border-radius: 9px;
-      color: #d8cce6;
-      background: #292039;
-      cursor: pointer;
-      list-style: none;
-    }
-
-    .cx-more summary::-webkit-details-marker {
-      display: none;
-    }
-
-    .cx-more-menu {
-      position: absolute;
-      z-index: 10;
-      top: 40px;
-      right: 0;
-      width: 145px;
-      padding: 6px;
-      border: 1px solid var(--cx-border);
-      border-radius: 10px;
-      background: #211a30;
-      box-shadow: var(--cx-shadow);
-    }
-
-    .cx-more-menu button {
-      display: block;
-      width: 100%;
-      padding: 9px;
-      border: 0;
-      border-radius: 7px;
-      color: #e9e1f0;
-      background: transparent;
-      text-align: left;
-      font-size: 11px;
-      cursor: pointer;
-    }
-
-    .cx-more-menu button:hover {
-      background: #332541;
-    }
-
-    .cx-more-menu button.report {
-      color: #ff9ca3;
-    }
-
-    .cx-empty {
-      grid-column: 1 / -1;
-      padding: 35px 15px;
-      border: 1px dashed var(--cx-border);
-      border-radius: 12px;
-      color: var(--cx-muted);
-      text-align: center;
-      font-size: 13px;
-      line-height: 1.7;
-    }
-
-    .cx-tabs {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 16px;
-    }
-
-    .cx-tab.active {
-      background: linear-gradient(105deg, var(--cx-pink), var(--cx-purple));
-      border-color: transparent;
-      color: white;
-    }
-
-    .cx-requests {
-      border-top: 1px solid var(--cx-border);
-    }
-
-    .cx-request {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 15px;
-      padding: 16px 4px;
-      border-bottom: 1px solid var(--cx-border);
-    }
-
-    .cx-request:last-child {
-      border-bottom: 0;
-    }
-
-    .cx-request-info {
-      min-width: 0;
-    }
-
-    .cx-request-info strong {
-      display: block;
-      margin-bottom: 5px;
-      font-size: 13px;
-    }
-
-    .cx-request-info p {
-      margin: 0;
-      color: var(--cx-muted);
-      font-size: 11px;
-      line-height: 1.5;
-      overflow-wrap: anywhere;
-    }
-
-    .cx-request-status {
-      display: inline-block;
-      margin-top: 7px;
-      padding: 4px 8px;
-      border-radius: 20px;
-      color: #d9c4ef;
-      background: #30223d;
-      font-size: 10px;
-      text-transform: capitalize;
-    }
-
-    .cx-request-actions {
-      display: flex;
-      flex-shrink: 0;
-      gap: 7px;
-    }
-
-    .cx-footer {
-      padding: 28px 5%;
-      border-top: 1px solid var(--cx-border);
-      color: var(--cx-muted);
-      text-align: center;
-      font-size: 11px;
-      line-height: 1.7;
-    }
-
-    .cx-footer a {
-      color: #e7a0d0;
+    .social-links a {
+      background: var(--panel2);
+      color: #e6dfff;
+      border: 1px solid var(--border);
       text-decoration: none;
-    }
-
-    .cx-modal {
-      position: fixed;
-      z-index: 100;
-      inset: 0;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      padding: 18px;
-      background: rgba(0,0,0,.76);
-      backdrop-filter: blur(7px);
-    }
-
-    .cx-modal.open {
-      display: flex;
-    }
-
-    .cx-modal-box {
-      width: min(440px, 100%);
-      padding: 23px;
-      border: 1px solid var(--cx-border);
-      border-radius: 17px;
-      background: #171323;
-      box-shadow: var(--cx-shadow);
-    }
-
-    .cx-modal-box h3 {
-      margin: 0 0 8px;
-      font-size: 18px;
-    }
-
-    .cx-modal-box p {
-      color: var(--cx-muted);
+      padding: 9px 12px;
+      border-radius: 10px;
       font-size: 12px;
+    }
+
+    .match-list {
+      display: grid;
+      gap: 12px;
+    }
+
+    .match-item {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      padding: 12px;
+      background: var(--panel2);
+      border-radius: 13px;
+    }
+
+    .match-item img {
+      width: 55px;
+      height: 55px;
+      object-fit: cover;
+      border-radius: 50%;
+      background: #333;
+    }
+
+    .match-item .match-name {
+      font-weight: bold;
+    }
+
+    .match-item .match-meta {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 4px;
+    }
+
+    .empty {
+      text-align: center;
+      color: var(--muted);
+      padding: 35px 15px;
       line-height: 1.6;
     }
 
-    .cx-modal-box textarea {
-      width: 100%;
-      min-height: 100px;
-      padding: 12px;
-      border: 1px solid var(--cx-border);
-      border-radius: 10px;
-      outline: none;
-      color: white;
-      background: #0d0b15;
-      resize: vertical;
+    .small-note {
+      color: var(--muted);
+      font-size: 11px;
+      line-height: 1.5;
+      margin-top: 10px;
     }
 
-    .cx-modal-actions {
-      display: flex;
-      justify-content: flex-end;
-      gap: 8px;
-      margin-top: 14px;
-    }
-
-    @media (max-width: 900px) {
-      .cx-cards {
-        grid-template-columns: repeat(2, minmax(0,1fr));
+    @media(max-width:560px) {
+      .topbar {
+        padding: 12px 10px;
       }
 
-      .cx-nav {
-        gap: 14px;
-      }
-    }
-
-    @media (max-width: 650px) {
-      .cx-header {
-        min-height: 62px;
-        padding: 10px 4%;
+      .brand {
+        font-size: 19px;
       }
 
-      .cx-nav {
-        display: none;
-      }
-
-      .cx-brand {
-        font-size: 17px;
-      }
-
-      .cx-header-right {
-        gap: 9px;
-      }
-
-      #user-display {
-        max-width: 85px;
+      .tab {
+        padding: 8px 10px;
         font-size: 11px;
       }
 
-      .cx-main {
-        width: 93%;
-        padding-top: 19px;
-      }
-
-      .cx-hero {
-        padding: 34px 22px;
-        border-radius: 19px;
-      }
-
-      .cx-hero h1 {
-        letter-spacing: -1.3px;
-      }
-
-      .cx-section {
-        padding: 18px;
-        border-radius: 15px;
-      }
-
-      .cx-section-heading {
-        gap: 10px;
-      }
-
-      .cx-section-heading h2 {
-        font-size: 18px;
-      }
-
-      .cx-cards {
+      .profile-grid {
         grid-template-columns: 1fr;
       }
 
-      .cx-card-photos img {
-        height: 190px;
-      }
-
-      .cx-card-photos img:first-child:nth-last-child(1) {
-        height: 270px;
-      }
-    }
-
-    @media (max-width: 430px) {
-      .cx-form-grid {
-        grid-template-columns: 1fr;
-      }
-
-      .cx-field.full {
-        grid-column: auto;
-      }
-
-      .cx-hero-actions {
-        flex-direction: column;
-      }
-
-      .cx-hero-actions .cx-button {
-        width: 100%;
-      }
-
-      .cx-section-heading {
-        flex-direction: column;
-      }
-
-      .cx-status {
-        align-self: flex-start;
-      }
-
-      .cx-discover-tools {
-        flex-wrap: wrap;
-      }
-
-      .cx-search {
-        flex-basis: 100%;
-      }
-
-      .cx-request {
-        align-items: flex-start;
-        flex-direction: column;
-      }
-
-      .cx-request-actions {
-        width: 100%;
+      .container {
+        padding-left: 11px;
+        padding-right: 11px;
       }
     }
   </style>
@@ -972,411 +459,171 @@
 
 <body>
 
-<header class="cx-header">
-  <a class="cx-brand" href="index.html">
-    <span class="cx-brand-mark">M</span>
-    MEGAVALLIA
-  </a>
-
-  <nav class="cx-nav" aria-label="Main navigation">
-    <a href="index.html">Home</a>
-    <a href="index.html#discover">Discover</a>
-    <a href="#connectDiscoverSection" class="current">Connect</a>
+<header class="topbar">
+  <div class="brand">Mega<span>vallia</span></div>
+  <nav class="top-actions">
+    <button class="tab active" data-tab="discover">Discover</button>
+    <button class="tab" data-tab="matches">Matches</button>
+    <button class="tab" data-tab="profile">My Profile</button>
   </nav>
-
-  <div class="cx-header-right">
-    <span id="user-display" data-auth-user></span>
-
-    <button
-      class="cx-button secondary small"
-      type="button"
-      data-auth-user
-      onclick="window.megavalliaLogout && window.megavalliaLogout()">
-      Sign Out
-    </button>
-  </div>
 </header>
 
-<main class="cx-main">
+<main class="container">
 
-  <section class="cx-hero">
-    <div class="cx-eyebrow">The Megavallia community</div>
+  <section class="intro">
+    <h1>Meet your next connection.</h1>
+    <p>Discover people, explore profiles and build meaningful connections.</p>
+  </section>
 
-    <h1>
-      Discover people.<br>
-      <span class="cx-gradient">Build connections.</span>
-    </h1>
+  <div id="message" class="message"></div>
 
-    <p>
-      Explore profiles, share a little about yourself and connect with
-      people across the Megavallia community. Your Connect profile is
-      separate from your main account profile.
-    </p>
-
-    <div class="cx-hero-actions">
-      <a class="cx-button" href="#connectDiscoverSection">Explore people</a>
-      <a class="cx-button secondary" href="#connectProfileSection">Create your profile</a>
+  <section id="discoverSection">
+    <div class="discover-wrap">
+      <div id="discoverContent">
+        <div class="empty">Loading people...</div>
+      </div>
     </div>
   </section>
 
-  <div id="connectSignInNotice" class="cx-signin" role="status">
-    You can explore this page, but you need to sign in to create a profile,
-    discover members or manage connection requests.
-    <a href="index.html">Sign in on Megavallia</a>.
-  </div>
-
-  <div id="connectApp">
-
-    <!-- PROFILE EDITOR -->
-    <section class="cx-section" id="connectProfileSection">
-      <div class="cx-section-heading">
-        <div>
-          <div class="cx-eyebrow">Your presence</div>
-          <h2 style="margin-top:10px">Your Connect Profile</h2>
-          <p>
-            Introduce yourself to the community. You control which social
-            links are visible to other members.
-          </p>
-        </div>
-
-        <span id="connectProfileStatus" class="cx-status">Checking profile…</span>
+  <section id="matchesSection" class="hidden">
+    <div class="panel">
+      <h2 class="section-title">Mutual Connections</h2>
+      <p class="subtext">People who have also liked your profile.</p>
+      <div id="matchesList" class="match-list">
+        <div class="empty">Loading connections...</div>
       </div>
+    </div>
+  </section>
 
-      <div id="connectProfileNotice" class="cx-notice" role="status"></div>
+  <section id="profileSection" class="hidden">
+    <div class="panel">
+      <h2 class="section-title">Your Connect Profile</h2>
+      <p class="subtext">
+        Create a profile to help people discover and connect with you.
+        You must be at least 18 years old.
+      </p>
 
-      <form id="connectProfileForm">
-
-        <div class="cx-form-grid">
-          <div class="cx-field">
-            <label for="connectAge">Age</label>
-            <input
-              id="connectAge"
-              type="number"
-              min="18"
-              max="120"
-              placeholder="Your age"
-              required>
-          </div>
-
-          <div class="cx-field">
-            <label for="connectCountry">Country</label>
-            <input
-              id="connectCountry"
-              type="text"
-              maxlength="80"
-              placeholder="e.g. Kenya"
-              required>
-          </div>
-
-          <div class="cx-field full">
-            <label for="connectBio">About you</label>
-            <textarea
-              id="connectBio"
-              maxlength="300"
-              placeholder="Write a short introduction about yourself…"></textarea>
-
-            <div class="cx-counter">
-              <span id="connectBioCount">0</span> / 300 characters
-            </div>
-          </div>
+      <form id="profileForm">
+        <div class="field">
+          <label for="age">Age</label>
+          <input id="age" type="number" min="18" max="120" required>
         </div>
 
-        <div class="cx-field">
-          <label for="connectPhotoFiles">Profile photos</label>
-          <input
-            id="connectPhotoFiles"
-            type="file"
-            accept="image/jpeg,image/png,image/webp"
-            multiple>
-
-          <p class="cx-field-help">
-            Add up to three photos. JPG, PNG and WebP are supported.
-            Maximum 5 MB per photo. Selecting new photos replaces your
-            current photo collection when you save.
-          </p>
+        <div class="field">
+          <label for="country">Country</label>
+          <input id="country" maxlength="80" required placeholder="Your country">
         </div>
 
-        <div id="connectPhotoPreview" class="cx-photos">
-          <div class="cx-photo">Photo 1</div>
-          <div class="cx-photo">Photo 2</div>
-          <div class="cx-photo">Photo 3</div>
+        <div class="field">
+          <label for="bio">About you</label>
+          <textarea id="bio" maxlength="300" placeholder="Write a short introduction..."></textarea>
         </div>
 
-        <h3 class="cx-subheading">Social links</h3>
-
-        <p class="cx-muted">
-          Add ways people can reach you outside Megavallia.
-        </p>
-
-        <label class="cx-checkbox">
-          <input type="checkbox" id="connectShowSocial">
-          Display my social links on my public Connect profile
-        </label>
-
-        <div class="cx-form-grid">
-          <div class="cx-field">
-            <label for="connectWhatsApp">WhatsApp</label>
-            <input
-              id="connectWhatsApp"
-              type="url"
-              placeholder="https://wa.me/...">
-          </div>
-
-          <div class="cx-field">
-            <label for="connectInstagram">Instagram</label>
-            <input
-              id="connectInstagram"
-              type="url"
-              placeholder="https://instagram.com/...">
-          </div>
-
-          <div class="cx-field">
-            <label for="connectTelegram">Telegram</label>
-            <input
-              id="connectTelegram"
-              type="url"
-              placeholder="https://t.me/...">
-          </div>
-
-          <div class="cx-field">
-            <label for="connectOther">Other link</label>
-            <input
-              id="connectOther"
-              type="url"
-              placeholder="https://...">
-          </div>
+        <div class="field">
+          <label>Primary profile photo</label>
+          <div class="photo-preview" id="primaryPreview">Main photo preview</div>
+          <input id="primaryPhoto" type="file" accept="image/jpeg,image/png,image/webp">
+          <p class="small-note">Maximum 5MB. JPG, PNG or WebP.</p>
         </div>
 
-        <div class="cx-form-actions">
-          <button type="submit" id="connectSaveButton" class="cx-button">
-            Save profile
-          </button>
-
-          <button
-            type="button"
-            id="connectReloadButton"
-            class="cx-button secondary">
-            Reload profile
-          </button>
+        <div class="field">
+          <label>Gallery — up to 3 photos</label>
+          <div class="preview-grid" id="galleryPreview">
+            <div class="photo-preview">Photo 1</div>
+            <div class="photo-preview">Photo 2</div>
+            <div class="photo-preview">Photo 3</div>
+          </div>
+          <input id="galleryPhotos" type="file" accept="image/jpeg,image/png,image/webp" multiple>
+          <p class="small-note">Select up to three photos. A new upload replaces the existing gallery.</p>
         </div>
+
+        <h3>Social links</h3>
+        <p class="subtext">Add optional links where people can reach you.</p>
+
+        <div class="field">
+          <label for="whatsapp">WhatsApp link</label>
+          <input id="whatsapp" type="url" placeholder="https://wa.me/...">
+        </div>
+
+        <div class="field">
+          <label for="instagram">Instagram link</label>
+          <input id="instagram" type="url" placeholder="https://instagram.com/...">
+        </div>
+
+        <div class="field">
+          <label for="telegram">Telegram link</label>
+          <input id="telegram" type="url" placeholder="https://t.me/...">
+        </div>
+
+        <div class="field">
+          <label for="other">Other link</label>
+          <input id="other" type="url" placeholder="https://...">
+        </div>
+
+        <div class="field">
+          <label>
+            <input id="showLinks" type="checkbox" style="width:auto">
+            Show my social links to people I connect with
+          </label>
+        </div>
+
+        <button class="btn" type="submit" id="saveProfileBtn">Save profile</button>
       </form>
-    </section>
+    </div>
+  </section>
 
-    <!-- DISCOVERY -->
-    <section class="cx-section" id="connectDiscoverSection">
-      <div class="cx-section-heading">
-        <div>
-          <div class="cx-eyebrow">Community discovery</div>
-          <h2 style="margin-top:10px">Discover People</h2>
-          <p>Explore profiles and find people you would like to connect with.</p>
-        </div>
-
-        <button
-          type="button"
-          id="connectRefreshDiscover"
-          class="cx-button secondary small">
-          Refresh
-        </button>
-      </div>
-
-      <div id="connectDiscoverNotice" class="cx-notice" role="status"></div>
-
-      <div class="cx-discover-tools">
-        <input
-          type="search"
-          id="connectSearch"
-          class="cx-search"
-          placeholder="Search by name, country or introduction…"
-          aria-label="Search Connect profiles">
-      </div>
-
-      <div id="connectDiscover" class="cx-cards">
-        <div class="cx-empty">Sign in to discover community profiles.</div>
-      </div>
-    </section>
-
-    <!-- CONNECTION REQUESTS -->
-    <section class="cx-section" id="connectRequestsSection">
-      <div class="cx-section-heading">
-        <div>
-          <div class="cx-eyebrow">Your network</div>
-          <h2 style="margin-top:10px">Connection Requests</h2>
-          <p>Review requests you have received and track the ones you have sent.</p>
-        </div>
-      </div>
-
-      <div class="cx-tabs">
-        <button
-          type="button"
-          class="cx-button small cx-tab active"
-          data-request-tab="incoming"
-          aria-pressed="true">
-          Received
-        </button>
-
-        <button
-          type="button"
-          class="cx-button secondary small cx-tab"
-          data-request-tab="outgoing"
-          aria-pressed="false">
-          Sent
-        </button>
-      </div>
-
-      <div id="connectRequestsNotice" class="cx-notice" role="status"></div>
-
-      <div id="connectRequests" class="cx-requests">
-        <div class="cx-empty">Sign in to manage your connection requests.</div>
-      </div>
-    </section>
-
-  </div>
 </main>
-
-<footer class="cx-footer">
-  © <span id="connectYear"></span> Megavallia.
-  Discover. Connect. Belong.
-  <br>
-  <a href="index.html">Return to Megavallia</a>
-</footer>
-
-<!-- REPORT MODAL -->
-<div
-  class="cx-modal"
-  id="connectReportModal"
-  role="dialog"
-  aria-modal="true"
-  aria-labelledby="connectReportTitle">
-
-  <div class="cx-modal-box">
-    <h3 id="connectReportTitle">Report this profile</h3>
-    <p>
-      Tell us why you are reporting this profile. Reports are submitted
-      to the Megavallia moderation system.
-    </p>
-
-    <form id="connectReportForm">
-      <textarea
-        id="connectReportReason"
-        maxlength="500"
-        minlength="3"
-        placeholder="Describe the issue…"
-        required></textarea>
-
-      <div id="connectReportNotice" class="cx-notice"></div>
-
-      <div class="cx-modal-actions">
-        <button type="button" id="connectReportCancel" class="cx-button secondary small">
-          Cancel
-        </button>
-
-        <button type="submit" id="connectReportSubmit" class="cx-button danger small">
-          Submit report
-        </button>
-      </div>
-    </form>
-  </div>
-</div>
-
-<script src="app.js"></script>
 
 <script>
 (() => {
   "use strict";
 
   const API_BASE = "https://megavallia.onrender.com/api/connect";
-  const $ = id => document.getElementById(id);
 
-  let currentRequestTab = "incoming";
-  let selectedFiles = [];
-  let savedPhotoUrls = [];
-  let previewObjectUrls = [];
-  let discoverProfiles = [];
-  let authSubscription = null;
-  let signedIn = false;
-  let refreshInProgress = false;
-  let reportTargetUserId = null;
+  const $ = (id) => document.getElementById(id);
 
-  $("connectYear").textContent = new Date().getFullYear();
+  let profiles = [];
+  let currentIndex = 0;
+  let currentPhotoIndex = 0;
+  let currentProfile = null;
+  let busy = false;
 
-  function element(tag, className, text) {
-    const node = document.createElement(tag);
+  function showMessage(message, type = "") {
+    const el = $("message");
+    el.textContent = message;
+    el.className = "message " + type;
+    el.style.display = "block";
 
-    if (className) node.className = className;
-    if (text !== undefined) node.textContent = text;
-
-    return node;
-  }
-
-  function showNotice(id, message, type = "success") {
-    const target = $(id);
-    if (!target) return;
-
-    target.textContent = message;
-    target.className = "cx-notice " + type;
-    target.style.display = "block";
-  }
-
-  function clearNotice(id) {
-    const target = $(id);
-    if (!target) return;
-
-    target.textContent = "";
-    target.style.display = "none";
-  }
-
-  function safeUrl(value) {
-    try {
-      const url = new URL(String(value));
-      return ["https:", "http:"].includes(url.protocol) ? url.href : null;
-    } catch {
-      return null;
-    }
-  }
-
-  function showSignedIn(isSignedIn) {
-    signedIn = Boolean(isSignedIn);
-
-    $("connectApp").style.display = "block";
-    $("connectSignInNotice").style.display = signedIn ? "none" : "block";
-
-    if (!signedIn) {
-      $("connectProfileStatus").textContent = "Sign in required";
-    }
+    window.clearTimeout(showMessage.timer);
+    showMessage.timer = window.setTimeout(() => {
+      el.style.display = "none";
+    }, 5000);
   }
 
   async function getAccessToken() {
-    if (!signedIn) {
-      throw new Error("Please sign in on the Megavallia homepage first.");
-    }
-
-    let token = null;
-
     if (typeof window.getMegavalliaAccessToken === "function") {
-      token = await window.getMegavalliaAccessToken();
-    } else if (window.megavalliaSupabase) {
-      const { data, error } =
-        await window.megavalliaSupabase.auth.getSession();
+      const token = await window.getMegavalliaAccessToken();
+      if (token) return token;
+    }
 
+    const client = window.megavalliaSupabase;
+
+    if (client?.auth?.getSession) {
+      const { data, error } = await client.auth.getSession();
       if (error) throw error;
-      token = data?.session?.access_token || null;
+
+      const token = data?.session?.access_token;
+      if (token) return token;
     }
 
-    if (!token) {
-      signedIn = false;
-      showSignedIn(false);
-      throw new Error("Your session has expired. Please sign in again.");
-    }
-
-    return token;
+    throw new Error("Please sign in to your Megavallia account first.");
   }
 
   async function api(path, options = {}) {
     const token = await getAccessToken();
-    const headers = new Headers(options.headers || {});
 
+    const headers = new Headers(options.headers || {});
     headers.set("Authorization", "Bearer " + token);
-    headers.set("Accept", "application/json");
 
     if (
       options.body &&
@@ -1391,934 +638,605 @@
       headers
     });
 
-    let result = {};
+    let data = {};
 
     try {
-      result = await response.json();
-    } catch {
-      result = {};
-    }
+      data = await response.json();
+    } catch (_) {}
 
     if (!response.ok) {
-      throw new Error(
-        result.error ||
-        result.message ||
-        "Request failed (" + response.status + ")."
-      );
+      throw new Error(data.error || "Something went wrong. Please try again.");
     }
 
-    return result;
+    return data;
   }
 
-  function clearPreviewObjectUrls() {
-    previewObjectUrls.forEach(url => URL.revokeObjectURL(url));
-    previewObjectUrls = [];
-  }
+  function showTab(tab) {
+    const sections = {
+      discover: $("discoverSection"),
+      matches: $("matchesSection"),
+      profile: $("profileSection")
+    };
 
-  function renderPhotoPreview(urls = []) {
-    clearPreviewObjectUrls();
-
-    const container = $("connectPhotoPreview");
-    container.replaceChildren();
-
-    for (let i = 0; i < 3; i++) {
-      const frame = element("div", "cx-photo");
-      const url = urls[i];
-
-      if (url) {
-        const img = element("img");
-        img.src = url;
-        img.alt = "Connect profile photo " + (i + 1);
-        img.loading = "lazy";
-
-        frame.appendChild(img);
-      } else {
-        frame.textContent = "Add photo " + (i + 1);
-      }
-
-      const number = element("span", "cx-photo-number", "PHOTO " + (i + 1));
-      frame.appendChild(number);
-      container.appendChild(frame);
-    }
-  }
-
-  function previewSelectedFiles() {
-    const files = Array.from($("connectPhotoFiles").files || []);
-
-    if (files.length > 3) {
-      showNotice(
-        "connectProfileNotice",
-        "Please select no more than three photos.",
-        "error"
-      );
-
-      $("connectPhotoFiles").value = "";
-      selectedFiles = [];
-      renderPhotoPreview(savedPhotoUrls);
-      return;
-    }
-
-    for (const file of files) {
-      if (file.size > 5 * 1024 * 1024) {
-        showNotice(
-          "connectProfileNotice",
-          "Each photo must be 5 MB or smaller.",
-          "error"
-        );
-
-        $("connectPhotoFiles").value = "";
-        selectedFiles = [];
-        renderPhotoPreview(savedPhotoUrls);
-        return;
-      }
-
-      if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-        showNotice(
-          "connectProfileNotice",
-          "Only JPG, PNG and WebP photos are supported.",
-          "error"
-        );
-
-        $("connectPhotoFiles").value = "";
-        selectedFiles = [];
-        renderPhotoPreview(savedPhotoUrls);
-        return;
-      }
-    }
-
-    selectedFiles = files;
-    clearNotice("connectProfileNotice");
-    clearPreviewObjectUrls();
-
-    const previewUrls = files.map(file => {
-      const url = URL.createObjectURL(file);
-      previewObjectUrls.push(url);
-      return url;
+    Object.entries(sections).forEach(([key, section]) => {
+      section.classList.toggle("hidden", key !== tab);
     });
 
-    renderPhotoPreview(previewUrls);
+    document.querySelectorAll("[data-tab]").forEach(button => {
+      button.classList.toggle("active", button.dataset.tab === tab);
+    });
+
+    if (tab === "discover") loadDiscover();
+    if (tab === "matches") loadMatches();
+    if (tab === "profile") loadMyProfile();
   }
+
+  document.querySelectorAll("[data-tab]").forEach(button => {
+    button.addEventListener("click", () => showTab(button.dataset.tab));
+  });
+
+  function previewFile(file, container) {
+    if (!file) return;
+
+    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
+      showMessage("Only JPG, PNG and WebP images are allowed.", "error");
+      return;
+    }
+
+    if (file.size > 5 * 1024 * 1024) {
+      showMessage("Each photo must be 5MB or smaller.", "error");
+      return;
+    }
+
+    const image = document.createElement("img");
+    image.alt = "Selected photo";
+    image.src = URL.createObjectURL(file);
+    container.replaceChildren(image);
+  }
+
+  $("primaryPhoto").addEventListener("change", event => {
+    previewFile(event.target.files[0], $("primaryPreview"));
+  });
+
+  $("galleryPhotos").addEventListener("change", event => {
+    const files = Array.from(event.target.files || []);
+
+    if (files.length > 3) {
+      event.target.value = "";
+      showMessage("Choose a maximum of three gallery photos.", "error");
+      return;
+    }
+
+    const grid = $("galleryPreview");
+    grid.replaceChildren();
+
+    for (let i = 0; i < 3; i++) {
+      const box = document.createElement("div");
+      box.className = "photo-preview";
+      box.textContent = "Photo " + (i + 1);
+
+      if (files[i]) {
+        previewFile(files[i], box);
+      }
+
+      grid.appendChild(box);
+    }
+  });
 
   async function loadMyProfile() {
-    const result = await api("/me");
-    const profile = result.profile || null;
+    try {
+      const data = await api("/me");
+      const profile = data.profile;
 
-    $("connectProfileStatus").textContent =
-      profile ? "Profile available" : "Not created yet";
+      if (!profile) return;
 
-    if (!profile) {
-      $("connectAge").value = "";
-      $("connectCountry").value = "";
-      $("connectBio").value = "";
-      $("connectShowSocial").checked = false;
+      $("age").value = profile.age || "";
+      $("country").value = profile.country || "";
+      $("bio").value = profile.bio || "";
 
-      $("connectWhatsApp").value = "";
-      $("connectInstagram").value = "";
-      $("connectTelegram").value = "";
-      $("connectOther").value = "";
+      const links = profile.social_links || {};
+      $("whatsapp").value = links.whatsapp || "";
+      $("instagram").value = links.instagram || "";
+      $("telegram").value = links.telegram || "";
+      $("other").value = links.other || "";
+      $("showLinks").checked = !!profile.show_social_links;
 
-      $("connectBioCount").textContent = "0";
-      $("connectPhotoFiles").value = "";
+      if (profile.primary_photo) {
+        $("primaryPreview").replaceChildren(
+          Object.assign(document.createElement("img"), {
+            src: profile.primary_photo,
+            alt: "Primary profile photo"
+          })
+        );
+      }
 
-      selectedFiles = [];
-      savedPhotoUrls = [];
+      const gallery = $("galleryPreview");
+      gallery.replaceChildren();
 
-      renderPhotoPreview([]);
-      return;
+      const photos = profile.photos || [];
+
+      for (let i = 0; i < 3; i++) {
+        const box = document.createElement("div");
+        box.className = "photo-preview";
+
+        if (photos[i]) {
+          const image = document.createElement("img");
+          image.src = photos[i];
+          image.alt = "Gallery photo";
+          box.appendChild(image);
+        } else {
+          box.textContent = "Photo " + (i + 1);
+        }
+
+        gallery.appendChild(box);
+      }
+    } catch (error) {
+      showMessage(error.message, "error");
     }
-
-    $("connectAge").value = profile.age ?? "";
-    $("connectCountry").value = profile.country ?? "";
-    $("connectBio").value = profile.bio ?? "";
-
-    $("connectShowSocial").checked =
-      Boolean(profile.show_social_links);
-
-    $("connectBioCount").textContent =
-      String((profile.bio || "").length);
-
-    const links = profile.social_links || {};
-
-    $("connectWhatsApp").value = links.whatsapp || "";
-    $("connectInstagram").value = links.instagram || "";
-    $("connectTelegram").value = links.telegram || "";
-    $("connectOther").value = links.other || "";
-
-    $("connectPhotoFiles").value = "";
-    selectedFiles = [];
-
-    savedPhotoUrls = Array.isArray(profile.photos)
-      ? profile.photos.filter(url => safeUrl(url))
-      : [];
-
-    renderPhotoPreview(savedPhotoUrls);
   }
 
-  async function saveProfile(event) {
+  $("profileForm").addEventListener("submit", async event => {
     event.preventDefault();
 
-    if (!signedIn) {
-      showNotice(
-        "connectProfileNotice",
-        "Please sign in on the Megavallia homepage before saving your profile.",
-        "error"
-      );
-      return;
-    }
-
-    const button = $("connectSaveButton");
+    const button = $("saveProfileBtn");
     button.disabled = true;
-    button.textContent = "Saving…";
-
-    $("connectProfileStatus").textContent = "Saving profile…";
-    clearNotice("connectProfileNotice");
+    button.textContent = "Saving...";
 
     try {
-      const age = Number($("connectAge").value);
-      const country = $("connectCountry").value.trim();
-      const bio = $("connectBio").value.trim();
-
-      if (!Number.isInteger(age) || age < 18 || age > 120) {
-        throw new Error("You must be at least 18 years old.");
-      }
-
-      if (!country) {
-        throw new Error("Please enter your country.");
-      }
-
-      if (country.length > 80) {
-        throw new Error("Country must be 80 characters or fewer.");
-      }
-
-      if (bio.length > 300) {
-        throw new Error("Your introduction cannot exceed 300 characters.");
-      }
-
-      const socialLinks = {
-        whatsapp: $("connectWhatsApp").value.trim(),
-        instagram: $("connectInstagram").value.trim(),
-        telegram: $("connectTelegram").value.trim(),
-        other: $("connectOther").value.trim()
+      const profileData = {
+        age: Number($("age").value),
+        country: $("country").value.trim(),
+        bio: $("bio").value.trim(),
+        social_links: {
+          whatsapp: $("whatsapp").value.trim(),
+          instagram: $("instagram").value.trim(),
+          telegram: $("telegram").value.trim(),
+          other: $("other").value.trim()
+        },
+        show_social_links: $("showLinks").checked
       };
-
-      for (const [name, value] of Object.entries(socialLinks)) {
-        if (value && !safeUrl(value)) {
-          throw new Error(
-            "Please enter a valid HTTP or HTTPS URL for " + name + "."
-          );
-        }
-      }
 
       await api("/profile", {
         method: "PUT",
-        body: JSON.stringify({
-          age,
-          country,
-          bio,
-          social_links: socialLinks,
-          show_social_links: $("connectShowSocial").checked
-        })
+        body: JSON.stringify(profileData)
       });
 
-      if (selectedFiles.length) {
-        button.textContent = "Uploading photos…";
+      const primaryFile = $("primaryPhoto").files[0];
 
-        const formData = new FormData();
-        selectedFiles.forEach(file => {
-          formData.append("photos", file);
+      if (primaryFile) {
+        const form = new FormData();
+        form.append("primaryPhoto", primaryFile);
+
+        await api("/primary-photo", {
+          method: "POST",
+          body: form
+        });
+      }
+
+      const galleryFiles = Array.from($("galleryPhotos").files || []);
+
+      if (galleryFiles.length) {
+        const form = new FormData();
+
+        galleryFiles.forEach(file => {
+          form.append("photos", file);
         });
 
         await api("/photos", {
           method: "POST",
-          body: formData
+          body: form
         });
       }
 
+      $("primaryPhoto").value = "";
+      $("galleryPhotos").value = "";
+
+      showMessage("Your Connect profile has been saved.", "success");
       await loadMyProfile();
-
-      showNotice(
-        "connectProfileNotice",
-        "Your Connect profile has been saved successfully.",
-        "success"
-      );
-
-      $("connectProfileStatus").textContent = "Profile saved";
-
-      await loadDiscover();
-
     } catch (error) {
-      console.error("[Connect] Save profile:", error);
-
-      showNotice(
-        "connectProfileNotice",
-        error.message || "Unable to save your profile.",
-        "error"
-      );
-
-      $("connectProfileStatus").textContent = "Save unsuccessful";
-
+      showMessage(error.message, "error");
     } finally {
       button.disabled = false;
       button.textContent = "Save profile";
     }
+  });
+
+  async function loadDiscover() {
+    const content = $("discoverContent");
+    content.innerHTML = '<div class="empty">Finding people...</div>';
+
+    try {
+      const data = await api("/discover");
+      profiles = data.profiles || [];
+      currentIndex = 0;
+      currentPhotoIndex = 0;
+
+      renderCurrentProfile();
+    } catch (error) {
+      content.innerHTML = "";
+      showMessage(error.message, "error");
+      content.innerHTML =
+        '<div class="empty">Sign in to your Megavallia account to discover people.</div>';
+    }
   }
 
-  function createSocialLinks(links) {
-    const container = element("div", "cx-socials");
+  function getProfilePhotos(profile) {
+    const all = [];
 
+    if (profile.primary_photo) all.push(profile.primary_photo);
+
+    (profile.photos || []).forEach(photo => {
+      if (photo && !all.includes(photo)) all.push(photo);
+    });
+
+    return all;
+  }
+
+  function renderCurrentProfile() {
+    const content = $("discoverContent");
+
+    if (currentIndex >= profiles.length) {
+      content.innerHTML = `
+        <div class="panel empty">
+          <h2>You've seen everyone for now.</h2>
+          <p>Check back later to discover more people.</p>
+          <button class="btn secondary" id="refreshDiscover">Refresh</button>
+        </div>
+      `;
+
+      $("refreshDiscover").addEventListener("click", loadDiscover);
+      return;
+    }
+
+    const profile = profiles[currentIndex];
+    currentProfile = profile;
+    currentPhotoIndex = 0;
+
+    const photos = getProfilePhotos(profile);
+    const account = profile.account || {};
+    const name = account.display_name || account.username || "Megavallia member";
+    const photo = photos[0] || account.avatar_url || "";
+
+    content.innerHTML = `
+      <article class="discover-card" id="activeCard">
+        <div class="main-photo" id="cardPhoto">
+          ${photo ? `<img src="${escapeAttr(photo)}" alt="Profile photo">` : '<div class="empty">No photo available</div>'}
+          <div class="photo-count" id="photoCount">1 / ${Math.max(photos.length,1)}</div>
+          <button class="photo-arrow left" id="photoPrev" aria-label="Previous photo">‹</button>
+          <button class="photo-arrow right" id="photoNext" aria-label="Next photo">›</button>
+          <div class="photo-dots" id="photoDots"></div>
+        </div>
+        <div class="card-info">
+          <h2 class="person-name">${escapeHTML(name)}${profile.age ? ", " + Number(profile.age) : ""}</h2>
+          <div class="person-meta">${escapeHTML(profile.country || "")}</div>
+          <div class="person-bio">${escapeHTML(profile.bio || "No introduction added yet.")}</div>
+          <div class="social-links" id="cardSocial"></div>
+          <div class="btn-row">
+            <button class="btn secondary" id="reportBtn">Report</button>
+            <button class="btn danger" id="blockBtn">Block</button>
+          </div>
+        </div>
+      </article>
+
+      <div class="swipe-actions">
+        <button class="swipe-btn pass" id="passBtn" aria-label="Pass">✕</button>
+        <button class="swipe-btn like" id="likeBtn" aria-label="Like">♥</button>
+      </div>
+      <p class="small-note" style="text-align:center">Swipe left to pass or right to like. You can also use the buttons.</p>
+    `;
+
+    renderPhotoDots(photos);
+    renderSocialLinks(profile);
+
+    $("photoPrev").addEventListener("click", () => changePhoto(-1));
+    $("photoNext").addEventListener("click", () => changePhoto(1));
+    $("passBtn").addEventListener("click", () => swipe("pass"));
+    $("likeBtn").addEventListener("click", () => swipe("like"));
+    $("blockBtn").addEventListener("click", blockCurrent);
+    $("reportBtn").addEventListener("click", reportCurrent);
+
+    enableTouchSwipe();
+  }
+
+  function escapeHTML(value) {
+    return String(value).replace(/[&<>"']/g, char => ({
+      "&": "&amp;",
+      "<": "&lt;",
+      ">": "&gt;",
+      '"': "&quot;",
+      "'": "&#39;"
+    })[char]);
+  }
+
+  function escapeAttr(value) {
+    return escapeHTML(value);
+  }
+
+  function renderPhotoDots(photos) {
+    const dots = $("photoDots");
+    dots.replaceChildren();
+
+    const count = Math.max(photos.length, 1);
+
+    for (let i = 0; i < count; i++) {
+      const dot = document.createElement("span");
+      dot.className = "photo-dot" + (i === currentPhotoIndex ? " active" : "");
+      dots.appendChild(dot);
+    }
+  }
+
+  function changePhoto(direction) {
+    const photos = getProfilePhotos(currentProfile);
+    if (!photos.length) return;
+
+    currentPhotoIndex =
+      (currentPhotoIndex + direction + photos.length) % photos.length;
+
+    $("cardPhoto").querySelector("img").src = photos[currentPhotoIndex];
+    $("photoCount").textContent =
+      (currentPhotoIndex + 1) + " / " + photos.length;
+
+    renderPhotoDots(photos);
+  }
+
+  function renderSocialLinks(profile) {
+    const container = $("cardSocial");
+    container.replaceChildren();
+
+    if (!profile.show_social_links) return;
+
+    const links = profile.social_links || {};
     const labels = {
       whatsapp: "WhatsApp",
       instagram: "Instagram",
       telegram: "Telegram",
-      other: "Other link"
+      other: "Website"
     };
 
     Object.entries(labels).forEach(([key, label]) => {
-      const url = safeUrl(links?.[key] || "");
+      const url = links[key];
+
       if (!url) return;
 
-      const link = element("a", "", label);
-      link.href = url;
-      link.target = "_blank";
-      link.rel = "noopener noreferrer";
+      try {
+        const parsed = new URL(url);
 
-      container.appendChild(link);
+        if (!["http:", "https:"].includes(parsed.protocol)) return;
+
+        const link = document.createElement("a");
+        link.href = parsed.href;
+        link.target = "_blank";
+        link.rel = "noopener noreferrer";
+        link.textContent = label;
+        container.appendChild(link);
+      } catch (_) {}
     });
-
-    return container;
   }
 
-  async function blockProfile(userId, details) {
-    if (!confirm("Block this profile? You will no longer see this member in discovery.")) {
+  async function swipe(action) {
+    if (busy || !currentProfile) return;
+
+    busy = true;
+
+    const targetId = currentProfile.user_id;
+
+    $("likeBtn").disabled = true;
+    $("passBtn").disabled = true;
+
+    try {
+      const result = await api("/swipe/" + encodeURIComponent(targetId), {
+        method: "POST",
+        body: JSON.stringify({ action })
+      });
+
+      if (result.matched) {
+        showMessage("It's a mutual connection! You both liked each other.", "success");
+      }
+
+      currentIndex++;
+      renderCurrentProfile();
+    } catch (error) {
+      showMessage(error.message, "error");
+    } finally {
+      busy = false;
+    }
+  }
+
+  function enableTouchSwipe() {
+    const card = $("activeCard");
+    if (!card) return;
+
+    let startX = 0;
+    let startY = 0;
+    let tracking = false;
+
+    card.addEventListener("touchstart", event => {
+      if (event.target.closest("button,a")) return;
+
+      const touch = event.touches[0];
+      startX = touch.clientX;
+      startY = touch.clientY;
+      tracking = true;
+    }, { passive: true });
+
+    card.addEventListener("touchend", event => {
+      if (!tracking) return;
+      tracking = false;
+
+      const touch = event.changedTouches[0];
+      const dx = touch.clientX - startX;
+      const dy = touch.clientY - startY;
+
+      if (Math.abs(dx) > 100 && Math.abs(dx) > Math.abs(dy) * 1.3) {
+        swipe(dx > 0 ? "like" : "pass");
+      }
+    }, { passive: true });
+
+    let mouseStart = null;
+
+    card.addEventListener("mousedown", event => {
+      if (event.target.closest("button,a")) return;
+      mouseStart = event.clientX;
+    });
+
+    window.addEventListener("mouseup", event => {
+      if (mouseStart === null) return;
+
+      const dx = event.clientX - mouseStart;
+      mouseStart = null;
+
+      if (Math.abs(dx) > 120) {
+        swipe(dx > 0 ? "like" : "pass");
+      }
+    });
+  }
+
+  async function blockCurrent() {
+    if (!currentProfile) return;
+
+    if (!confirm("Block this profile? You will no longer see each other in Connect.")) {
       return;
     }
 
     try {
-      await api("/block/" + encodeURIComponent(userId), {
+      await api("/block/" + encodeURIComponent(currentProfile.user_id), {
         method: "POST"
       });
 
-      if (details) details.open = false;
-
-      showNotice(
-        "connectDiscoverNotice",
-        "This profile has been blocked.",
-        "success"
-      );
-
-      await loadDiscover();
-
+      showMessage("Profile blocked.", "success");
+      currentIndex++;
+      renderCurrentProfile();
     } catch (error) {
-      showNotice("connectDiscoverNotice", error.message, "error");
+      showMessage(error.message, "error");
     }
   }
 
-  function openReportModal(userId, details) {
-    reportTargetUserId = userId;
-    $("connectReportReason").value = "";
-    clearNotice("connectReportNotice");
-    $("connectReportModal").classList.add("open");
-    $("connectReportReason").focus();
+  async function reportCurrent() {
+    if (!currentProfile) return;
 
-    if (details) details.open = false;
-  }
+    const reason = prompt("Why are you reporting this profile?");
 
-  function closeReportModal() {
-    $("connectReportModal").classList.remove("open");
-    reportTargetUserId = null;
-  }
+    if (!reason || reason.trim().length < 3) return;
 
-  function createProfileCard(profile) {
-    const card = element("article", "cx-card");
-    const photos = element("div", "cx-card-photos");
-
-    const urls = Array.isArray(profile.photos)
-      ? profile.photos.slice(0, 3).map(safeUrl).filter(Boolean)
-      : [];
-
-    if (urls.length) {
-      urls.forEach(url => {
-        const img = element("img");
-        img.src = url;
-        img.alt = "Community member photo";
-        img.loading = "lazy";
-
-        img.addEventListener("error", () => {
-          img.remove();
-
-          if (!photos.querySelector("img")) {
-            photos.appendChild(
-              element("div", "cx-card-placeholder", "Photo unavailable")
-            );
-          }
-        });
-
-        photos.appendChild(img);
+    try {
+      await api("/report/" + encodeURIComponent(currentProfile.user_id), {
+        method: "POST",
+        body: JSON.stringify({ reason: reason.trim() })
       });
-    } else {
-      photos.appendChild(
-        element("div", "cx-card-placeholder", "Megavallia member")
-      );
+
+      showMessage("Your report has been submitted.", "success");
+    } catch (error) {
+      showMessage(error.message, "error");
     }
-
-    const body = element("div", "cx-card-body");
-    const account = profile.account || {};
-
-    const displayName =
-      account.display_name ||
-      account.username ||
-      "Megavallia member";
-
-    const titleRow = element("div", "cx-card-title-row");
-    titleRow.appendChild(element("h3", "", displayName));
-
-    const more = element("details", "cx-more");
-    const summary = element("summary", "", "•••");
-    summary.setAttribute("aria-label", "More profile actions");
-
-    const menu = element("div", "cx-more-menu");
-
-    const blockButton = element("button", "", "Block profile");
-    blockButton.type = "button";
-    blockButton.addEventListener("click", () => {
-      blockProfile(profile.user_id, more);
-    });
-
-    const reportButton = element("button", "report", "Report profile");
-    reportButton.type = "button";
-    reportButton.addEventListener("click", () => {
-      openReportModal(profile.user_id, more);
-    });
-
-    menu.append(blockButton, reportButton);
-    more.append(summary, menu);
-    titleRow.appendChild(more);
-
-    body.appendChild(titleRow);
-
-    const location =
-      (profile.age ? profile.age + " years old" : "") +
-      (profile.country
-        ? (profile.age ? " · " : "") + profile.country
-        : "");
-
-    if (location) {
-      body.appendChild(element("p", "cx-card-location", location));
-    }
-
-    body.appendChild(
-      element("p", "cx-card-bio", profile.bio || "This member hasn't added an introduction yet.")
-    );
-
-    if (profile.show_social_links && profile.social_links) {
-      body.appendChild(createSocialLinks(profile.social_links));
-    }
-
-    const actions = element("div", "cx-card-actions");
-    const requestButton = element("button", "cx-button small", "Connect");
-
-    requestButton.type = "button";
-
-    if (profile.request_status === "pending") {
-      requestButton.textContent = "Request sent";
-      requestButton.disabled = true;
-    } else if (profile.request_status === "accepted") {
-      requestButton.textContent = "Connected";
-      requestButton.disabled = true;
-    }
-
-    requestButton.addEventListener("click", async () => {
-      requestButton.disabled = true;
-      requestButton.textContent = "Sending…";
-
-      try {
-        await api(
-          "/requests/" + encodeURIComponent(profile.user_id),
-          { method: "POST" }
-        );
-
-        requestButton.textContent = "Request sent";
-
-        showNotice(
-          "connectDiscoverNotice",
-          "Your connection request has been sent.",
-          "success"
-        );
-
-        await loadRequests();
-
-      } catch (error) {
-        requestButton.disabled = false;
-        requestButton.textContent = "Connect";
-
-        showNotice(
-          "connectDiscoverNotice",
-          error.message,
-          "error"
-        );
-      }
-    });
-
-    actions.appendChild(requestButton);
-    body.appendChild(actions);
-
-    card.append(photos, body);
-
-    return card;
   }
 
-  function renderDiscover() {
-    const container = $("connectDiscover");
-    const search = $("connectSearch").value.trim().toLowerCase();
-
-    const filtered = discoverProfiles.filter(profile => {
-      const account = profile.account || {};
-
-      const searchable = [
-        account.display_name,
-        account.username,
-        profile.country,
-        profile.bio
-      ].filter(Boolean).join(" ").toLowerCase();
-
-      return searchable.includes(search);
-    });
-
-    container.replaceChildren();
-
-    if (!filtered.length) {
-      container.appendChild(
-        element(
-          "div",
-          "cx-empty",
-          discoverProfiles.length
-            ? "No profiles match your search. Try another name or country."
-            : "No profiles to discover yet. Check back soon."
-        )
-      );
-
-      return;
-    }
-
-    filtered.forEach(profile => {
-      container.appendChild(createProfileCard(profile));
-    });
-  }
-
-  async function loadDiscover() {
-    const container = $("connectDiscover");
-
-    container.replaceChildren(
-      element("div", "cx-empty", "Loading community profiles…")
-    );
-
-    clearNotice("connectDiscoverNotice");
+  async function loadMatches() {
+    const container = $("matchesList");
+    container.innerHTML = '<div class="empty">Loading connections...</div>';
 
     try {
-      const result = await api("/discover");
+      const data = await api("/matches");
+      const matches = data.matches || [];
 
-      discoverProfiles = Array.isArray(result.profiles)
-        ? result.profiles
-        : [];
+      if (!matches.length) {
+        container.innerHTML =
+          '<div class="empty">No mutual connections yet.<br>Keep discovering people.</div>';
+        return;
+      }
 
-      renderDiscover();
+      container.replaceChildren();
 
-    } catch (error) {
-      discoverProfiles = [];
+      matches.forEach(profile => {
+        const account = profile.account || {};
+        const name = account.display_name || account.username || "Megavallia member";
+        const photo = profile.primary_photo ||
+          profile.photos?.[0] ||
+          account.avatar_url ||
+          "";
 
-      container.replaceChildren(
-        element("div", "cx-empty", error.message)
-      );
-    }
-  }
+        const item = document.createElement("div");
+        item.className = "match-item";
 
-  function getRequestDisplayName(request, type) {
-    const person = type === "incoming"
-      ? (request.sender_profile || request.sender || {})
-      : (request.receiver_profile || request.receiver || {});
+        const image = document.createElement("img");
+        image.src = photo;
+        image.alt = "Profile photo";
 
-    return (
-      person.display_name ||
-      person.username ||
-      person.name ||
-      "Megavallia member"
-    );
-  }
+        const details = document.createElement("div");
 
-  function renderRequests(result) {
-    const container = $("connectRequests");
-    container.replaceChildren();
+        const nameEl = document.createElement("div");
+        nameEl.className = "match-name";
+        nameEl.textContent = name;
 
-    const list = Array.isArray(result[currentRequestTab])
-      ? result[currentRequestTab]
-      : [];
+        const meta = document.createElement("div");
+        meta.className = "match-meta";
+        meta.textContent = profile.country || "Mutual connection";
 
-    if (!list.length) {
-      container.appendChild(
-        element(
-          "div",
-          "cx-empty",
-          currentRequestTab === "incoming"
-            ? "You have no received connection requests."
-            : "You haven't sent any connection requests yet."
-        )
-      );
+        details.append(nameEl, meta);
+        item.append(image, details);
 
-      return;
-    }
+        if (profile.show_social_links) {
+          const links = profile.social_links || {};
 
-    list.forEach(request => {
-      const row = element("div", "cx-request");
-      const info = element("div", "cx-request-info");
+          ["whatsapp", "instagram", "telegram", "other"].forEach(key => {
+            const url = links[key];
 
-      const displayName = getRequestDisplayName(
-        request,
-        currentRequestTab
-      );
+            if (!url) return;
 
-      info.appendChild(element("strong", "", displayName));
+            try {
+              const parsed = new URL(url);
+              if (!["http:", "https:"].includes(parsed.protocol)) return;
 
-      info.appendChild(
-        element(
-          "p",
-          "",
-          currentRequestTab === "incoming"
-            ? "This member would like to connect with you."
-            : "You sent this member a connection request."
-        )
-      );
-
-      info.appendChild(
-        element(
-          "span",
-          "cx-request-status",
-          request.status || "pending"
-        )
-      );
-
-      row.appendChild(info);
-
-      if (
-        currentRequestTab === "incoming" &&
-        request.status === "pending"
-      ) {
-        const actions = element("div", "cx-request-actions");
-
-        const accept = element("button", "cx-button small", "Accept");
-        const reject = element("button", "cx-button secondary small", "Decline");
-
-        accept.type = "button";
-        reject.type = "button";
-
-        async function updateRequest(status) {
-          accept.disabled = true;
-          reject.disabled = true;
-
-          try {
-            await api(
-              "/requests/" + encodeURIComponent(request.id),
-              {
-                method: "PATCH",
-                body: JSON.stringify({ status })
-              }
-            );
-
-            showNotice(
-              "connectRequestsNotice",
-              status === "accepted"
-                ? "Connection request accepted."
-                : "Connection request declined.",
-              "success"
-            );
-
-            await loadRequests();
-
-          } catch (error) {
-            showNotice(
-              "connectRequestsNotice",
-              error.message,
-              "error"
-            );
-
-            accept.disabled = false;
-            reject.disabled = false;
-          }
+              const link = document.createElement("a");
+              link.href = parsed.href;
+              link.target = "_blank";
+              link.rel = "noopener noreferrer";
+              link.textContent = key === "other" ? "Website" : key;
+              link.style.cssText =
+                "color:#e8dfff;font-size:11px;margin-left:8px;";
+              details.appendChild(link);
+            } catch (_) {}
+          });
         }
 
-        accept.addEventListener("click", () => updateRequest("accepted"));
-        reject.addEventListener("click", () => updateRequest("rejected"));
-
-        actions.append(accept, reject);
-        row.appendChild(actions);
-      }
-
-      container.appendChild(row);
-    });
-  }
-
-  async function loadRequests() {
-    const container = $("connectRequests");
-
-    container.replaceChildren(
-      element("div", "cx-empty", "Loading connection requests…")
-    );
-
-    try {
-      const result = await api("/requests");
-      renderRequests(result);
-
+        item.appendChild(details);
+        container.appendChild(item);
+      });
     } catch (error) {
-      container.replaceChildren(
-        element("div", "cx-empty", error.message)
-      );
+      container.innerHTML = "";
+      showMessage(error.message, "error");
     }
   }
 
-  async function refreshConnect() {
-    if (!signedIn || refreshInProgress) return;
-
-    refreshInProgress = true;
-    showSignedIn(true);
-
+  async function checkSession() {
     try {
-      await loadMyProfile();
-    } catch (error) {
-      console.error("[Connect] Profile loading:", error);
-
-      showNotice(
-        "connectProfileNotice",
-        "Your profile could not be loaded: " + error.message,
-        "error"
-      );
-    }
-
-    await Promise.all([
-      loadDiscover(),
-      loadRequests()
-    ]);
-
-    refreshInProgress = false;
-  }
-
-  async function checkConnectSession() {
-    const client = window.megavalliaSupabase;
-
-    if (!client) {
-      showSignedIn(false);
-      return;
-    }
-
-    try {
-      const { data, error } = await client.auth.getSession();
-
-      if (error) throw error;
-
-      const session = data?.session || null;
-
-      showSignedIn(Boolean(session));
-
-      if (session) {
-        await refreshConnect();
-      }
-
-    } catch (error) {
-      console.error("[Connect] Session check:", error);
-      showSignedIn(false);
-    }
-  }
-
-  async function submitReport(event) {
-    event.preventDefault();
-
-    if (!reportTargetUserId) return;
-
-    const reason = $("connectReportReason").value.trim();
-
-    if (reason.length < 3) {
-      showNotice(
-        "connectReportNotice",
-        "Please provide a little more detail.",
-        "error"
-      );
-      return;
-    }
-
-    const button = $("connectReportSubmit");
-    button.disabled = true;
-    button.textContent = "Submitting…";
-
-    try {
-      await api(
-        "/report/" + encodeURIComponent(reportTargetUserId),
-        {
-          method: "POST",
-          body: JSON.stringify({ reason })
-        }
-      );
-
-      closeReportModal();
-
-      showNotice(
-        "connectDiscoverNotice",
-        "Your report has been submitted.",
-        "success"
-      );
-
-    } catch (error) {
-      showNotice(
-        "connectReportNotice",
-        error.message,
-        "error"
-      );
-
-    } finally {
-      button.disabled = false;
-      button.textContent = "Submit report";
-    }
-  }
-
-  // Profile form
-  $("connectProfileForm").addEventListener("submit", saveProfile);
-
-  $("connectPhotoFiles").addEventListener(
-    "change",
-    previewSelectedFiles
-  );
-
-  $("connectBio").addEventListener("input", () => {
-    $("connectBioCount").textContent =
-      String($("connectBio").value.length);
-  });
-
-  $("connectReloadButton").addEventListener("click", async () => {
-    if (!signedIn) {
-      showNotice(
-        "connectProfileNotice",
-        "Please sign in on the Megavallia homepage first.",
-        "error"
-      );
-      return;
-    }
-
-    const button = $("connectReloadButton");
-    button.disabled = true;
-    button.textContent = "Reloading…";
-
-    try {
-      await loadMyProfile();
-
-      showNotice(
-        "connectProfileNotice",
-        "Your profile has been reloaded.",
-        "success"
-      );
-
-    } catch (error) {
-      showNotice(
-        "connectProfileNotice",
-        error.message,
-        "error"
-      );
-
-    } finally {
-      button.disabled = false;
-      button.textContent = "Reload profile";
-    }
-  });
-
-  // Discovery
-  $("connectRefreshDiscover").addEventListener("click", () => {
-    if (signedIn) {
+      await getAccessToken();
       loadDiscover();
-    } else {
-      showNotice(
-        "connectSignInNotice",
-        "Sign in on the Megavallia homepage to discover profiles.",
-        "error"
-      );
+    } catch (error) {
+      $("discoverContent").innerHTML =
+        '<div class="panel empty">Please sign in to your Megavallia account to use Connect.<br><br><a href="/login.html" style="color:#f04eaa">Sign in</a></div>';
     }
-  });
-
-  $("connectSearch").addEventListener("input", renderDiscover);
-
-  // Request tabs
-  document.querySelectorAll("[data-request-tab]").forEach(button => {
-    button.addEventListener("click", () => {
-      currentRequestTab = button.dataset.requestTab;
-
-      document.querySelectorAll("[data-request-tab]").forEach(tab => {
-        const active = tab === button;
-
-        tab.classList.toggle("active", active);
-        tab.classList.toggle("secondary", !active);
-        tab.setAttribute("aria-pressed", String(active));
-      });
-
-      if (signedIn) {
-        loadRequests();
-      } else {
-        showNotice(
-          "connectSignInNotice",
-          "Sign in on the Megavallia homepage to view requests.",
-          "error"
-        );
-      }
-    });
-  });
-
-  // Reporting modal
-  $("connectReportForm").addEventListener("submit", submitReport);
-
-  $("connectReportCancel").addEventListener("click", closeReportModal);
-
-  $("connectReportModal").addEventListener("click", event => {
-    if (event.target === $("connectReportModal")) {
-      closeReportModal();
-    }
-  });
-
-  document.addEventListener("keydown", event => {
-    if (event.key === "Escape") {
-      closeReportModal();
-    }
-  });
-
-  // Reuse the existing Megavallia Supabase authentication.
-  if (window.megavalliaSupabase) {
-    const { data } =
-      window.megavalliaSupabase.auth.onAuthStateChange(
-        (_event, session) => {
-          signedIn = Boolean(session);
-          showSignedIn(signedIn);
-
-          if (signedIn) {
-            setTimeout(() => refreshConnect(), 0);
-          } else {
-            discoverProfiles = [];
-
-            $("connectDiscover").replaceChildren(
-              element("div", "cx-empty", "Sign in to discover community profiles.")
-            );
-
-            $("connectRequests").replaceChildren(
-              element("div", "cx-empty", "Sign in to manage your connection requests.")
-            );
-          }
-        }
-      );
-
-    authSubscription = data?.subscription || null;
   }
 
-  checkConnectSession();
+  // Wait for the main website's Supabase client to become available.
+  let attempts = 0;
 
-  window.addEventListener("pagehide", () => {
-    if (authSubscription) {
-      authSubscription.unsubscribe();
+  const sessionTimer = setInterval(async () => {
+    attempts++;
+
+    if (
+      window.megavalliaSupabase ||
+      typeof window.getMegavalliaAccessToken === "function"
+    ) {
+      clearInterval(sessionTimer);
+      checkSession();
+      return;
     }
 
-    clearPreviewObjectUrls();
-  });
+    if (attempts >= 20) {
+      clearInterval(sessionTimer);
+      checkSession();
+    }
+  }, 500);
 
 })();
 </script>
