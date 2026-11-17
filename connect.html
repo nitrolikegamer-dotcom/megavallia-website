@@ -600,24 +600,30 @@
     }, 5000);
   }
 
-  async function getAccessToken() {
-    if (typeof window.getMegavalliaAccessToken === "function") {
-      const token = await window.getMegavalliaAccessToken();
-      if (token) return token;
-    }
-
-    const client = window.megavalliaSupabase;
-
-    if (client?.auth?.getSession) {
-      const { data, error } = await client.auth.getSession();
-      if (error) throw error;
-
-      const token = data?.session?.access_token;
-      if (token) return token;
-    }
-
-    throw new Error("Please sign in to your Megavallia account first.");
+  
+async function getAccessToken() {
+  // Reuse the main Megavallia website authentication.
+  if (typeof window.getMegavalliaAccessToken === "function") {
+    return await window.getMegavalliaAccessToken();
   }
+
+  // Fallback: use the main website's existing Supabase client.
+  if (window.megavalliaSupabase) {
+    const { data, error } =
+      await window.megavalliaSupabase.auth.getSession();
+
+    if (error) throw error;
+
+    const token = data?.session?.access_token;
+
+    if (token) return token;
+  }
+
+  throw new Error(
+    "Your Megavallia session could not be found. Please sign in on the main website first."
+  );
+  }
+  
 
   async function api(path, options = {}) {
     const token = await getAccessToken();
