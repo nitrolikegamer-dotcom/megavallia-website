@@ -1,1389 +1,995 @@
 
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <meta name="theme-color" content="#090914">
-  <meta name="description" content="Discover people, build connections and meet new communities on Megavallia.">
-  <title>Connect | Megavallia</title>
-
-  <style>
-    :root {
-      --bg: #090914;
-      --panel: #141426;
-      --panel2: #1c1b32;
-      --text: #f7f5ff;
-      --muted: #a6a2bb;
-      --pink: #f04eaa;
-      --purple: #8756ff;
-      --border: rgba(255,255,255,.1);
-      --green: #40d9a2;
-      --red: #ff687c;
-    }
-
-    * { box-sizing: border-box; }
-
-    body {
-      margin: 0;
-      background: var(--bg);
-      color: var(--text);
-      font-family: Arial, sans-serif;
-      min-height: 100vh;
-    }
-
-    button, input, textarea, select { font: inherit; }
-    button { cursor: pointer; }
-
-    .topbar {
-      position: sticky;
-      top: 0;
-      z-index: 20;
-      background: rgba(9,9,20,.95);
-      border-bottom: 1px solid var(--border);
-      padding: 14px 18px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 12px;
-      backdrop-filter: blur(14px);
-    }
-
-    .brand {
-      font-size: 22px;
-      font-weight: 900;
-      letter-spacing: -.8px;
-    }
-
-    .brand span { color: var(--pink); }
-
-    .top-actions {
-      display: flex;
-      gap: 8px;
-    }
-
-    .tab {
-      background: transparent;
-      color: var(--muted);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 9px 13px;
-      font-size: 12px;
-    }
-
-    .tab.active {
-      background: linear-gradient(110deg,var(--purple),var(--pink));
-      color: white;
-      border-color: transparent;
-    }
-
-    .container {
-      width: min(100%, 1050px);
-      margin: auto;
-      padding: 22px 15px 60px;
-    }
-
-    .intro {
-      text-align: center;
-      margin: 12px auto 24px;
-    }
-
-    .intro h1 {
-      font-size: clamp(27px,5vw,40px);
-      margin: 0 0 8px;
-    }
-
-    .intro p {
-      color: var(--muted);
-      line-height: 1.5;
-      margin: 0;
-    }
-
-    .panel {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 20px;
-      padding: 18px;
-      margin-bottom: 18px;
-    }
-
-    .section-title {
-      font-size: 20px;
-      margin: 0 0 8px;
-    }
-
-    .subtext {
-      color: var(--muted);
-      font-size: 13px;
-      line-height: 1.5;
-    }
-
-    .hidden { display: none !important; }
-
-    .message {
-      padding: 12px;
-      border-radius: 12px;
-      margin-bottom: 15px;
-      font-size: 13px;
-      background: var(--panel2);
-      color: var(--text);
-      display: none;
-    }
-
-    .message.error { color: #ff9aaa; }
-    .message.success { color: var(--green); }
-
-    .btn {
-      border: 0;
-      border-radius: 12px;
-      padding: 12px 17px;
-      color: white;
-      background: linear-gradient(110deg,var(--purple),var(--pink));
-      font-weight: 700;
-    }
-
-    .btn:disabled {
-      opacity: .5;
-      cursor: not-allowed;
-    }
-
-    .btn.secondary {
-      background: var(--panel2);
-      border: 1px solid var(--border);
-    }
-
-    .btn.danger { background: #642637; }
-    .btn.green { background: #14664f; }
-
-    .btn-row {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 10px;
-      margin-top: 15px;
-    }
-
-    .field { margin-bottom: 14px; }
-
-    .field label {
-      display: block;
-      font-size: 13px;
-      margin-bottom: 7px;
-      color: #ddd8f3;
-    }
-
-    .field input,
-    .field textarea,
-    .field select {
-      width: 100%;
-      background: #0d0d1b;
-      border: 1px solid var(--border);
-      border-radius: 11px;
-      color: white;
-      padding: 12px;
-      outline: none;
-    }
-
-    .field input:focus,
-    .field textarea:focus {
-      border-color: var(--purple);
-    }
-
-    .field textarea {
-      min-height: 85px;
-      resize: vertical;
-    }
-
-    .profile-grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 12px;
-    }
-
-    .photo-preview {
-      width: 100%;
-      aspect-ratio: 4/5;
-      background: var(--panel2);
-      border-radius: 14px;
-      overflow: hidden;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      color: var(--muted);
-      font-size: 12px;
-    }
-
-    .photo-preview img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-
-    .preview-grid {
-      display: grid;
-      grid-template-columns: repeat(3,1fr);
-      gap: 9px;
-      margin-top: 10px;
-    }
-
-    .preview-grid .photo-preview { aspect-ratio: 1; }
-
-    .discover-wrap {
-      max-width: 500px;
-      margin: auto;
-    }
-
-    .discover-card {
-      background: var(--panel);
-      border: 1px solid var(--border);
-      border-radius: 22px;
-      overflow: hidden;
-      position: relative;
-      touch-action: pan-y;
-      user-select: none;
-    }
-
-    .main-photo {
-      width: 100%;
-      aspect-ratio: 4/4.5;
-      background: var(--panel2);
-      position: relative;
-      overflow: hidden;
-    }
-
-    .main-photo img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      display: block;
-    }
-
-    .photo-count {
-      position: absolute;
-      top: 12px;
-      left: 12px;
-      background: rgba(0,0,0,.65);
-      padding: 7px 10px;
-      border-radius: 20px;
-      font-size: 12px;
-    }
-
-    .photo-arrow {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 36px;
-      height: 45px;
-      border: 0;
-      color: white;
-      background: rgba(0,0,0,.5);
-      border-radius: 10px;
-    }
-
-    .photo-arrow.left { left: 9px; }
-    .photo-arrow.right { right: 9px; }
-
-    .photo-dots {
-      display: flex;
-      gap: 5px;
-      position: absolute;
-      bottom: 10px;
-      left: 50%;
-      transform: translateX(-50%);
-    }
-
-    .photo-dot {
-      height: 4px;
-      width: 25px;
-      border-radius: 5px;
-      background: rgba(255,255,255,.4);
-    }
-
-    .photo-dot.active { background: white; }
-
-    .card-info { padding: 18px; }
-
-    .person-name {
-      font-size: 25px;
-      font-weight: 800;
-      margin: 0 0 5px;
-    }
-
-    .person-meta {
-      color: var(--muted);
-      font-size: 13px;
-    }
-
-    .person-bio {
-      color: #ded9ef;
-      line-height: 1.55;
-      font-size: 14px;
-      margin-top: 13px;
-      white-space: pre-wrap;
-    }
-
-    .swipe-actions {
-      display: flex;
-      justify-content: center;
-      gap: 25px;
-      padding: 18px 5px;
-    }
-
-    .swipe-btn {
-      width: 65px;
-      height: 65px;
-      border-radius: 50%;
-      border: 1px solid var(--border);
-      background: var(--panel);
-      color: white;
-      font-size: 25px;
-      box-shadow: 0 5px 20px rgba(0,0,0,.2);
-    }
-
-    .swipe-btn.like {
-      background: linear-gradient(140deg,#a13fff,#f04eaa);
-      border: 0;
-    }
-
-    .swipe-btn.pass { color: var(--red); }
-
-    .social-links {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 15px;
-    }
-
-    .social-links a {
-      background: var(--panel2);
-      color: #e6dfff;
-      border: 1px solid var(--border);
-      text-decoration: none;
-      padding: 9px 12px;
-      border-radius: 10px;
-      font-size: 12px;
-    }
-
-    .match-list {
-      display: grid;
-      gap: 12px;
-    }
-
-    .match-item {
-      display: flex;
-      align-items: center;
-      gap: 13px;
-      padding: 12px;
-      background: var(--panel2);
-      border-radius: 13px;
-    }
-
-    .match-item img {
-      width: 55px;
-      height: 55px;
-      object-fit: cover;
-      border-radius: 50%;
-      background: #333;
-    }
-
-    .match-item .match-name { font-weight: bold; }
-
-    .match-item .match-meta {
-      font-size: 12px;
-      color: var(--muted);
-      margin-top: 4px;
-    }
-
-    .empty {
-      text-align: center;
-      color: var(--muted);
-      padding: 35px 15px;
-      line-height: 1.6;
-    }
-
-    .small-note {
-      color: var(--muted);
-      font-size: 11px;
-      line-height: 1.5;
-      margin-top: 10px;
-    }
-
-    @media(max-width:560px) {
-      .topbar { padding: 12px 10px; }
-      .brand { font-size: 19px; }
-      .tab { padding: 8px 10px; font-size: 11px; }
-      .profile-grid { grid-template-columns: 1fr; }
-      .container {
-        padding-left: 11px;
-        padding-right: 11px;
-      }
-    }
-  </style>
-
-  <!--
-    IMPORTANT:
-    Load the same Supabase CDN and authentication script
-    used by your main Megavallia index.html.
-
-    If your main website uses a different script path,
-    replace /app.js with that exact path.
-
-    Do not initialize a second Supabase client here.
-  -->
-  <script src="/app.js" defer></script>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090711">
+<title>Megavallia Connect</title>
+
+<style>
+:root {
+  --bg:#090711;
+  --panel:#151120;
+  --panel2:#1d172a;
+  --line:#352744;
+  --text:#f7f2ff;
+  --muted:#aaa0b9;
+  --pink:#ed4ca5;
+  --violet:#8957ff;
+  --green:#53d6a2;
+  --danger:#ff7777;
+}
+
+* { box-sizing:border-box; }
+
+body {
+  margin:0;
+  background:
+    radial-gradient(ellipse at 80% -10%,#30204c 0,transparent 36%),
+    var(--bg);
+  color:var(--text);
+  font:15px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif;
+}
+
+button,input,textarea { font:inherit; }
+button { cursor:pointer; }
+
+button:disabled {
+  opacity:.55;
+  cursor:not-allowed;
+}
+
+.wrap {
+  max-width:1120px;
+  margin:auto;
+  padding:0 22px;
+}
+
+header {
+  min-height:76px;
+  border-bottom:1px solid #ffffff12;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:16px;
+}
+
+.brand {
+  font-size:21px;
+  font-weight:850;
+  letter-spacing:-.7px;
+}
+
+.brand span { color:#d77bff; }
+
+.nav {
+  display:flex;
+  gap:8px;
+  align-items:center;
+}
+
+.nav button,.mode button {
+  background:transparent;
+  border:1px solid transparent;
+  color:var(--muted);
+  padding:10px 14px;
+  border-radius:12px;
+}
+
+.nav button.active,.mode button.active {
+  background:#2b203d;
+  border-color:#50336c;
+  color:white;
+}
+
+.primary {
+  border:0!important;
+  color:white!important;
+  background:linear-gradient(110deg,var(--violet),var(--pink))!important;
+  padding:11px 17px!important;
+  border-radius:12px;
+  font-weight:750;
+}
+
+.hero { padding:38px 0 25px; }
+
+.eyebrow {
+  color:#d99bff;
+  font-weight:750;
+  text-transform:uppercase;
+  letter-spacing:1.8px;
+  font-size:11px;
+}
+
+.hero h1 {
+  font-size:clamp(30px,5vw,48px);
+  line-height:1.08;
+  letter-spacing:-1.7px;
+  margin:10px 0;
+}
+
+.hero h1 span {
+  background:linear-gradient(90deg,#b18aff,#f078bd);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
+
+.hero p {
+  color:var(--muted);
+  max-width:620px;
+  margin:0;
+}
+
+.toolbar {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:14px;
+  flex-wrap:wrap;
+  margin:24px 0;
+}
+
+.mode {
+  display:flex;
+  gap:6px;
+  padding:5px;
+  background:#100d19;
+  border:1px solid var(--line);
+  border-radius:15px;
+}
+
+.mode button { padding:9px 16px; }
+
+.section-title {
+  font-size:19px;
+  margin:0 0 14px;
+}
+
+.grid {
+  display:grid;
+  grid-template-columns:repeat(3,minmax(0,1fr));
+  gap:18px;
+  padding-bottom:50px;
+}
+
+.card {
+  background:linear-gradient(180deg,#1a1525,#110e19);
+  border:1px solid var(--line);
+  border-radius:19px;
+  overflow:hidden;
+  min-width:0;
+  box-shadow:0 12px 35px #0003;
+}
+
+.photos {
+  height:230px;
+  display:grid;
+  grid-template-columns:1.3fr 1fr;
+  grid-template-rows:1fr 1fr;
+  gap:4px;
+  background:#21172e;
+}
+
+.photo {
+  position:relative;
+  overflow:hidden;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  color:#ffffffb8;
+  background:linear-gradient(145deg,#55317d,#b34491);
+}
+
+.photo:first-child { grid-row:1/3; }
+
+.photo:nth-child(2) {
+  background:linear-gradient(145deg,#263f6d,#8a4d9c);
+}
+
+.photo:nth-child(3) {
+  background:linear-gradient(145deg,#6a3c51,#d07b66);
+}
+
+.photo img {
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  position:absolute;
+  inset:0;
+}
+
+.card-body { padding:15px; }
+
+.name-line {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:8px;
+}
+
+.name {
+  font-weight:800;
+  font-size:18px;
+}
+
+.location,.bio,.interests {
+  color:var(--muted);
+  font-size:13px;
+}
+
+.bio { margin:10px 0; }
+
+.chips {
+  display:flex;
+  gap:6px;
+  flex-wrap:wrap;
+}
+
+.chip {
+  font-size:11px;
+  border:1px solid #473455;
+  background:#21182c;
+  padding:4px 8px;
+  border-radius:30px;
+  color:#e4d5f5;
+}
+
+.actions {
+  display:flex;
+  gap:8px;
+  margin-top:14px;
+}
+
+.actions button {
+  flex:1;
+  padding:9px;
+  border-radius:10px;
+  border:1px solid var(--line);
+  background:#211a2d;
+  color:white;
+}
+
+.actions .like {
+  background:#342044;
+  border-color:#7744a2;
+}
+
+.links {
+  display:flex;
+  gap:12px;
+  flex-wrap:wrap;
+  margin-top:12px;
+}
+
+.links a {
+  color:#d9a3ff;
+  font-size:12px;
+  text-decoration:none;
+}
+
+.links a:hover { text-decoration:underline; }
+
+.discover-wrap {
+  max-width:520px;
+  margin:0 auto 50px;
+}
+
+.discover-wrap .photos { height:360px; }
+.discover-wrap .card-body { padding:20px; }
+
+.discover-actions {
+  display:flex;
+  justify-content:center;
+  gap:12px;
+  margin-top:16px;
+}
+
+.discover-actions button {
+  border-radius:50px;
+  padding:12px 23px;
+  border:1px solid var(--line);
+  background:#211a2d;
+  color:white;
+}
+
+.discover-actions .like {
+  background:linear-gradient(110deg,var(--violet),var(--pink));
+  border:0;
+}
+
+.empty {
+  border:1px dashed #59436d;
+  border-radius:18px;
+  padding:35px;
+  text-align:center;
+  color:var(--muted);
+  grid-column:1/-1;
+}
+
+.status {
+  display:none;
+  padding:12px 15px;
+  margin:12px 0 20px;
+  border:1px solid var(--line);
+  background:var(--panel);
+  border-radius:12px;
+  color:var(--muted);
+  overflow-wrap:anywhere;
+}
+
+.status.show { display:block; }
+.status.error { color:#ffaaaa;border-color:#713b4a; }
+.status.success { color:#8ce8b9;border-color:#315d4b; }
+
+footer {
+  border-top:1px solid #ffffff12;
+  padding:22px 0 34px;
+  color:var(--muted);
+  font-size:12px;
+}
+
+.modal {
+  position:fixed;
+  inset:0;
+  background:#05040bdc;
+  display:none;
+  align-items:center;
+  justify-content:center;
+  padding:18px;
+  z-index:5;
+}
+
+.modal.open { display:flex; }
+
+.dialog {
+  width:min(620px,100%);
+  max-height:90vh;
+  overflow:auto;
+  background:#171222;
+  border:1px solid #4b365f;
+  border-radius:20px;
+  padding:22px;
+  box-shadow:0 25px 90px #0009;
+}
+
+.dialog-head {
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+}
+
+.dialog h2 { margin:0 0 12px; }
+
+.close {
+  border:0;
+  background:#2a2038;
+  color:white;
+  border-radius:9px;
+  padding:7px 11px;
+}
+
+.form-grid {
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+
+.field {
+  display:flex;
+  flex-direction:column;
+  gap:6px;
+  margin:10px 0;
+}
+
+.field.full { grid-column:1/-1; }
+
+.field label {
+  font-size:12px;
+  color:#c9bdd5;
+}
+
+.field input,.field textarea {
+  width:100%;
+  border:1px solid #453451;
+  background:#0f0c17;
+  color:white;
+  border-radius:10px;
+  padding:11px;
+  outline:none;
+}
+
+.field input:focus,.field textarea:focus {
+  border-color:#a45be9;
+}
+
+.field small {
+  color:var(--muted);
+  font-size:11px;
+}
+
+.submit {
+  width:100%;
+  border:0;
+  border-radius:11px;
+  padding:12px;
+  color:white;
+  font-weight:800;
+  background:linear-gradient(110deg,var(--violet),var(--pink));
+  margin-top:10px;
+}
+
+.notice {
+  font-size:12px;
+  color:#b9adc6;
+  background:#211a2c;
+  border:1px solid #3b2c4a;
+  padding:11px;
+  border-radius:10px;
+  margin:12px 0;
+}
+
+@media(max-width:760px) {
+  .grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .nav button:not(.primary) { display:none; }
+  .photos { height:200px; }
+}
+
+@media(max-width:520px) {
+  .wrap { padding:0 14px; }
+  .grid { grid-template-columns:1fr; }
+  .photos { height:255px; }
+  .hero { padding-top:28px; }
+  .form-grid { grid-template-columns:1fr; }
+  .field.full { grid-column:auto; }
+  .discover-wrap .photos { height:300px; }
+}
+</style>
 </head>
 
 <body>
 
-<header class="topbar">
-  <div class="brand">Mega<span>vallia</span></div>
+<div class="wrap">
 
-  <nav class="top-actions">
-    <button class="tab active" data-tab="discover">Discover</button>
-    <button class="tab" data-tab="matches">Matches</button>
-    <button class="tab" data-tab="profile">My Profile</button>
+<header>
+  <div class="brand">MEGAVALLIA <span>CONNECT</span></div>
+
+  <nav class="nav">
+    <button class="active" id="navExplore">Explore</button>
+    <button id="navDiscover">Discover</button>
+    <button class="primary" id="openCreate">Create profile</button>
   </nav>
 </header>
 
-<main class="container">
+<section class="hero">
+  <div class="eyebrow">Meet people. Find your community.</div>
 
-  <section class="intro">
-    <h1>Meet your next connection.</h1>
-    <p>Discover people, explore profiles and build meaningful connections.</p>
-  </section>
+  <h1>
+    Discover people.<br>
+    <span>Make real connections.</span>
+  </h1>
 
-  <div id="message" class="message" role="status"></div>
+  <p>
+    Share a little about yourself, explore profiles and connect
+    with people who share your interests.
+  </p>
+</section>
 
-  <section id="discoverSection">
-    <div class="discover-wrap">
-      <div id="discoverContent">
-        <div class="empty">Checking your Megavallia account...</div>
-      </div>
+<div class="toolbar">
+  <div class="mode">
+    <button class="active" id="galleryMode">Explore profiles</button>
+    <button id="swipeMode">Discover one by one</button>
+  </div>
+
+  <button class="primary" id="createCta">
+    ＋ Create your profile
+  </button>
+</div>
+
+<div id="pageStatus" class="status" role="status"></div>
+
+<main id="galleryView">
+  <h2 class="section-title">People to discover</h2>
+  <div class="grid" id="profileGrid">
+    <div class="empty">Loading profiles…</div>
+  </div>
+</main>
+
+<main id="discoverView" style="display:none">
+  <div class="discover-wrap" id="discoverCard"></div>
+</main>
+
+<footer>
+  © <span id="year"></span> Megavallia Connect ·
+  Be respectful. Protect your privacy. Report or block anyone
+  who makes you uncomfortable.
+</footer>
+
+</div>
+
+<!-- CREATE PROFILE MODAL -->
+
+<div class="modal" id="createModal" role="dialog"
+     aria-modal="true" aria-labelledby="modalTitle">
+
+  <div class="dialog">
+
+    <div class="dialog-head">
+      <h2 id="modalTitle">Create your profile</h2>
+      <button class="close" id="closeModal" type="button">✕</button>
     </div>
-  </section>
 
-  <section id="matchesSection" class="hidden">
-    <div class="panel">
-      <h2 class="section-title">Mutual Connections</h2>
-      <p class="subtext">People who have also liked your profile.</p>
-      <div id="matchesList" class="match-list">
-        <div class="empty">Loading connections...</div>
-      </div>
-    </div>
-  </section>
+    <p class="location">
+      Add three photos and a few details so people can get to know you.
+    </p>
 
-  <section id="profileSection" class="hidden">
-    <div class="panel">
-      <h2 class="section-title">Your Connect Profile</h2>
-      <p class="subtext">
-        Create a profile to help people discover and connect with you.
-        You must be at least 18 years old.
-      </p>
+    <form id="profileForm">
 
-      <form id="profileForm">
+      <div class="form-grid">
 
         <div class="field">
-          <label for="age">Age</label>
-          <input id="age" type="number" min="18" max="120" required>
+          <label for="displayName">Display name *</label>
+          <input id="displayName" maxlength="35"
+                 required placeholder="Your name">
         </div>
 
         <div class="field">
-          <label for="country">Country</label>
-          <input id="country" maxlength="80" required placeholder="Your country">
+          <label for="age">Age *</label>
+          <input id="age" type="number" min="18" max="99"
+                 required placeholder="18+">
         </div>
 
         <div class="field">
-          <label for="bio">About you</label>
-          <textarea id="bio" maxlength="300" placeholder="Write a short introduction..."></textarea>
+          <label for="location">City / country</label>
+          <input id="location" maxlength="60"
+                 placeholder="e.g. Nairobi, Kenya">
         </div>
 
         <div class="field">
-          <label>Primary profile photo</label>
-          <div class="photo-preview" id="primaryPreview">Main photo preview</div>
-          <input id="primaryPhoto" type="file" accept="image/jpeg,image/png,image/webp">
-          <p class="small-note">Maximum 5MB. JPG, PNG or WebP.</p>
+          <label for="interests">Interests</label>
+          <input id="interests" maxlength="100"
+                 placeholder="Music, travel, business">
         </div>
 
-        <div class="field">
-          <label>Gallery — up to 3 photos</label>
-          <div class="preview-grid" id="galleryPreview">
-            <div class="photo-preview">Photo 1</div>
-            <div class="photo-preview">Photo 2</div>
-            <div class="photo-preview">Photo 3</div>
-          </div>
-          <input id="galleryPhotos" type="file" accept="image/jpeg,image/png,image/webp" multiple>
-          <p class="small-note">Select up to three gallery photos. A new upload replaces the existing gallery.</p>
+        <div class="field full">
+          <label for="bio">About me</label>
+          <textarea id="bio" rows="3" maxlength="240"
+                    placeholder="A short introduction…"></textarea>
         </div>
 
-        <h3>Social links</h3>
-        <p class="subtext">Add optional links where people can reach you.</p>
+        <div class="field full">
+          <label for="photos">Three photos * (choose exactly 3)</label>
+          <input id="photos" type="file" accept="image/*"
+                 multiple required>
+          <small>
+            Choose three images you own or have permission to share.
+          </small>
+        </div>
 
         <div class="field">
           <label for="whatsapp">WhatsApp link</label>
-          <input id="whatsapp" type="url" placeholder="https://wa.me/...">
+          <input id="whatsapp" type="url"
+                 placeholder="https://wa.me/...">
         </div>
 
         <div class="field">
           <label for="instagram">Instagram link</label>
-          <input id="instagram" type="url" placeholder="https://instagram.com/...">
+          <input id="instagram" type="url"
+                 placeholder="https://instagram.com/...">
         </div>
 
         <div class="field">
           <label for="telegram">Telegram link</label>
-          <input id="telegram" type="url" placeholder="https://t.me/...">
+          <input id="telegram" type="url"
+                 placeholder="https://t.me/...">
         </div>
 
         <div class="field">
           <label for="other">Other link</label>
-          <input id="other" type="url" placeholder="https://...">
+          <input id="other" type="url"
+                 placeholder="https://...">
         </div>
 
-        <div class="field">
-          <label>
-            <input id="showLinks" type="checkbox" style="width:auto">
-            Show my social links to people I connect with
-          </label>
-        </div>
-
-        <button class="btn" type="submit" id="saveProfileBtn">Save profile</button>
-      </form>
-    </div>
-  </section>
-
-</main>
-
-<script>
-(() => {
-  "use strict";
-
-  const API_BASE = "https://megavallia.onrender.com/api/connect";
-  const MAIN_WEBSITE = "/";
-
-  const $ = id => document.getElementById(id);
-
-  let profiles = [];
-  let currentIndex = 0;
-  let currentPhotoIndex = 0;
-  let currentProfile = null;
-  let busy = false;
-  let initialized = false;
-
-  function showMessage(message, type = "") {
-    const el = $("message");
-    el.textContent = message;
-    el.className = "message " + type;
-    el.style.display = "block";
-
-    window.clearTimeout(showMessage.timer);
-
-    showMessage.timer = window.setTimeout(() => {
-      el.style.display = "none";
-    }, 5000);
-  }
-
-  // Reuse the main Megavallia authentication.
-  async function getAccessToken() {
-    if (typeof window.getMegavalliaAccessToken === "function") {
-      const token = await window.getMegavalliaAccessToken();
-
-      if (token) return token;
-    }
-
-    if (window.megavalliaSupabase) {
-      const { data, error } =
-        await window.megavalliaSupabase.auth.getSession();
-
-      if (error) throw error;
-
-      const token = data?.session?.access_token;
-
-      if (token) return token;
-    }
-
-    throw new Error("Please sign in to your main Megavallia account first.");
-  }
-
-  function redirectToMainLogin() {
-    const returnUrl = encodeURIComponent(
-      window.location.pathname + window.location.search
-    );
-
-    window.location.href =
-      MAIN_WEBSITE + "?returnTo=" + returnUrl;
-  }
-
-  async function api(path, options = {}) {
-    const token = await getAccessToken();
-
-    const headers = new Headers(options.headers || {});
-    headers.set("Authorization", "Bearer " + token);
-
-    if (
-      options.body &&
-      !(options.body instanceof FormData) &&
-      !headers.has("Content-Type")
-    ) {
-      headers.set("Content-Type", "application/json");
-    }
-
-    const response = await fetch(API_BASE + path, {
-      ...options,
-      headers
-    });
-
-    let data = {};
-
-    try {
-      data = await response.json();
-    } catch (_) {}
-
-    if (response.status === 401) {
-      showMessage("Your session has expired. Please sign in again.", "error");
-      redirectToMainLogin();
-      throw new Error("Authentication required.");
-    }
-
-    if (!response.ok) {
-      throw new Error(data.error || "Something went wrong. Please try again.");
-    }
-
-    return data;
-  }
-
-  function showTab(tab) {
-    const sections = {
-      discover: $("discoverSection"),
-      matches: $("matchesSection"),
-      profile: $("profileSection")
-    };
-
-    Object.entries(sections).forEach(([key, section]) => {
-      section.classList.toggle("hidden", key !== tab);
-    });
-
-    document.querySelectorAll("[data-tab]").forEach(button => {
-      button.classList.toggle("active", button.dataset.tab === tab);
-    });
-
-    if (tab === "discover") loadDiscover();
-    if (tab === "matches") loadMatches();
-    if (tab === "profile") loadMyProfile();
-  }
-
-  document.querySelectorAll("[data-tab]").forEach(button => {
-    button.addEventListener("click", () => showTab(button.dataset.tab));
-  });
-
-  function previewFile(file, container) {
-    if (!file) return;
-
-    if (!["image/jpeg", "image/png", "image/webp"].includes(file.type)) {
-      showMessage("Only JPG, PNG and WebP images are allowed.", "error");
-      return;
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      showMessage("Each photo must be 5MB or smaller.", "error");
-      return;
-    }
-
-    const image = document.createElement("img");
-    image.alt = "Selected photo";
-    image.src = URL.createObjectURL(file);
-
-    container.replaceChildren(image);
-  }
-
-  $("primaryPhoto").addEventListener("change", event => {
-    previewFile(event.target.files[0], $("primaryPreview"));
-  });
-
-  $("galleryPhotos").addEventListener("change", event => {
-    const files = Array.from(event.target.files || []);
-
-    if (files.length > 3) {
-      event.target.value = "";
-      showMessage("Choose a maximum of three gallery photos.", "error");
-      return;
-    }
-
-    if (files.some(file =>
-      !["image/jpeg", "image/png", "image/webp"].includes(file.type) ||
-      file.size > 5 * 1024 * 1024
-    )) {
-      event.target.value = "";
-      showMessage("Each photo must be JPG, PNG or WebP and 5MB or smaller.", "error");
-      return;
-    }
-
-    const grid = $("galleryPreview");
-    grid.replaceChildren();
-
-    for (let i = 0; i < 3; i++) {
-      const box = document.createElement("div");
-      box.className = "photo-preview";
-      box.textContent = "Photo " + (i + 1);
-
-      if (files[i]) previewFile(files[i], box);
-
-      grid.appendChild(box);
-    }
-  });
-
-  async function loadMyProfile() {
-    try {
-      const data = await api("/me");
-      const profile = data.profile;
-
-      if (!profile) return;
-
-      $("age").value = profile.age || "";
-      $("country").value = profile.country || "";
-      $("bio").value = profile.bio || "";
-
-      const links = profile.social_links || {};
-
-      $("whatsapp").value = links.whatsapp || "";
-      $("instagram").value = links.instagram || "";
-      $("telegram").value = links.telegram || "";
-      $("other").value = links.other || "";
-      $("showLinks").checked = !!profile.show_social_links;
-
-      if (profile.primary_photo) {
-        const image = document.createElement("img");
-        image.src = profile.primary_photo;
-        image.alt = "Primary profile photo";
-        $("primaryPreview").replaceChildren(image);
-      }
-
-      const gallery = $("galleryPreview");
-      gallery.replaceChildren();
-
-      const photos = profile.photos || [];
-
-      for (let i = 0; i < 3; i++) {
-        const box = document.createElement("div");
-        box.className = "photo-preview";
-
-        if (photos[i]) {
-          const image = document.createElement("img");
-          image.src = photos[i];
-          image.alt = "Gallery photo";
-          box.appendChild(image);
-        } else {
-          box.textContent = "Photo " + (i + 1);
-        }
-
-        gallery.appendChild(box);
-      }
-
-    } catch (error) {
-      showMessage(error.message, "error");
-    }
-  }
-
-  $("profileForm").addEventListener("submit", async event => {
-    event.preventDefault();
-
-    const button = $("saveProfileBtn");
-    button.disabled = true;
-    button.textContent = "Saving...";
-
-    try {
-      const age = Number($("age").value);
-
-      if (!Number.isInteger(age) || age < 18 || age > 120) {
-        throw new Error("You must be at least 18 years old.");
-      }
-
-      const profileData = {
-        age,
-        country: $("country").value.trim(),
-        bio: $("bio").value.trim(),
-        social_links: {
-          whatsapp: $("whatsapp").value.trim(),
-          instagram: $("instagram").value.trim(),
-          telegram: $("telegram").value.trim(),
-          other: $("other").value.trim()
-        },
-        show_social_links: $("showLinks").checked
-      };
-
-      await api("/profile", {
-        method: "PUT",
-        body: JSON.stringify(profileData)
-      });
-
-      const primaryFile = $("primaryPhoto").files[0];
-
-      if (primaryFile) {
-        const form = new FormData();
-        form.append("primaryPhoto", primaryFile);
-
-        await api("/primary-photo", {
-          method: "POST",
-          body: form
-        });
-      }
-
-      const galleryFiles = Array.from($("galleryPhotos").files || []);
-
-      if (galleryFiles.length) {
-        const form = new FormData();
-
-        galleryFiles.forEach(file => form.append("photos", file));
-
-        await api("/photos", {
-          method: "POST",
-          body: form
-        });
-      }
-
-      $("primaryPhoto").value = "";
-      $("galleryPhotos").value = "";
-
-      showMessage("Your Connect profile has been saved.", "success");
-      await loadMyProfile();
-
-    } catch (error) {
-      showMessage(error.message, "error");
-    } finally {
-      button.disabled = false;
-      button.textContent = "Save profile";
-    }
-  });
-
-  async function loadDiscover() {
-    const content = $("discoverContent");
-    content.innerHTML = '<div class="empty">Finding people...</div>';
-
-    try {
-      const data = await api("/discover");
-
-      profiles = data.profiles || [];
-      currentIndex = 0;
-      currentPhotoIndex = 0;
-
-      renderCurrentProfile();
-
-    } catch (error) {
-      content.innerHTML = "";
-
-      if (error.message !== "Authentication required.") {
-        showMessage(error.message, "error");
-
-        content.innerHTML =
-          '<div class="empty">Unable to load profiles. Please try again.</div>';
-      }
-    }
-  }
-
-  function getProfilePhotos(profile) {
-    const all = [];
-
-    if (profile.primary_photo) all.push(profile.primary_photo);
-
-    (profile.photos || []).forEach(photo => {
-      if (photo && !all.includes(photo)) all.push(photo);
-    });
-
-    return all;
-  }
-
-  function escapeHTML(value) {
-    return String(value).replace(/[&<>"']/g, char => ({
-      "&": "&amp;",
-      "<": "&lt;",
-      ">": "&gt;",
-      '"': "&quot;",
-      "'": "&#39;"
-    })[char]);
-  }
-
-  function escapeAttr(value) {
-    return escapeHTML(value);
-  }
-
-  function renderCurrentProfile() {
-    const content = $("discoverContent");
-
-    if (currentIndex >= profiles.length) {
-      content.innerHTML = `
-        <div class="panel empty">
-          <h2>You've seen everyone for now.</h2>
-          <p>Check back later to discover more people.</p>
-          <button class="btn secondary" id="refreshDiscover">Refresh</button>
-        </div>
-      `;
-
-      $("refreshDiscover").addEventListener("click", loadDiscover);
-      return;
-    }
-
-    const profile = profiles[currentIndex];
-    currentProfile = profile;
-    currentPhotoIndex = 0;
-
-    const photos = getProfilePhotos(profile);
-    const account = profile.account || {};
-    const name = account.display_name || account.username || "Megavallia member";
-    const photo = photos[0] || account.avatar_url || "";
-
-    content.innerHTML = `
-      <article class="discover-card" id="activeCard">
-        <div class="main-photo" id="cardPhoto">
-          ${
-            photo
-              ? `<img src="${escapeAttr(photo)}" alt="Profile photo">`
-              : '<div class="empty">No photo available</div>'
-          }
-
-          <div class="photo-count" id="photoCount">
-            1 / ${Math.max(photos.length,1)}
-          </div>
-
-          <button class="photo-arrow left" id="photoPrev" aria-label="Previous photo">‹</button>
-          <button class="photo-arrow right" id="photoNext" aria-label="Next photo">›</button>
-
-          <div class="photo-dots" id="photoDots"></div>
-        </div>
-
-        <div class="card-info">
-          <h2 class="person-name">
-            ${escapeHTML(name)}${profile.age ? ", " + Number(profile.age) : ""}
-          </h2>
-
-          <div class="person-meta">${escapeHTML(profile.country || "")}</div>
-
-          <div class="person-bio">
-            ${escapeHTML(profile.bio || "No introduction added yet.")}
-          </div>
-
-          <div class="social-links" id="cardSocial"></div>
-
-          <div class="btn-row">
-            <button class="btn secondary" id="reportBtn">Report</button>
-            <button class="btn danger" id="blockBtn">Block</button>
-          </div>
-        </div>
-      </article>
-
-      <div class="swipe-actions">
-        <button class="swipe-btn pass" id="passBtn" aria-label="Pass">✕</button>
-        <button class="swipe-btn like" id="likeBtn" aria-label="Like">♥</button>
       </div>
 
-      <p class="small-note" style="text-align:center">
-        Swipe left to pass or right to like. You can also use the buttons.
-      </p>
-    `;
-
-    renderPhotoDots(photos);
-    renderSocialLinks(profile);
-
-    $("photoPrev").addEventListener("click", () => changePhoto(-1));
-    $("photoNext").addEventListener("click", () => changePhoto(1));
-    $("passBtn").addEventListener("click", () => swipe("pass"));
-    $("likeBtn").addEventListener("click", () => swipe("like"));
-    $("blockBtn").addEventListener("click", blockCurrent);
-    $("reportBtn").addEventListener("click", reportCurrent);
-
-    enableTouchSwipe();
-  }
-
-  function renderPhotoDots(photos) {
-    const dots = $("photoDots");
-    dots.replaceChildren();
-
-    const count = Math.max(photos.length, 1);
-
-    for (let i = 0; i < count; i++) {
-      const dot = document.createElement("span");
-
-      dot.className =
-        "photo-dot" + (i === currentPhotoIndex ? " active" : "");
-
-      dots.appendChild(dot);
-    }
-  }
-
-  function changePhoto(direction) {
-    const photos = getProfilePhotos(currentProfile);
-
-    if (!photos.length) return;
-
-    currentPhotoIndex =
-      (currentPhotoIndex + direction + photos.length) % photos.length;
-
-    const image = $("cardPhoto").querySelector("img");
-
-    if (image) image.src = photos[currentPhotoIndex];
-
-    $("photoCount").textContent =
-      (currentPhotoIndex + 1) + " / " + photos.length;
-
-    renderPhotoDots(photos);
-  }
-
-  function renderSocialLinks(profile) {
-    const container = $("cardSocial");
-    container.replaceChildren();
-
-    if (!profile.show_social_links) return;
-
-    const links = profile.social_links || {};
-
-    const labels = {
-      whatsapp: "WhatsApp",
-      instagram: "Instagram",
-      telegram: "Telegram",
-      other: "Website"
-    };
-
-    Object.entries(labels).forEach(([key, label]) => {
-      const url = links[key];
-
-      if (!url) return;
-
-      try {
-        const parsed = new URL(url);
-
-        if (!["http:", "https:"].includes(parsed.protocol)) return;
-
-        const link = document.createElement("a");
-        link.href = parsed.href;
-        link.target = "_blank";
-        link.rel = "noopener noreferrer";
-        link.textContent = label;
-
-        container.appendChild(link);
-
-      } catch (_) {}
-    });
-  }
-
-  async function swipe(action) {
-    if (busy || !currentProfile) return;
-
-    busy = true;
-
-    const targetId = currentProfile.user_id;
-
-    $("likeBtn").disabled = true;
-    $("passBtn").disabled = true;
-
-    try {
-      const result = await api(
-        "/swipe/" + encodeURIComponent(targetId),
-        {
-          method: "POST",
-          body: JSON.stringify({ action })
-        }
-      );
-
-      if (result.matched) {
-        showMessage(
-          "It's a mutual connection! You both liked each other.",
-          "success"
-        );
-      }
-
-      currentIndex++;
-      renderCurrentProfile();
-
-    } catch (error) {
-      showMessage(error.message, "error");
-
-    } finally {
-      busy = false;
-    }
-  }
-
-  function enableTouchSwipe() {
-    const card = $("activeCard");
-
-    if (!card) return;
-
-    let startX = 0;
-    let startY = 0;
-    let tracking = false;
-
-    card.addEventListener("touchstart", event => {
-      if (event.target.closest("button,a")) return;
-
-      const touch = event.touches[0];
-
-      startX = touch.clientX;
-      startY = touch.clientY;
-      tracking = true;
-
-    }, { passive: true });
-
-    card.addEventListener("touchend", event => {
-      if (!tracking) return;
-
-      tracking = false;
-
-      const touch = event.changedTouches[0];
-
-      const dx = touch.clientX - startX;
-      const dy = touch.clientY - startY;
-
-      if (
-        Math.abs(dx) > 100 &&
-        Math.abs(dx) > Math.abs(dy) * 1.3
-      ) {
-        swipe(dx > 0 ? "like" : "pass");
-      }
-
-    }, { passive: true });
-
-    let mouseStart = null;
-
-    card.addEventListener("mousedown", event => {
-      if (event.target.closest("button,a")) return;
-      mouseStart = event.clientX;
-    });
-
-    window.addEventListener("mouseup", event => {
-      if (mouseStart === null) return;
-
-      const dx = event.clientX - mouseStart;
-      mouseStart = null;
-
-      if (Math.abs(dx) > 120) {
-        swipe(dx > 0 ? "like" : "pass");
-      }
-    });
-  }
-
-  async function blockCurrent() {
-    if (!currentProfile) return;
-
-    if (!confirm(
-      "Block this profile? You will no longer see each other in Connect."
-    )) return;
-
-    try {
-      await api(
-        "/block/" + encodeURIComponent(currentProfile.user_id),
-        { method: "POST" }
-      );
-
-      showMessage("Profile blocked.", "success");
-
-      currentIndex++;
-      renderCurrentProfile();
-
-    } catch (error) {
-      showMessage(error.message, "error");
-    }
-  }
-
-  async function reportCurrent() {
-    if (!currentProfile) return;
-
-    const reason = prompt("Why are you reporting this profile?");
-
-    if (!reason || reason.trim().length < 3) return;
-
-    try {
-      await api(
-        "/report/" + encodeURIComponent(currentProfile.user_id),
-        {
-          method: "POST",
-          body: JSON.stringify({ reason: reason.trim() })
-        }
-      );
-
-      showMessage("Your report has been submitted.", "success");
-
-    } catch (error) {
-      showMessage(error.message, "error");
-    }
-  }
-
-  async function loadMatches() {
-    const container = $("matchesList");
-
-    container.innerHTML =
-      '<div class="empty">Loading connections...</div>';
-
-    try {
-      const data = await api("/matches");
-      const matches = data.matches || [];
-
-      if (!matches.length) {
-        container.innerHTML =
-          '<div class="empty">No mutual connections yet.<br>Keep discovering people.</div>';
-
-        return;
-      }
-
-      container.replaceChildren();
-
-      matches.forEach(profile => {
-        const account = profile.account || {};
-
-        const name =
-          account.display_name ||
-          account.username ||
-          "Megavallia member";
-
-        const photo =
-          profile.primary_photo ||
-          profile.photos?.[0] ||
-          account.avatar_url ||
-          "";
-
-        const item = document.createElement("div");
-        item.className = "match-item";
-
-        const image = document.createElement("img");
-        image.src = photo;
-        image.alt = "Profile photo";
-
-        const details = document.createElement("div");
-
-        const nameEl = document.createElement("div");
-        nameEl.className = "match-name";
-        nameEl.textContent = name;
-
-        const meta = document.createElement("div");
-        meta.className = "match-meta";
-        meta.textContent = profile.country || "Mutual connection";
-
-        details.append(nameEl, meta);
-        item.append(image, details);
-
-        if (profile.show_social_links) {
-          const links = profile.social_links || {};
-
-          ["whatsapp", "instagram", "telegram", "other"].forEach(key => {
-            const url = links[key];
-
-            if (!url) return;
-
-            try {
-              const parsed = new URL(url);
-
-              if (!["http:", "https:"].includes(parsed.protocol)) return;
-
-              const link = document.createElement("a");
-
-              link.href = parsed.href;
-              link.target = "_blank";
-              link.rel = "noopener noreferrer";
-              link.textContent = key === "other" ? "Website" : key;
-              link.style.cssText =
-                "color:#e8dfff;font-size:11px;margin-left:8px;";
-
-              details.appendChild(link);
-
-            } catch (_) {}
-          });
-        }
-
-        item.appendChild(details);
-        container.appendChild(item);
-      });
-
-    } catch (error) {
-      container.innerHTML = "";
-
-      if (error.message !== "Authentication required.") {
-        showMessage(error.message, "error");
-      }
-    }
-  }
-
-  // Initialize only after the main website authentication is ready.
-  async function initializeConnect() {
-    if (initialized) return;
-
-    initialized = true;
-
-    try {
-      await getAccessToken();
-
-      $("discoverContent").innerHTML =
-        '<div class="empty">Welcome to Megavallia Connect. Finding people...</div>';
-
-      await loadDiscover();
-
-    } catch (error) {
-      initialized = false;
-
-      $("discoverContent").innerHTML = `
-        <div class="panel empty">
-          <h2>Welcome to Megavallia Connect</h2>
-          <p>Sign in using your existing Megavallia account to discover people and build connections.</p>
-          <br>
-          <a href="/" class="btn" style="text-decoration:none;display:inline-block">
-            Go to Megavallia
-          </a>
-        </div>
-      `;
-    }
-  }
-
-  // Wait for the main authentication script to initialize.
-  let attempts = 0;
-
-  const sessionTimer = window.setInterval(async () => {
-    attempts++;
-
-    if (
-      typeof window.getMegavalliaAccessToken === "function" ||
-      window.megavalliaSupabase
-    ) {
-      window.clearInterval(sessionTimer);
-      await initializeConnect();
-      return;
-    }
-
-    if (attempts >= 30) {
-      window.clearInterval(sessionTimer);
-      await initializeConnect();
-    }
-
-  }, 500);
-
-  // If the main Supabase client supports auth-state events,
-  // respond to changes in the shared login session.
-  function attachAuthListener() {
-    if (!window.megavalliaSupabase) return;
-
-    window.megavalliaSupabase.auth.onAuthStateChange(
-      (event, session) => {
-        if (event === "SIGNED_OUT" || !session) {
-          initialized = false;
-
-          $("discoverContent").innerHTML = `
-            <div class="panel empty">
-              Your Megavallia session has ended.
-              <br><br>
-              <a href="/" style="color:#f04eaa">Return to Megavallia to sign in</a>
-            </div>
-          `;
-        }
-
-        if (event === "SIGNED_IN" && session) {
-          initialized = false;
-          initializeConnect();
-        }
-      }
+      <div class="notice">
+        Your profile is connected to your Megavallia account.
+        Only share contact links you are comfortable making visible.
+      </div>
+
+      <button class="submit" id="submitProfile" type="submit">
+        Create profile
+      </button>
+
+    </form>
+  </div>
+</div>
+
+<!-- IMPORTANT: load Supabase first, then the main Megavallia app.js.
+     The Connect code below runs after both scripts. -->
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="/app.js"></script>
+
+<script>
+"use strict";
+
+/* =========================================================
+   MEGAVALLIA CONNECT CONFIGURATION
+   ========================================================= */
+
+const API_BASE_URL = "https://megavallia.onrender.com/api/connect";
+
+/*
+  The discovery endpoint matches the Connect API request
+  used by the previous integrated version.
+
+  The profile and interest endpoints below must also exist
+  in your Express Connect router for those actions to work.
+*/
+
+const CONNECT_ENDPOINTS = {
+  discover: "/discover",
+  profile: "/profile",
+  interest: "/like"
+};
+
+let profiles = [];
+let skipped = new Set();
+let discoverIndex = 0;
+let currentMode = "gallery";
+let isLoading = false;
+
+const $ = id => document.getElementById(id);
+
+/* =========================================================
+   STATUS MESSAGES
+   ========================================================= */
+
+function showStatus(message, type = "info") {
+  const element = $("pageStatus");
+
+  element.textContent = message;
+  element.className = "status show";
+
+  if (type === "error") element.classList.add("error");
+  if (type === "success") element.classList.add("success");
+}
+
+function clearStatus() {
+  const element = $("pageStatus");
+  element.textContent = "";
+  element.className = "status";
+}
+
+/* =========================================================
+   AUTHENTICATION
+   Reuses the main website app.js session.
+   ========================================================= */
+
+async function getAccessToken() {
+  if (typeof window.getMegavalliaAccessToken !== "function") {
+    throw new Error(
+      "Megavallia authentication has not loaded. Refresh the page and try again."
     );
   }
 
-  const authListenerTimer = window.setInterval(() => {
-    if (window.megavalliaSupabase) {
-      window.clearInterval(authListenerTimer);
-      attachAuthListener();
+  return await window.getMegavalliaAccessToken();
+}
+
+/* =========================================================
+   API REQUEST HELPER
+   ========================================================= */
+
+async function connectApi(path, options = {}) {
+  const token = await getAccessToken();
+
+  const headers = {
+    Accept: "application/json",
+    Authorization: `Bearer ${token}`,
+    ...options.headers
+  };
+
+  const response = await fetch(`${API_BASE_URL}${path}`, {
+    ...options,
+    headers
+  });
+
+  const responseText = await response.text();
+
+  let data = {};
+
+  if (responseText) {
+    try {
+      data = JSON.parse(responseText);
+    } catch {
+      data = { message: responseText };
     }
-  }, 500);
+  }
 
-})();
+  if (response.status === 401) {
+    throw new Error(
+      "Your Megavallia session has expired. Sign in again on the main website."
+    );
+  }
+
+  if (response.status === 403) {
+    throw new Error(
+      data.error || data.message || "Your account is not allowed to perform this action."
+    );
+  }
+
+  if (response.status === 404) {
+    throw new Error(
+      `Connect API endpoint not found: ${path}. Check the Express route mounting.`
+    );
+  }
+
+  if (!response.ok) {
+    throw new Error(
+      data.error ||
+      data.message ||
+      `Connect request failed (${response.status}).`
+    );
+  }
+
+  return data;
+}
+
+/* =========================================================
+   SAFE HELPERS
+   ========================================================= */
+
+function escapeHtml(value) {
+  return String(value ?? "").replace(/[&<>"']/g, char => ({
+    "&": "&amp;",
+    "<": "&lt;",
+    ">": "&gt;",
+    '"': "&quot;",
+    "'": "&#39;"
+  })[char]);
+}
+
+function safeUrl(value) {
+  try {
+    const url = new URL(value);
+
+    if (url.protocol !== "https:" && url.protocol !== "http:") {
+      return null;
+    }
+
+    return url.href;
+  } catch {
+    return null;
+  }
+}
+
+function profileId(profile) {
+  return String(
+    profile.id ??
+    profile.profile_id ??
+    profile.user_id ??
+    ""
+  );
+}
+
+function profileName(profile) {
+  return profile.display_name ||
+    profile.name ||
+    profile.username ||
+    "Megavallia member";
+}
+
+function profilePhotos(profile) {
+  let photos = profile.photos || profile.photo_urls || [];
+
+  if (typeof photos === "string") {
+    try {
+      photos = JSON.parse(photos);
+    } catch {
+      photos = [photos];
+    }
+  }
+
+  if (!Array.isArray(photos)) photos = [];
+
+  return photos.slice(0, 3).map(photo => {
+    if (typeof photo === "string") return photo;
+
+    return photo?.url || photo?.image_url || "";
+  });
+}
+
+function profileLinks(profile) {
+  let links = profile.links || profile.social_links || [];
+
+  if (typeof links === "string") {
+    try {
+      links = JSON.parse(links);
+    } catch {
+      links = [];
+    }
+  }
+
+  if (Array.isArray(links)) return links;
+
+  if (links && typeof links === "object") {
+    return Object.entries(links).map(([label, url]) => ({
+      label,
+      url
+    }));
+  }
+
+  return [];
+}
+
+function profileInterests(profile) {
+  let interests = profile.interests || [];
+
+  if (typeof interests === "string") {
+    interests = interests.split(",");
+  }
+
+  if (!Array.isArray(interests)) return [];
+
+  return interests
+    .map(item => String(item).trim())
+    .filter(Boolean)
+    .slice(0, 12);
+}
+
+/* =========================================================
+   PHOTO RENDERING
+   ========================================================= */
+
+function photoMarkup(profile, index) {
+  const photos = profilePhotos(profile);
+  const source = photos[index];
+
+  if (source && safeUrl(source)) {
+    return `
+      <div class="photo">
+        <img
+          src="${escapeHtml(source)}"
+          alt="Profile photo ${index + 1}"
+          loading="lazy"
+          referrerpolicy="no-referrer">
+      </div>
+    `;
+  }
+
+  return `
+    <div class="photo">
+      <span>Photo ${index + 1}</span>
+    </div>
+  `;
+}
+
+/* =========================================================
+   SOCIAL LINKS
+   ========================================================= */
+
+function linksMarkup(profile) {
+  return profileLinks(profile)
+    .map(link => {
+      const url = safeUrl(link.url);
+
+      if (!url) return "";
+
+      const label = escapeHtml(
+        link.label || link.platform || "Open profile"
+      );
+
+      return `
+        <a href="${escapeHtml(url)}"
+           target="_blank"
+           rel="noopener noreferrer">${label}</a>
+      `;
+    })
+    .join("");
+}
+
+/* =========================================================
+   PROFILE CARD
+   ========================================================= */
+
+function cardMarkup(profile, discover = false) {
+  const id = profileId(profile);
+  const name = escapeHtml(profileName(profile));
+  const age = Number(profile.age);
+  const ageText = Number.isFinite(age) && age > 0
+    ? `, ${age}`
+    : "";
+
+  const location = escapeHtml(
+    profile.location || profile.city || "Location not added"
+  );
+
+  const bio = escapeHtml(
+    profile.bio || profile.about || "No introduction added yet."
+  );
+
+  const interests = profileInterests(profile)
+    .map(item => `<span class="chip">${escapeHtml(item)}</span>`)
+    .join("");
+
+  const links = linksMarkup(profile);
+
+  const actions = discover
+    ? `
+      <div class="discover-actions">
+        <button type="button" data-action="skip"
+                data-profile-id="${escapeHtml(id)}">Skip</button>
+        <button type="button" class="like"
+                data-action="like"
+                data-profile-id="${escapeHtml(id)}">♥ Interested</button>
+      </div>
+    `
+    : `
+      <div class="actions">
+        <button type="button" data-action="skip"
+                data-profile-id="${escapeHtml(id)}">Skip</button>
+        <button type="button" class="like"
+                data-action="like"
+                data-profile-id="${escapeHtml(id)}">♥ Interested</button>
+      </div>
+    `;
+
+  return `
+    <article class="card">
+      <div class="photos">
+        ${photoMarkup(profile, 0)}
+        ${photoMarkup(profile, 1)}
+        ${photoMarkup(profile, 2)}
+      </div>
+
+      <div class="card-body">
+        <div class="name-line">
+          <div class="name">${name}${ageText}</div>
+        </div>
+
+        <div class="location">⌖ ${location}</div>
+
+        <p class="bio">${bio}</p>
+
+        <div class="chips">${interests}</div>
+
+        ${links ? `<div class="links">${links}</div>` : ""}
+
+        ${actions}
+      </div>
+    </article>
+  `;
+}
+
+/* ===========================
+        INITIALIZATION
+   ========================================================= */
+
+$("year").textContent = new Date().getFullYear();
+
+async function initializeConnect() {
+  try {
+    await getAccessToken();
+    await loadProfiles();
+  } catch (error) {
+    console.error("[Megavallia Connect] Initialization failed:", error);
+
+    $("profileGrid").innerHTML = `
+      <div class="empty">
+        <strong>Sign in to Megavallia to continue.</strong>
+        <p>${escapeHtml(error.message)}</p>
+        <a href="/" style="color:#d9a3ff">Go to Megavallia home</a>
+      </div>
+    `;
+
+    showStatus(error.message, "error");
+  }
+}
+
+initializeConnect();
+
 </script>
-
 </body>
 </html>
