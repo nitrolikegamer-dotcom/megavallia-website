@@ -9,405 +9,258 @@
 
 <style>
 :root {
-  --bg: #050505;
-  --panel: #171719;
-  --muted: #aaaab2;
-  --pink: #ed48b8;
-  --purple: #8d62ff;
-  --border: rgba(255,255,255,.1);
+  --bg:#050505;
+  --panel:#171719;
+  --muted:#aaaab2;
+  --pink:#ed48b8;
+  --purple:#8d62ff;
+  --border:rgba(255,255,255,.1);
 }
-
-* { box-sizing: border-box; }
-
+* { box-sizing:border-box; }
 body {
-  margin: 0;
-  background: var(--bg);
-  color: white;
-  font-family: Arial, Helvetica, sans-serif;
-  min-height: 100vh;
+  margin:0;background:var(--bg);color:white;
+  font-family:Arial,Helvetica,sans-serif;min-height:100vh;
 }
-
-button { font: inherit; cursor: pointer; }
+button { font:inherit;cursor:pointer; }
+input,textarea { font:inherit; }
 
 .app {
-  width: 100%;
-  max-width: 650px;
-  min-height: 100dvh;
-  margin: auto;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  background: #050505;
-  overflow: hidden;
+  width:100%;max-width:650px;min-height:100dvh;
+  margin:auto;display:flex;flex-direction:column;
+  position:relative;background:#050505;overflow:hidden;
 }
-
-/* Header */
-
 .topbar {
-  height: 66px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: 0 22px;
-  background: #050505;
+  height:66px;flex-shrink:0;display:flex;
+  align-items:center;justify-content:space-between;
+  padding:0 22px;background:#050505;
 }
-
 .topbar-left {
-  display: flex;
-  align-items: center;
-  gap: 18px;
-  font-size: 22px;
-  font-weight: 700;
+  display:flex;align-items:center;gap:18px;
+  font-size:22px;font-weight:700;
 }
-
 .topbar button {
-  color: white;
-  border: 0;
-  background: transparent;
-  font-size: 25px;
+  color:white;border:0;background:transparent;font-size:25px;
 }
-
-.topbar-right {
-  display: flex;
-  gap: 22px;
-  align-items: center;
-}
-
-.topbar-right button:last-child {
-  color: var(--pink);
-}
-
-/* Main content */
+.topbar-right { display:flex;gap:22px;align-items:center; }
+.topbar-right button:last-child { color:var(--pink); }
 
 main {
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  flex-direction: column;
-  padding: 0 8px;
+  flex:1;min-height:0;display:flex;
+  flex-direction:column;padding:0 8px;
 }
-
 .view {
-  display: none;
-  flex: 1;
-  min-height: 0;
-  flex-direction: column;
+  display:none;flex:1;min-height:0;flex-direction:column;
 }
-
-.view.active { display: flex; }
+.view.active { display:flex; }
 
 .card {
-  position: relative;
-  flex: 1;
-  min-height: 440px;
-  overflow: hidden;
-  border-radius: 0 0 42px 42px;
-  background: #171719;
+  position:relative;flex:1;min-height:440px;
+  overflow:hidden;border-radius:0 0 42px 42px;
+  background:#171719;
 }
-
 .card-photo {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  background: linear-gradient(145deg,#30203d,#101014);
+  position:absolute;inset:0;width:100%;height:100%;
+  object-fit:cover;background:linear-gradient(145deg,#30203d,#101014);
 }
-
 .photo-fallback {
-  position: absolute;
-  inset: 0;
-  display: grid;
-  place-items: center;
-  font-size: 90px;
-  color: white;
-  background: linear-gradient(145deg,#53336e,#15151c);
+  position:absolute;inset:0;display:grid;place-items:center;
+  font-size:90px;color:white;
+  background:linear-gradient(145deg,#53336e,#15151c);
 }
-
 .card-shade {
-  position: absolute;
-  inset: 45% 0 0;
-  background: linear-gradient(
-    transparent,
-    rgba(0,0,0,.25) 35%,
-    rgba(0,0,0,.92)
-  );
-  pointer-events: none;
+  position:absolute;inset:45% 0 0;
+  background:linear-gradient(transparent,rgba(0,0,0,.25) 35%,rgba(0,0,0,.92));
+  pointer-events:none;
 }
-
 .card-content {
-  position: absolute;
-  left: 20px;
-  right: 20px;
-  bottom: 20px;
-  z-index: 2;
+  position:absolute;left:20px;right:20px;bottom:20px;z-index:2;
 }
-
 .person-name {
-  font-size: clamp(27px, 6vw, 38px);
-  font-weight: 800;
-  margin: 0 0 22px;
-  text-shadow: 0 2px 8px #000;
+  font-size:clamp(27px,6vw,38px);font-weight:800;
+  margin:0 0 22px;text-shadow:0 2px 8px #000;
 }
-
 .person-location {
-  font-size: 17px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  text-shadow: 0 2px 6px #000;
+  font-size:17px;display:flex;align-items:center;
+  gap:10px;text-shadow:0 2px 6px #000;
 }
-
-.person-bio {
-  margin-top: 12px;
-  color: #eee;
-  font-size: 14px;
-  line-height: 1.5;
-  max-width: 95%;
-}
-
+.person-bio { margin-top:12px;color:#eee;font-size:14px;line-height:1.5;max-width:95%; }
 .photo-count {
-  position: absolute;
-  top: 12px;
-  left: 14px;
-  right: 14px;
-  display: flex;
-  gap: 5px;
-  z-index: 3;
+  position:absolute;top:12px;left:14px;right:14px;
+  display:flex;gap:5px;z-index:3;
 }
-
-.photo-count span {
-  height: 4px;
-  border-radius: 5px;
-  background: rgba(255,255,255,.4);
-  flex: 1;
-}
-
-.photo-count span.current { background: white; }
-
+.photo-count span { height:4px;border-radius:5px;background:rgba(255,255,255,.4);flex:1; }
+.photo-count span.current { background:white; }
 .next-photo {
-  position: absolute;
-  right: 16px;
-  bottom: 150px;
-  z-index: 4;
-  border: 0;
-  border-radius: 50%;
-  width: 48px;
-  height: 48px;
-  background: rgba(0,0,0,.65);
-  color: white;
-  font-size: 23px;
+  position:absolute;right:16px;bottom:150px;z-index:4;
+  border:0;border-radius:50%;width:48px;height:48px;
+  background:rgba(0,0,0,.65);color:white;font-size:23px;
 }
-
-/* Action buttons */
 
 .actions {
-  height: 112px;
-  flex-shrink: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: clamp(10px, 3.5vw, 24px);
-  padding: 10px 8px 14px;
-  background: #050505;
+  height:112px;flex-shrink:0;display:flex;
+  align-items:center;justify-content:center;
+  gap:clamp(10px,3.5vw,24px);
+  padding:10px 8px 14px;background:#050505;
 }
-
 .action {
-  width: clamp(54px, 13vw, 76px);
-  height: clamp(54px, 13vw, 76px);
-  border-radius: 50%;
-  border: 2px solid rgba(255,255,255,.07);
-  background: #242427;
-  color: white;
-  display: grid;
-  place-items: center;
-  font-size: clamp(25px, 6vw, 36px);
-  box-shadow: 0 3px 10px rgba(0,0,0,.3);
-  transition: transform .15s, background .15s;
+  width:clamp(54px,13vw,76px);
+  height:clamp(54px,13vw,76px);
+  border-radius:50%;border:2px solid rgba(255,255,255,.07);
+  background:#242427;color:white;display:grid;place-items:center;
+  font-size:clamp(25px,6vw,36px);
+  box-shadow:0 3px 10px rgba(0,0,0,.3);
+  transition:transform .15s,background .15s;
 }
-
-.action:active { transform: scale(.9); }
-
-.action.pass {
-  width: clamp(68px, 16vw, 92px);
-  height: clamp(68px, 16vw, 92px);
-  font-size: 48px;
-  font-weight: 300;
+.action:active { transform:scale(.9); }
+.action.pass,.action.like {
+  width:clamp(68px,16vw,92px);
+  height:clamp(68px,16vw,92px);
 }
-
-.action.rewind { font-size: 32px; }
-.action.star { color: #91b5ff; }
-.action.like {
-  width: clamp(68px, 16vw, 92px);
-  height: clamp(68px, 16vw, 92px);
-  color: #f01624;
-  font-size: 42px;
-}
-.action.send { color: #91b5ff; font-size: 31px; }
-
-/* Bottom navigation */
+.action.pass { font-size:48px;font-weight:300; }
+.action.rewind { font-size:32px; }
+.action.star { color:#91b5ff; }
+.action.like { color:#f01624;font-size:42px; }
+.action.send { color:#91b5ff;font-size:31px; }
 
 .bottom-nav {
-  height: 78px;
-  flex-shrink: 0;
-  display: flex;
-  justify-content: space-around;
-  align-items: center;
-  padding: 4px 3px max(5px, env(safe-area-inset-bottom));
-  background: #050505;
-  border-top: 1px solid rgba(255,255,255,.04);
+  height:78px;flex-shrink:0;display:flex;
+  justify-content:space-around;align-items:center;
+  padding:4px 3px max(5px,env(safe-area-inset-bottom));
+  background:#050505;border-top:1px solid rgba(255,255,255,.04);
 }
-
 .nav-item {
-  flex: 1;
-  border: 0;
-  background: transparent;
-  color: #aaaab0;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  gap: 5px;
-  font-size: 13px;
-  min-width: 0;
+  flex:1;border:0;background:transparent;color:#aaaab0;
+  display:flex;flex-direction:column;align-items:center;
+  justify-content:center;gap:5px;font-size:13px;min-width:0;
 }
+.nav-icon { font-size:29px;line-height:1; }
+.nav-item.active { color:white;font-weight:700; }
+.nav-item .pink { color:var(--pink); }
 
-.nav-icon {
-  font-size: 29px;
-  line-height: 1;
-}
-
-.nav-item.active {
-  color: white;
-  font-weight: 700;
-}
-
-.nav-item.active .nav-icon { color: white; }
-
-.nav-item .pink { color: var(--pink); }
-
-/* Other views */
-
-.page-heading {
-  padding: 22px 16px;
-  font-size: 25px;
-  font-weight: 800;
-}
-
-.profile-list {
-  overflow-y: auto;
-  padding: 0 12px 20px;
-}
-
+.page-heading { padding:22px 16px;font-size:25px;font-weight:800; }
+.profile-list { overflow-y:auto;padding:0 12px 20px; }
 .profile-row {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  padding: 12px;
-  margin-bottom: 10px;
-  border: 1px solid var(--border);
-  background: var(--panel);
-  border-radius: 16px;
+  display:flex;align-items:center;gap:14px;padding:12px;
+  margin-bottom:10px;border:1px solid var(--border);
+  background:var(--panel);border-radius:16px;
 }
-
-.profile-row img,
-.profile-avatar {
-  width: 68px;
-  height: 68px;
-  object-fit: cover;
-  border-radius: 13px;
-  background: #30203d;
-  flex-shrink: 0;
+.profile-row img,.profile-avatar {
+  width:68px;height:68px;object-fit:cover;
+  border-radius:13px;background:#30203d;flex-shrink:0;
 }
-
-.profile-row h3 { margin: 0 0 5px; font-size: 17px; }
-.profile-row p { margin: 0; color: var(--muted); font-size: 13px; }
+.profile-row h3 { margin:0 0 5px;font-size:17px; }
+.profile-row p { margin:0;color:var(--muted);font-size:13px; }
 
 .profile-form {
-  margin: 14px;
-  padding: 20px;
-  border-radius: 20px;
-  background: var(--panel);
-  overflow-y: auto;
+  margin:14px;padding:20px;border-radius:20px;
+  background:var(--panel);overflow-y:auto;
 }
-
-.profile-form h2 { margin-top: 0; }
-
+.profile-form h2 { margin-top:0; }
 .profile-form label {
-  display: block;
-  margin: 15px 0 7px;
-  color: #ddd;
-  font-size: 14px;
+  display:block;margin:15px 0 7px;color:#ddd;font-size:14px;
 }
-
-.profile-form input,
-.profile-form textarea {
-  width: 100%;
-  padding: 13px;
-  border: 1px solid #393940;
-  border-radius: 10px;
-  background: #0d0d10;
-  color: white;
-  outline: none;
+.profile-form input,.profile-form textarea {
+  width:100%;padding:13px;border:1px solid #393940;
+  border-radius:10px;background:#0d0d10;color:white;outline:none;
 }
-
-.profile-form textarea { min-height: 85px; resize: vertical; }
-
-.profile-form input:focus,
-.profile-form textarea:focus { border-color: var(--pink); }
+.profile-form textarea { min-height:85px;resize:vertical; }
+.profile-form input:focus,.profile-form textarea:focus { border-color:var(--pink); }
 
 .primary-button {
-  width: 100%;
-  border: 0;
-  border-radius: 12px;
-  padding: 15px;
-  margin-top: 18px;
-  color: white;
-  font-weight: 700;
-  background: linear-gradient(110deg,#8d48ef,#ed48b8);
+  width:100%;border:0;border-radius:12px;padding:15px;
+  margin-top:18px;color:white;font-weight:700;
+  background:linear-gradient(110deg,#8d48ef,#ed48b8);
 }
-
+.primary-button:disabled { opacity:.6;cursor:wait; }
 .secondary-button {
-  border: 1px solid var(--border);
-  border-radius: 10px;
-  padding: 10px 14px;
-  background: #25252a;
-  color: white;
+  border:1px solid var(--border);border-radius:10px;
+  padding:10px 14px;background:#25252a;color:white;
 }
-
 .status {
-  margin: 12px 15px;
-  padding: 12px;
-  border-radius: 10px;
-  background: #211b2b;
-  color: #eee;
-  font-size: 13px;
-  display: none;
+  margin:12px 15px;padding:12px;border-radius:10px;
+  background:#211b2b;color:#eee;font-size:13px;display:none;
+}
+.status.show { display:block; }
+.empty { text-align:center;color:var(--muted);padding:45px 20px;line-height:1.6; }
+.hidden { display:none!important; }
+
+/* Authentication interface */
+
+.auth-overlay {
+  position:fixed;inset:0;z-index:1000;
+  display:none;align-items:center;justify-content:center;
+  padding:18px;background:rgba(0,0,0,.88);
+  backdrop-filter:blur(10px);
+}
+.auth-overlay.show { display:flex; }
+.auth-panel {
+  width:100%;max-width:420px;max-height:92dvh;
+  overflow-y:auto;padding:27px 23px;
+  background:#171719;border:1px solid rgba(255,255,255,.1);
+  border-radius:23px;box-shadow:0 20px 70px rgba(0,0,0,.6);
+}
+.auth-brand {
+  text-align:center;font-size:29px;font-weight:900;
+  letter-spacing:-1px;margin-bottom:5px;
+}
+.auth-brand span { color:var(--pink); }
+.auth-subtitle {
+  text-align:center;color:#aaaab2;font-size:13px;
+  line-height:1.6;margin:8px 0 24px;
+}
+.auth-panel h2 { text-align:center;margin:0 0 10px;font-size:23px; }
+.auth-panel label {
+  display:block;margin:14px 0 7px;font-size:13px;color:#ddd;
+}
+.auth-panel input {
+  width:100%;padding:14px;background:#0b0b0d;
+  border:1px solid #38383e;border-radius:11px;
+  color:white;outline:none;
+}
+.auth-panel input:focus { border-color:var(--pink); }
+.auth-panel .primary-button { margin-top:20px; }
+.auth-message {
+  display:none;padding:12px;border-radius:10px;
+  background:#24202a;font-size:13px;line-height:1.5;
+  margin-top:14px;overflow-wrap:anywhere;
+}
+.auth-switch {
+  text-align:center;color:#aaaab2;font-size:13px;margin-top:20px;
+}
+.auth-switch button {
+  border:0;background:none;color:#ed72c6;font-weight:700;
+}
+.auth-close {
+  display:block;margin:0 0 16px auto;
+  border:0;background:transparent;color:#aaa;
+  font-size:23px;
+}
+.auth-note {
+  color:#888;font-size:11px;text-align:center;
+  line-height:1.5;margin-top:16px;
+}
+.auth-code { letter-spacing:8px;text-align:center;font-size:25px!important; }
+.auth-back {
+  display:block;margin:15px auto 0;border:0;
+  background:transparent;color:#ed72c6;font-size:13px;
+}
+.auth-userbar {
+  display:flex;align-items:center;justify-content:space-between;
+  gap:10px;margin:8px 15px;padding:10px 13px;
+  background:#171719;border:1px solid var(--border);
+  border-radius:12px;font-size:12px;color:#ddd;
+}
+.auth-userbar button {
+  border:0;background:transparent;color:#ed72c6;font-weight:bold;
 }
 
-.status.show { display: block; }
-
-.empty {
-  text-align: center;
-  color: var(--muted);
-  padding: 45px 20px;
-  line-height: 1.6;
-}
-
-.hidden { display: none !important; }
-
-@media (min-width: 700px) {
-  body {
-    background: #151419;
-    padding: 18px 0;
-  }
+@media(min-width:700px) {
+  body { background:#151419;padding:18px 0; }
   .app {
-    min-height: calc(100dvh - 36px);
-    border: 1px solid #28252c;
-    border-radius: 24px;
+    min-height:calc(100dvh - 36px);
+    border:1px solid #28252c;border-radius:24px;
   }
-  .card { border-radius: 20px 20px 35px 35px; }
+  .card { border-radius:20px 20px 35px 35px; }
 }
 </style>
 </head>
@@ -426,20 +279,21 @@ main {
     </div>
   </header>
 
+  <div id="authUserBar" class="auth-userbar hidden">
+    <span id="authUserText">Signed in</span>
+    <button id="signOutButton" type="button">Sign out</button>
+  </div>
+
   <div id="status" class="status"></div>
 
   <main>
-    <!-- SWIPE VIEW -->
     <section id="swipeView" class="view active">
       <div class="card" id="discoverCard">
         <div class="photo-fallback" id="photoFallback">M</div>
         <img class="card-photo hidden" id="personPhoto" alt="Profile photo">
-
         <div class="photo-count" id="photoCount"></div>
         <div class="card-shade"></div>
-
         <button class="next-photo" id="nextPhoto" aria-label="Next photo">↑</button>
-
         <div class="card-content">
           <h1 class="person-name" id="personName">Discover people</h1>
           <div class="person-location">
@@ -459,19 +313,16 @@ main {
       </div>
     </section>
 
-    <!-- EXPLORE VIEW -->
     <section id="exploreView" class="view">
       <div class="page-heading">Explore</div>
       <div class="profile-list" id="exploreList"></div>
     </section>
 
-    <!-- LIKES / MATCHES VIEW -->
     <section id="likesView" class="view">
       <div class="page-heading">Connections</div>
       <div class="profile-list" id="matchesList"></div>
     </section>
 
-    <!-- CHAT VIEW -->
     <section id="chatView" class="view">
       <div class="page-heading">Chat</div>
       <div class="empty">
@@ -479,7 +330,6 @@ main {
       </div>
     </section>
 
-    <!-- PROFILE VIEW -->
     <section id="profileView" class="view">
       <div class="page-heading">My Profile</div>
       <div id="profileFormContainer"></div>
@@ -488,29 +338,126 @@ main {
 
   <nav class="bottom-nav">
     <button class="nav-item active" data-view="swipe">
-      <span class="nav-icon">♨</span>
-      <span>Swipe</span>
+      <span class="nav-icon">♨</span><span>Swipe</span>
     </button>
     <button class="nav-item" data-view="explore">
-      <span class="nav-icon">◎</span>
-      <span>Explore</span>
+      <span class="nav-icon">◎</span><span>Explore</span>
     </button>
     <button class="nav-item" data-view="likes">
-      <span class="nav-icon">♡</span>
-      <span>Likes</span>
+      <span class="nav-icon">♡</span><span>Likes</span>
     </button>
     <button class="nav-item" data-view="chat">
-      <span class="nav-icon">▢</span>
-      <span>Chat</span>
+      <span class="nav-icon">▢</span><span>Chat</span>
     </button>
     <button class="nav-item" data-view="profile">
-      <span class="nav-icon">♙</span>
-      <span>Profile</span>
+      <span class="nav-icon">♙</span><span>Profile</span>
     </button>
   </nav>
 </div>
 
-<!-- Load Supabase first, then the main Megavallia authentication script -->
+<!-- Authentication modal -->
+<div id="authOverlay" class="auth-overlay" role="dialog"
+     aria-modal="true" aria-labelledby="authHeading">
+  <div class="auth-panel">
+
+    <button class="auth-close" id="authClose" aria-label="Close">×</button>
+
+    <div class="auth-brand">MEGA<span>VALLIA</span></div>
+    <p class="auth-subtitle">Connect with people across Megavallia.</p>
+
+    <!-- Login -->
+    <form id="loginForm" class="auth-stage">
+      <h2 id="authHeading">Welcome back</h2>
+      <p class="auth-subtitle">Sign in to access Megavallia Connect.</p>
+
+      <label for="loginEmail">Email address</label>
+      <input id="loginEmail" type="email" autocomplete="email"
+             placeholder="you@example.com" required>
+
+      <label for="loginPassword">Password</label>
+      <input id="loginPassword" type="password"
+             autocomplete="current-password" minlength="6" required>
+
+      <button class="primary-button" type="submit" id="loginSubmit">
+        Sign In
+      </button>
+
+      <div class="auth-message" id="loginMessage" role="status"></div>
+
+      <div class="auth-switch">
+        Don't have an account?
+        <button type="button" id="showSignup">Create Account</button>
+      </div>
+    </form>
+
+    <!-- Registration -->
+    <form id="signupForm" class="auth-stage hidden">
+      <h2>Create your account</h2>
+      <p class="auth-subtitle">Join Megavallia for free.</p>
+
+      <label for="signupEmail">Email address</label>
+      <input id="signupEmail" type="email" autocomplete="email"
+             placeholder="you@example.com" required>
+
+      <label for="signupPassword">Create password</label>
+      <input id="signupPassword" type="password"
+             autocomplete="new-password" minlength="6"
+             placeholder="At least 6 characters" required>
+
+      <label for="signupConfirm">Confirm password</label>
+      <input id="signupConfirm" type="password"
+             autocomplete="new-password" minlength="6" required>
+
+      <button class="primary-button" type="submit" id="signupSubmit">
+        Create Account
+      </button>
+
+      <div class="auth-message" id="signupMessage" role="status"></div>
+
+      <div class="auth-switch">
+        Already registered?
+        <button type="button" id="showLogin">Sign In</button>
+      </div>
+    </form>
+
+    <!-- Email verification -->
+    <form id="verifyForm" class="auth-stage hidden">
+      <h2>Verify your email</h2>
+      <p class="auth-subtitle">
+        We've sent a six-digit verification code to
+        <strong id="verificationEmail"></strong>.
+        Enter the code below to activate your account.
+      </p>
+
+      <label for="verificationCode">Six-digit code</label>
+      <input id="verificationCode" class="auth-code"
+             type="text" inputmode="numeric" autocomplete="one-time-code"
+             maxlength="6" pattern="[0-9]{6}"
+             placeholder="000000" required>
+
+      <button class="primary-button" type="submit" id="verifySubmit">
+        Verify Email
+      </button>
+
+      <div class="auth-message" id="verifyMessage" role="status"></div>
+
+      <button type="button" class="auth-back" id="resendCode">
+        Resend verification code
+      </button>
+
+      <button type="button" class="auth-back" id="backToLogin">
+        Back to Sign In
+      </button>
+    </form>
+
+    <p class="auth-note">
+      Your account is protected by Megavallia authentication.
+      Never share your verification code or password.
+    </p>
+  </div>
+</div>
+
+<!-- Supabase must load before app.js -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="/app.js"></script>
 
@@ -519,6 +466,7 @@ main {
   "use strict";
 
   const API = "https://megavallia.onrender.com/api/connect";
+  const AUTH_API = "https://megavallia.onrender.com/api/auth";
 
   const $ = id => document.getElementById(id);
 
@@ -527,6 +475,16 @@ main {
   let currentIndex = 0;
   let currentPhotoIndex = 0;
   let currentProfile = null;
+
+  let pendingVerificationEmail = "";
+  let authBusy = false;
+  let starting = false;
+
+  const supabase = window.megavalliaSupabase;
+
+  /* =========================================
+     STATUS MESSAGES
+     ========================================= */
 
   function showStatus(message) {
     const el = $("status");
@@ -538,15 +496,444 @@ main {
     $("status").classList.remove("show");
   }
 
+  function authMessage(id, message, isError = false) {
+    const el = $(id);
+    el.textContent = message;
+    el.style.display = "block";
+    el.style.color = isError ? "#ff8585" : "#72e6a1";
+  }
+
+  function clearAuthMessages() {
+    ["loginMessage", "signupMessage", "verifyMessage"].forEach(id => {
+      $(id).textContent = "";
+      $(id).style.display = "none";
+    });
+  }
+
+  function setBusy(button, busy, normalText) {
+    button.disabled = busy;
+    button.textContent = busy ? "Please wait..." : normalText;
+  }
+
+  /* =========================================
+     AUTHENTICATION UI
+     ========================================= */
+
+  function showAuthStage(stage) {
+    document.querySelectorAll(".auth-stage").forEach(form => {
+      form.classList.add("hidden");
+    });
+
+    $(stage).classList.remove("hidden");
+    clearAuthMessages();
+  }
+
+  function openAuth(stage = "login") {
+    showAuthStage(
+      stage === "signup" ? "signupForm" :
+      stage === "verify" ? "verifyForm" : "loginForm"
+    );
+
+    $("authOverlay").classList.add("show");
+  }
+
+  function closeAuth() {
+    if (!window.getMegavalliaAccessToken) return;
+
+    $("authOverlay").classList.remove("show");
+  }
+
+  $("authClose").addEventListener("click", () => {
+    // Do not close during verification: the user may return later.
+    if (pendingVerificationEmail) return;
+    closeAuth();
+  });
+
+  $("authOverlay").addEventListener("click", event => {
+    if (event.target === $("authOverlay")) {
+      if (!pendingVerificationEmail) closeAuth();
+    }
+  });
+
+  $("showSignup").addEventListener("click", () => {
+    openAuth("signup");
+  });
+
+  $("showLogin").addEventListener("click", () => {
+    openAuth("login");
+  });
+
+  $("backToLogin").addEventListener("click", () => {
+    pendingVerificationEmail = "";
+    openAuth("login");
+  });
+
+  /* =========================================
+     BACKEND REQUEST HELPER
+     ========================================= */
+
+  async function authRequest(path, body) {
+    const response = await fetch(AUTH_API + path, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Accept": "application/json"
+      },
+      body: JSON.stringify(body)
+    });
+
+    let data = {};
+
+    try {
+      data = await response.json();
+    } catch (_) {}
+
+    if (!response.ok) {
+      throw new Error(
+        data.error || data.message ||
+        "The authentication request failed. Please try again."
+      );
+    }
+
+    return data;
+  }
+
+  /* =========================================
+     REGISTRATION
+     ========================================= */
+
+  $("signupForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    if (authBusy) return;
+
+    if (!supabase) {
+      authMessage(
+        "signupMessage",
+        "Supabase is not configured. Please contact Megavallia support.",
+        true
+      );
+      return;
+    }
+
+    const email = $("signupEmail").value.trim().toLowerCase();
+    const password = $("signupPassword").value;
+    const confirm = $("signupConfirm").value;
+
+    if (!email || !password) return;
+
+    if (password.length < 6) {
+      authMessage("signupMessage",
+        "Your password must contain at least six characters.", true);
+      return;
+    }
+
+    if (password !== confirm) {
+      authMessage("signupMessage",
+        "Your passwords do not match.", true);
+      return;
+    }
+
+    authBusy = true;
+    setBusy($("signupSubmit"), true, "Create Account");
+
+    try {
+      /*
+       * Step 1: Create the account in Supabase.
+       *
+       * The server-side verification endpoint will confirm
+       * the email after the correct code is submitted.
+       */
+
+      const result = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          emailRedirectTo: window.location.origin
+        }
+      });
+
+      if (result.error) throw result.error;
+
+      if (!result.data?.user) {
+        throw new Error("Supabase did not return a user account.");
+      }
+
+      // Ensure the newly registered account cannot remain signed in
+      // before the custom email verification is completed.
+      if (result.data.session) {
+        await supabase.auth.signOut();
+      }
+
+      /*
+       * Step 2: Request the custom Resend verification email.
+       *
+       * Request body: { email }
+       */
+
+      await authRequest("/verification/request", { email });
+
+      pendingVerificationEmail = email;
+      $("verificationEmail").textContent = email;
+      $("verificationCode").value = "";
+
+      showAuthStage("verifyForm");
+
+      authMessage(
+        "verifyMessage",
+        "Your account has been created. Check your email for the six-digit verification code."
+      );
+
+    } catch (error) {
+      console.error("[Megavallia Connect] Registration:", error);
+
+      authMessage(
+        "signupMessage",
+        error.message || "Registration failed. Please try again.",
+        true
+      );
+    } finally {
+      authBusy = false;
+      setBusy($("signupSubmit"), false, "Create Account");
+    }
+  });
+
+  /* =========================================
+     RESEND VERIFICATION CODE
+     ========================================= */
+
+  $("resendCode").addEventListener("click", async () => {
+    if (authBusy || !pendingVerificationEmail) return;
+
+    authBusy = true;
+    $("resendCode").disabled = true;
+
+    try {
+      await authRequest("/verification/request", {
+        email: pendingVerificationEmail
+      });
+
+      authMessage(
+        "verifyMessage",
+        "A new verification code has been sent. Check your inbox."
+      );
+
+    } catch (error) {
+      authMessage(
+        "verifyMessage",
+        error.message || "Unable to resend the code.",
+        true
+      );
+    } finally {
+      authBusy = false;
+      $("resendCode").disabled = false;
+    }
+  });
+
+  /* =========================================
+     VERIFY EMAIL
+     ========================================= */
+
+  $("verifyForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    if (authBusy) return;
+
+    const code = $("verificationCode").value.trim();
+
+    if (!pendingVerificationEmail) {
+      authMessage(
+        "verifyMessage",
+        "Your verification session has expired. Please register or sign in again.",
+        true
+      );
+      return;
+    }
+
+    if (!/^[0-9]{6}$/.test(code)) {
+      authMessage(
+        "verifyMessage",
+        "Enter the complete six-digit verification code.",
+        true
+      );
+      return;
+    }
+
+    authBusy = true;
+    setBusy($("verifySubmit"), true, "Verify Email");
+
+    try {
+      /*
+       * Request body:
+       * {
+       *   email: "...",
+       *   code: "123456"
+       * }
+       */
+
+      await authRequest("/verification/verify", {
+        email: pendingVerificationEmail,
+        code
+      });
+
+      const verifiedEmail = pendingVerificationEmail;
+
+      pendingVerificationEmail = "";
+
+      showAuthStage("loginForm");
+      $("loginEmail").value = verifiedEmail;
+      $("loginPassword").value = "";
+
+      authMessage(
+        "loginMessage",
+        "Email successfully verified! Your account is now activated. Sign in to continue."
+      );
+
+    } catch (error) {
+      console.error("[Megavallia Connect] Verification:", error);
+
+      authMessage(
+        "verifyMessage",
+        error.message || "Verification failed. Check your code and try again.",
+        true
+      );
+    } finally {
+      authBusy = false;
+      setBusy($("verifySubmit"), false, "Verify Email");
+    }
+  });
+
+  /* =========================================
+     LOGIN
+     ========================================= */
+
+  $("loginForm").addEventListener("submit", async event => {
+    event.preventDefault();
+
+    if (authBusy) return;
+
+    if (!supabase) {
+      authMessage(
+        "loginMessage",
+        "Supabase authentication is not configured.",
+        true
+      );
+      return;
+    }
+
+    const email = $("loginEmail").value.trim().toLowerCase();
+    const password = $("loginPassword").value;
+
+    if (!email || !password) return;
+
+    authBusy = true;
+    setBusy($("loginSubmit"), true, "Sign In");
+
+    try {
+      const { data, error } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password
+        });
+
+      if (error) {
+        if (/email not confirmed/i.test(error.message)) {
+          throw new Error(
+            "Your email has not been verified. Please complete email verification first."
+          );
+        }
+        throw error;
+      }
+
+      if (!data.session) {
+        throw new Error("Login did not create a valid session.");
+      }
+
+      pendingVerificationEmail = "";
+
+      $("authOverlay").classList.remove("show");
+
+      await start();
+
+      showStatus("Welcome to Megavallia Connect!");
+
+    } catch (error) {
+      console.error("[Megavallia Connect] Login:", error);
+
+      authMessage(
+        "loginMessage",
+        error.message || "Unable to sign in. Check your details.",
+        true
+      );
+    } finally {
+      authBusy = false;
+      setBusy($("loginSubmit"), false, "Sign In");
+    }
+  });
+
+  /* =========================================
+     SESSION MANAGEMENT
+     ========================================= */
+
   async function getToken() {
     if (typeof window.getMegavalliaAccessToken !== "function") {
-      throw new Error(
-        "Megavallia login could not be loaded. Please return to the main website and sign in."
-      );
+      throw new Error("Megavallia authentication could not be loaded.");
     }
 
     return await window.getMegavalliaAccessToken();
   }
+
+  function updateUserBar(user) {
+    const bar = $("authUserBar");
+
+    if (!user) {
+      bar.classList.add("hidden");
+      return;
+    }
+
+    const displayName =
+      user.user_metadata?.username ||
+      user.user_metadata?.display_name ||
+      user.email ||
+      "Megavallia member";
+
+    $("authUserText").textContent = "Signed in: " + displayName;
+    bar.classList.remove("hidden");
+  }
+
+  $("signOutButton").addEventListener("click", async () => {
+    if (!supabase) return;
+
+    try {
+      await supabase.auth.signOut();
+
+      myProfile = null;
+      currentProfile = null;
+      updateUserBar(null);
+
+      showEmptyDiscovery("Sign in to continue");
+      openAuth("login");
+
+    } catch (error) {
+      showStatus(error.message || "Unable to sign out.");
+    }
+  });
+
+  if (supabase) {
+    supabase.auth.onAuthStateChange((event, session) => {
+      updateUserBar(session?.user || null);
+
+      if (event === "SIGNED_OUT") {
+        myProfile = null;
+        currentProfile = null;
+        showEmptyDiscovery("Sign in to continue");
+      }
+    });
+  }
+
+  /* =========================================
+     CONNECT API
+     ========================================= */
 
   async function api(path, options = {}) {
     const token = await getToken();
@@ -565,18 +952,24 @@ main {
     });
 
     let data = {};
+
     try {
       data = await response.json();
     } catch (_) {}
 
     if (!response.ok) {
       throw new Error(
-        data.error || data.message || ("Request failed (" + response.status + ")")
+        data.error || data.message ||
+        ("Request failed (" + response.status + ")")
       );
     }
 
     return data;
   }
+
+  /* =========================================
+     NAVIGATION
+     ========================================= */
 
   function setView(name) {
     document.querySelectorAll(".view").forEach(view => {
@@ -591,11 +984,11 @@ main {
     });
 
     const titles = {
-      swipe: "For You",
-      explore: "Explore",
-      likes: "Likes",
-      chat: "Chat",
-      profile: "Profile"
+      swipe:"For You",
+      explore:"Explore",
+      likes:"Likes",
+      chat:"Chat",
+      profile:"Profile"
     };
 
     $("headerTitle").textContent = titles[name] || "Connect";
@@ -606,10 +999,19 @@ main {
   }
 
   document.querySelectorAll(".nav-item").forEach(button => {
-    button.addEventListener("click", () => setView(button.dataset.view));
+    button.addEventListener("click", () => {
+      if (!myProfile && button.dataset.view !== "profile") {
+        showStatus("Create your Connect profile first.");
+        return;
+      }
+      setView(button.dataset.view);
+    });
   });
 
-  $("headerExplore").addEventListener("click", () => setView("explore"));
+  $("headerExplore").addEventListener("click", () => {
+    if (myProfile) setView("explore");
+    else showStatus("Create your Connect profile first.");
+  });
 
   $("filterButton").addEventListener("click", () => {
     showStatus("Discovery filters will be available in a future update.");
@@ -618,6 +1020,10 @@ main {
   $("headerFeature").addEventListener("click", () => {
     showStatus("Featured profiles are coming soon.");
   });
+
+  /* =========================================
+     PROFILE HELPERS
+     ========================================= */
 
   function profileName(profile) {
     const account = profile.account || {};
@@ -634,13 +1040,18 @@ main {
   function renderPhoto(profile) {
     const photo = $("personPhoto");
     const fallback = $("photoFallback");
+
     const photos = [
       profile.primary_photo,
       ...(profile.photos || [])
     ].filter(Boolean);
 
     const uniquePhotos = [...new Set(photos)];
-    currentPhotoIndex = Math.min(currentPhotoIndex, Math.max(0, uniquePhotos.length - 1));
+
+    currentPhotoIndex = Math.min(
+      currentPhotoIndex,
+      Math.max(0, uniquePhotos.length - 1)
+    );
 
     const selected = uniquePhotos[currentPhotoIndex] || profilePhoto(profile);
 
@@ -676,10 +1087,11 @@ main {
     currentPhotoIndex = 0;
 
     $("personName").textContent =
-      profileName(profile) +
-      (profile.age ? " " + profile.age : "");
+      profileName(profile) + (profile.age ? " " + profile.age : "");
 
-    $("personCountry").textContent = profile.country || "Location not specified";
+    $("personCountry").textContent =
+      profile.country || "Location not specified";
+
     $("personBio").textContent = profile.bio || "";
 
     renderPhoto(profile);
@@ -687,22 +1099,33 @@ main {
 
   function showEmptyDiscovery(message) {
     currentProfile = null;
+
     $("personName").textContent = message;
     $("personCountry").textContent = "";
-    $("personBio").textContent = "Check back later for more people to discover.";
+    $("personBio").textContent =
+      "Check back later for more people to discover.";
+
     $("personPhoto").classList.add("hidden");
     $("photoFallback").classList.remove("hidden");
     $("photoFallback").textContent = "M";
+
     $("photoCount").replaceChildren();
     $("nextPhoto").classList.add("hidden");
   }
+
+  /* =========================================
+     DISCOVERY
+     ========================================= */
 
   async function loadDiscover() {
     hideStatus();
 
     try {
       const result = await api("/discover");
-      discoverProfiles = Array.isArray(result.profiles) ? result.profiles : [];
+
+      discoverProfiles = Array.isArray(result.profiles)
+        ? result.profiles : [];
+
       currentIndex = 0;
 
       if (!discoverProfiles.length) {
@@ -711,6 +1134,7 @@ main {
       }
 
       displayProfile(discoverProfiles[currentIndex]);
+
     } catch (error) {
       showEmptyDiscovery("Unable to load profiles");
       showStatus(error.message);
@@ -726,9 +1150,12 @@ main {
     ].filter(Boolean);
 
     const uniquePhotos = [...new Set(photos)];
+
     if (uniquePhotos.length < 2) return;
 
-    currentPhotoIndex = (currentPhotoIndex + 1) % uniquePhotos.length;
+    currentPhotoIndex =
+      (currentPhotoIndex + 1) % uniquePhotos.length;
+
     renderPhoto(currentProfile);
   });
 
@@ -743,8 +1170,8 @@ main {
 
     try {
       await api("/swipe/" + encodeURIComponent(selected.user_id), {
-        method: "POST",
-        body: JSON.stringify({ action })
+        method:"POST",
+        body:JSON.stringify({action})
       });
 
       currentIndex++;
@@ -753,8 +1180,9 @@ main {
         displayProfile(discoverProfiles[currentIndex]);
       } else {
         showEmptyDiscovery("You're all caught up");
-        loadDiscover();
+        await loadDiscover();
       }
+
     } catch (error) {
       showStatus(error.message);
     }
@@ -775,6 +1203,10 @@ main {
     showStatus("Sending profiles is not available yet.");
   });
 
+  /* =========================================
+     EXPLORE AND CONNECTIONS
+     ========================================= */
+
   function makeProfileRow(profile) {
     const row = document.createElement("div");
     row.className = "profile-row";
@@ -788,8 +1220,8 @@ main {
     const details = document.createElement("div");
 
     const heading = document.createElement("h3");
-    heading.textContent = profileName(profile) +
-      (profile.age ? " · " + profile.age : "");
+    heading.textContent =
+      profileName(profile) + (profile.age ? " · " + profile.age : "");
 
     const description = document.createElement("p");
     description.textContent =
@@ -808,14 +1240,18 @@ main {
 
     try {
       const result = await api("/discover");
-      const profiles = Array.isArray(result.profiles) ? result.profiles : [];
+      const profiles = Array.isArray(result.profiles)
+        ? result.profiles : [];
 
       if (!profiles.length) {
         list.textContent = "No profiles available yet.";
         return;
       }
 
-      profiles.forEach(profile => list.appendChild(makeProfileRow(profile)));
+      profiles.forEach(profile => {
+        list.appendChild(makeProfileRow(profile));
+      });
+
     } catch (error) {
       showStatus(error.message);
     }
@@ -827,12 +1263,14 @@ main {
 
     try {
       const result = await api("/matches");
-      const matches = Array.isArray(result.matches) ? result.matches : [];
+      const matches = Array.isArray(result.matches)
+        ? result.matches : [];
 
       if (!matches.length) {
         const empty = document.createElement("div");
         empty.className = "empty";
-        empty.textContent = "Your connections will appear here when you make a mutual connection.";
+        empty.textContent =
+          "Your connections will appear here when you make a mutual connection.";
         list.appendChild(empty);
         return;
       }
@@ -849,7 +1287,8 @@ main {
 
           try {
             const parsed = new URL(url);
-            if (!["http:", "https:"].includes(parsed.protocol)) return;
+
+            if (!["http:","https:"].includes(parsed.protocol)) return;
 
             const link = document.createElement("a");
             link.href = parsed.href;
@@ -858,16 +1297,22 @@ main {
             link.textContent = platform;
             link.style.color = "#ed72c6";
             link.style.marginLeft = "8px";
+
             row.appendChild(link);
           } catch (_) {}
         });
 
         list.appendChild(row);
       });
+
     } catch (error) {
       showStatus(error.message);
     }
   }
+
+  /* =========================================
+     PROFILE EDITOR
+     ========================================= */
 
   function renderProfileForm() {
     const container = $("profileFormContainer");
@@ -892,7 +1337,7 @@ main {
       <textarea id="connectBio" maxlength="300"
         placeholder="Write a short introduction"></textarea>
 
-      <label for="connectPrimaryPhoto">Main photo (required)</label>
+      <label for="connectPrimaryPhoto">Main photo</label>
       <input id="connectPrimaryPhoto" type="file"
         accept="image/jpeg,image/png,image/webp">
 
@@ -917,22 +1362,28 @@ main {
         Show my social links to my connections
       </label>
 
-      <button class="primary-button" type="submit">Save Connect Profile</button>
+      <button class="primary-button" type="submit">
+        Save Connect Profile
+      </button>
     `;
 
     if (myProfile) {
-      $("connectAge", form).value = myProfile.age || "";
-      $("connectCountry", form).value = myProfile.country || "";
-      $("connectBio", form).value = myProfile.bio || "";
+      $("connectAge").value = myProfile.age || "";
+      $("connectCountry").value = myProfile.country || "";
+      $("connectBio").value = myProfile.bio || "";
 
       const links = myProfile.social_links || {};
-      $("connectWhatsapp", form).value = links.whatsapp || "";
-      $("connectInstagram", form).value = links.instagram || "";
-      $("connectTelegram", form).value = links.telegram || "";
-      $("connectOther", form).value = links.other || "";
-      $("connectShowLinks", form).checked = !!myProfile.show_social_links;
 
-      form.querySelector("h2").textContent = "Edit your Connect profile";
+      $("connectWhatsapp").value = links.whatsapp || "";
+      $("connectInstagram").value = links.instagram || "";
+      $("connectTelegram").value = links.telegram || "";
+      $("connectOther").value = links.other || "";
+
+      $("connectShowLinks").checked =
+        !!myProfile.show_social_links;
+
+      form.querySelector("h2").textContent =
+        "Edit your Connect profile";
     }
 
     form.addEventListener("submit", saveProfile);
@@ -943,7 +1394,8 @@ main {
     if (!value.trim()) return "";
 
     const parsed = new URL(value);
-    if (!["http:", "https:"].includes(parsed.protocol)) {
+
+    if (!["http:","https:"].includes(parsed.protocol)) {
       throw new Error("Please use a valid HTTPS or HTTP link.");
     }
 
@@ -956,6 +1408,7 @@ main {
 
     const form = event.currentTarget;
     const submit = form.querySelector("button[type=submit]");
+
     submit.disabled = true;
     submit.textContent = "Saving...";
 
@@ -967,22 +1420,26 @@ main {
         throw new Error("You must be at least 18 years old.");
       }
 
+      if (!country) {
+        throw new Error("Please enter your country.");
+      }
+
       const body = {
         age,
         country,
-        bio: $("connectBio").value.trim(),
-        social_links: {
-          whatsapp: validOptionalUrl($("connectWhatsapp").value),
-          instagram: validOptionalUrl($("connectInstagram").value),
-          telegram: validOptionalUrl($("connectTelegram").value),
-          other: validOptionalUrl($("connectOther").value)
+        bio:$("connectBio").value.trim(),
+        social_links:{
+          whatsapp:validOptionalUrl($("connectWhatsapp").value),
+          instagram:validOptionalUrl($("connectInstagram").value),
+          telegram:validOptionalUrl($("connectTelegram").value),
+          other:validOptionalUrl($("connectOther").value)
         },
-        show_social_links: $("connectShowLinks").checked
+        show_social_links:$("connectShowLinks").checked
       };
 
       await api("/profile", {
-        method: "PUT",
-        body: JSON.stringify(body)
+        method:"PUT",
+        body:JSON.stringify(body)
       });
 
       const primary = $("connectPrimaryPhoto").files[0];
@@ -997,41 +1454,54 @@ main {
         data.append("primaryPhoto", primary);
 
         await api("/primary-photo", {
-          method: "POST",
-          body: data
+          method:"POST",
+          body:data
         });
       }
 
       if (gallery.length) {
         const data = new FormData();
+
         gallery.forEach(file => data.append("photos", file));
 
         await api("/photos", {
-          method: "POST",
-          body: data
+          method:"POST",
+          body:data
         });
       }
 
       await loadMe();
+
       showStatus("Your Connect profile has been saved.");
+
       setView("swipe");
       await loadDiscover();
 
     } catch (error) {
       showStatus(error.message);
+
     } finally {
       submit.disabled = false;
       submit.textContent = "Save Connect Profile";
     }
   }
 
+  /* =========================================
+     CURRENT USER PROFILE
+     ========================================= */
+
   async function loadMe() {
     const result = await api("/me");
+
     myProfile = result.profile || null;
 
     if (!myProfile) {
       setView("profile");
-      showStatus("Create your Connect profile before discovering people.");
+
+      showStatus(
+        "Create your Connect profile before discovering people."
+      );
+
       renderProfileForm();
       return;
     }
@@ -1039,30 +1509,72 @@ main {
     return myProfile;
   }
 
+  /* =========================================
+     START CONNECT
+     ========================================= */
+
   async function start() {
+    if (starting) return;
+
+    starting = true;
+
     try {
+      const session = await supabase?.auth.getSession();
+
+      if (!session?.data?.session) {
+        myProfile = null;
+
+        showEmptyDiscovery("Sign in to continue");
+        updateUserBar(null);
+        openAuth("login");
+
+        return;
+      }
+
+      updateUserBar(session.data.session.user);
+
       await loadMe();
 
       if (myProfile) {
         await loadDiscover();
       }
+
     } catch (error) {
-      showStatus(error.message + " Sign in on the main Megavallia website first.");
-      showEmptyDiscovery("Sign in to continue");
+      console.error("[Megavallia Connect] Startup:", error);
 
-      const link = document.createElement("a");
-      link.href = "/";
-      link.textContent = "Go to Megavallia and sign in";
-      link.style.color = "#ed72c6";
-      link.style.display = "block";
-      link.style.textAlign = "center";
-      link.style.padding = "15px";
+      showEmptyDiscovery("Unable to load Connect");
 
-      $("discoverCard").appendChild(link);
+      showStatus(error.message);
+
+      if (/sign in|session|token|authentication/i.test(error.message)) {
+        openAuth("login");
+      }
+
+    } finally {
+      starting = false;
     }
   }
 
-  start();
+  /* =========================================
+     INITIALIZATION
+     ========================================= */
+
+  async function initialize() {
+    if (!supabase) {
+      showEmptyDiscovery("Authentication unavailable");
+
+      showStatus(
+        "Megavallia authentication could not initialize. Check the Supabase configuration in app.js."
+      );
+
+      return;
+    }
+
+    await start();
+  }
+
+  initialize();
+
 })();
 </script>
 </body>
